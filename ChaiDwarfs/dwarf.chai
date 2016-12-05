@@ -1,0 +1,48 @@
+/**
+Functions:
+
+moveUp()
+moveDown()
+moveLeft()
+moveRight()
+moveStop()
+checkTerrain(int x, int y)
+getX()
+getY()
+getSpeed()
+getViewDistance()
+getHP()
+
+Terrain Enums:
+SOIL
+DARK
+PASSABLE
+NOMAP
+STONE
+
+Object Enums:
+INVALID
+DIAMOND
+RUBY
+SAPPHIRE
+
+**/
+
+def main(){
+	puts("Executing Script...!\n")
+	var terrainType = checkTerrain(0, 1)
+	if(NOMAP == terrainType){ puts("There is no map!\n") }
+	else if (SOIL == terrainType) { puts("Dwarf sees Soil!\n") }
+	else if (STONE == terrainType) { puts("Dwarf sees Stone!\n") }
+	else if (PASSABLE == terrainType) { puts("Dwarf sees passable ground!\n") }
+	else if (DARK == terrainType) { puts("Dwarf tries to look at places he should not even know!\n") }
+	puts("Position: " + to_string(getX()) + " " + to_string(getY()) + "\n")
+	
+	var objType = checkForObject(0, 0);
+	if(objType == INVALID) { puts ("There is no fortune here!\n")}
+	else if (objType == DIAMOND) { puts("Found a Diamond!\n")}
+	
+	moveDown();
+	
+	puts("\n")
+}

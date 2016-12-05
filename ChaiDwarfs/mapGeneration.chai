@@ -1,0 +1,31 @@
+/**
+Functions:
+
+setSize(int rows, int cols)
+setType(int row, int col, type)
+numRows()
+numCols()
+
+Terrain Enums:
+SOIL
+DARK
+PASSABLE
+STONE
+
+**/
+
+setSize(10, 10)
+
+for(var row = 0; row < 10; ++row){
+	for(var col = 0; col < 10; ++col){
+		setType(row, col, PASSABLE);
+		//puts("Setting " + to_string(row), + " " + to_string(col) + "\n")
+	}
+}
+
+setType(0, 5, STONE)
+
+// factory.defineNewObject("Diamond")
+	// .addComp_TouchHeal()
+	// .addComp_PickUpValue()
+	// .addComp_PickUp
