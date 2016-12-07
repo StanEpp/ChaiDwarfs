@@ -27,9 +27,8 @@
 #include "ChaiScriptAI.hpp"
 #include "GameStateControl.hpp"
 #include "TerrainObjectSystem.hpp"
-#include "ECSFactory.hpp"
-#include "ObjectComponents.hpp"
-#include "DwarfComponents.hpp"
+#include "EntityManager.hpp"
+#include "CommandSystem.hpp"
 
 namespace CDwarfs {
 
@@ -40,9 +39,9 @@ namespace CDwarfs {
     std::shared_ptr<TerrainObjectSystem>    m_terrainObjSys;
     std::shared_ptr<GameStateControl> m_gameState;
     bool  m_running;
-
-    ECSFactory<BaseObjectComponent> objFac;
-    ECSFactory<BaseDwarfComponent>  dwarfFac;
+    
+    EntityManager m_entManager;
+    CommandSystem m_cmdSystem;
 
   public:
     ChaiDwarfs() : 
@@ -50,28 +49,25 @@ namespace CDwarfs {
       m_running(true),
       m_terrain(std::make_shared<TerrainMap>()),
       m_terrainObjSys(std::make_shared<TerrainObjectSystem>()),
-      m_gameState(std::make_shared<GameStateControl>(m_terrain, m_dwarfSys)){}
+      m_gameState(std::make_shared<GameStateControl>(m_terrain, m_dwarfSys)),
+      m_entManager(),
+      m_cmdSystem(m_entManager) {}
 
 
     void init() { 
       m_terrain->load("mapGeneration.chai");
-
-      objFac.registerComponent<TouchValue, const int>("TouchValue");
-      objFac.registerComponent<TouchDamage, const int>("TouchDamage");
-      objFac.registerComponent<Name, const std::string&>("Name");
-      objFac.registerComponent<Position, const int, const int>("Position");
-      objFac.loadObjectDefinitions("objectDefinitions.chai");
-
-      dwarfFac.registerComponent<DwarfHP, const int, const int>("DwarfHP");
-      dwarfFac.registerComponent<DwarfSpeed, const int>("DwarfSpeed");
-      dwarfFac.registerComponent<DwarfPosition, const int, const int>("DwarfPosition");
-      dwarfFac.registerComponent<DwarfPoints, const int>("DwarfPoints");
-      dwarfFac.registerComponent<DwarfView, const int>("DwarfView");
+      m_entManager.init();
+      m_cmdSystem.init();
+      m_entManager.loadObjectDefinitions("objectDefinitions.chai");
+      m_entManager.loadObjectCreations("objectCreation.chai");
     }
 
     void run() {
       Timer timer;
       auto lastTimePoint = timer.currentTime();
+
+      m_cmdSystem.pushCommand(cmd::Cmd_Touch());
+      m_cmdSystem.processQueue();
 
       m_dwarfSys->add<ChaiScriptAI>("dwarf.chai", m_terrain, m_terrainObjSys);
       auto& obj = m_terrainObjSys->add<Diamond>();

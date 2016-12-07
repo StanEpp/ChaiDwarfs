@@ -12,16 +12,8 @@ addComp_TouchValue
 
 **/
 
-factory.defineObject("Diamond").addComp_Name("DiamondCool").addComp_TouchValue(100).addComp_TouchDamage(15).addComp_Position(0, 0)
-factory.defineObject("Sapphire").addComp_Name("Sapphire2").addComp_TouchValue(20).addComp_TouchDamage(500)
+factory.defineObject("Diamond").addComp_Name("Diamond").addComp_TouchValue(100).addComp_TouchDamage(15).addComp_Position(0, 0)
+factory.defineObject("Sapphire").addComp_Name("Sapphire2").addComp_TouchValue(20).addComp_TouchDamage(500).addComp_HP(50, 100)
 factory.defineObject("Emerald").addComp_Name("Emerald").addComp_TouchValue(10).addComp_TouchDamage(100).addComp_Position(0, 0)
-factory.createObject("Diamond")
-var sID = factory.createObject("Sapphire")
-factory.createObject("Emerald")
-var i = factory.hasComponent_Position(sID)
-var ptr = factory.getComponent_Name(sID)
-ptr.name = "Es hat geklappt!"
-var ptr2 = factory.getComponent_Name(sID)
-puts(ptr2.name);
 
-puts("Everything went well!\n")
+puts("Object Definitions: Everything went well!\n")

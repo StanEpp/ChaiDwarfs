@@ -20,26 +20,8 @@
 
 #include <iostream>
 
-#include "DwarfComponents.hpp"
-#include "ObjectComponents.hpp"
+#include "Components.hpp"
 #include "ChaiDwarfs.hpp"
-
-#include <queue>
-
-struct EL{
-  int pr;
-  std::string str;
-  EL(int pr, const std::string& str) : pr(pr), str(str) {}
-};
-
-bool operator<(const EL& lhs, const EL& rhs) {
-  return lhs.pr < rhs.pr;
-}
-
-bool operator<=(const EL& lhs, const EL& rhs) {
-  return lhs.pr <= rhs.pr;
-}
-
 
 int main(){
 
@@ -50,18 +32,6 @@ int main(){
   //std::cout << CDwarfs::DwarfHP::componentTypeID << '\n';
   //std::cout << CDwarfs::DwarfPosition::componentTypeID << '\n';
 
-  //std::priority_queue<EL> qu;
-
-  //qu.emplace(1, "3");
-  //qu.emplace(3, "2");
-  //qu.emplace(1, "4");
-  //qu.emplace(4, "1");
-  //
-  //while (!qu.empty()) {
-  //  std::cout << qu.top().str << '\n';
-  //  qu.pop();
-  //}
-
   //std::cin.get();
 
   try {
@@ -71,6 +41,7 @@ int main(){
   }
   catch (const std::exception &e) {
     std::cerr << e.what() << '\n';
+    std::cin.get();
   }
 
   return 0;

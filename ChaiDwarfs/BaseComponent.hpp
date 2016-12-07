@@ -16,38 +16,37 @@
 *
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
-*
 */
-#ifndef _OBJECTCOMPONENTS_HPP_
-#define _OBJECTCOMPONENTS_HPP_
 
-#include "Component.hpp"
+#ifndef _BASECOMPONENT_HPP_
+#define _BASECOMPONENT_HPP_
+
+#include <cstdint>
 
 namespace CDwarfs {
 
-  struct TouchValue : public ObjectComponent<TouchValue> {
-    int value;
-    TouchValue() : value(0) {}
-    TouchValue(const int l_value) : value(l_value) {}
+  using  ComponentUUID = uint_fast64_t;
+
+  class BaseComponent {
+  public:
+    //get unique Component Class ID
+    static inline ComponentUUID getCID() {
+      static ComponentUUID ID = 0;
+      return ID++;
+    }
+
+    virtual ~BaseComponent() {}
   };
 
-  struct TouchDamage : public ObjectComponent<TouchDamage> {
-    int damage;
-    TouchDamage() : damage(0) {}
-    TouchDamage(const int l_damage) : damage(l_damage) {}
+  template<class T>
+  class Component : public BaseComponent {
+  public:
+    static ComponentUUID componentTypeID;
   };
 
-  struct Name : public ObjectComponent<Name> {
-    std::string name;
-    Name() : name() {}
-    Name(const std::string& l_name) : name(l_name) {}
-  };
+  template<typename T>
+  ComponentUUID Component<T>::componentTypeID = BaseComponent::getCID();
 
-  struct Position : public ObjectComponent<Position> {
-    int row, col;
-    Position() : row(0), col(0) {}
-    Position(const int l_row, const int l_col) : row(l_row), col(l_col) {}
-  };
 }
 
-#endif // !_OBJECTCOMPONENTS_HPP_
+#endif // !_BASECOMPONENT_HPP_

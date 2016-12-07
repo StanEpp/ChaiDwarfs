@@ -126,21 +126,23 @@
   <ItemGroup>
     <ClInclude Include="ChaiDwarfs.hpp" />
     <ClInclude Include="ChaiScriptTypes.hpp" />
-    <ClInclude Include="Component.hpp" />
+    <ClInclude Include="Commands.hpp" />
+    <ClInclude Include="CommandSystem.hpp" />
+    <ClInclude Include="BaseComponent.hpp" />
+    <ClInclude Include="ComponentSystem.hpp" />
     <ClInclude Include="Datastructs.hpp" />
     <ClInclude Include="Dwarf.hpp" />
     <ClInclude Include="DwarfAI.hpp" />
     <ClInclude Include="DwarfCommand.hpp" />
     <ClInclude Include="ChaiScriptAI.hpp" />
-    <ClInclude Include="DwarfComponentRegistrations.hpp" />
-    <ClInclude Include="DwarfComponents.hpp" />
     <ClInclude Include="DwarfSystem.hpp" />
     <ClInclude Include="DwarfTerrainInterface.hpp" />
     <ClInclude Include="DwarfTerrainObjectInterface.hpp" />
     <ClInclude Include="Entity.hpp" />
+    <ClInclude Include="EntityManager.hpp" />
     <ClInclude Include="GameStateControl.hpp" />
     <ClInclude Include="ObjectComponentRegistrations.hpp" />
-    <ClInclude Include="ObjectComponents.hpp" />
+    <ClInclude Include="Components.hpp" />
     <ClInclude Include="ECSFactory.hpp" />
     <ClInclude Include="TerrainMap.hpp" />
     <ClInclude Include="TerrainObject.hpp" />

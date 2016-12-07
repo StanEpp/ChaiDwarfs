@@ -1,0 +1,24 @@
+/**
+Variables:
+factory
+
+Functions for 'factory':
+defineObject(string name)
+
+Cascading functions after 'defineObject':
+addComp_Position
+addComp_TouchDamage
+addComp_TouchValue
+
+**/
+
+factory.createObject("Diamond")
+var sID = factory.createObject("Sapphire")
+factory.createObject("Emerald")
+var i = factory.hasComponent_Position(sID)
+var ptr = factory.getComponent_Name(sID)
+ptr.name = "Es hat geklappt!\n"
+var ptr2 = factory.getComponent_Name(sID)
+puts(ptr2.name);
+
+puts("Object Creations: Everything went well!\n")

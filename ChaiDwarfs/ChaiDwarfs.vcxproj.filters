@@ -60,25 +60,31 @@
     <ClInclude Include="DwarfTerrainObjectInterface.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="Component.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="ObjectComponents.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="ObjectComponentRegistrations.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DwarfComponents.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ECSFactory.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="DwarfComponentRegistrations.hpp">
+    <ClInclude Include="EntityManager.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandSystem.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="Components.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseComponent.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

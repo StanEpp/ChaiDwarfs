@@ -24,12 +24,14 @@
 #ifndef _OBJECTCOMPONENTREGISTRATIONS_HPP_
 #define _OBJECTCOMPONENTREGISTRATIONS_HPP_
 
-#include "ObjectComponents.hpp"
+#include "Components.hpp"
 
 #include <chaiscript\chaiscript.hpp>
 
 namespace CDwarfs {
   namespace objDef {
+
+    using namespace comp;
 
     template<class TObjComp>
     void registerComponent(chaiscript::ModulePtr& module);
@@ -38,6 +40,12 @@ namespace CDwarfs {
     void registerComponent<TouchValue>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<TouchValue>(), "TouchValue");
       module->add(chaiscript::fun(&TouchValue::value), "value");
+    }
+
+    template<>
+    void registerComponent<TouchHeal>(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::user_type<TouchHeal>(), "TouchHeal");
+      module->add(chaiscript::fun(&TouchHeal::heal), "heal");
     }
 
     template<>
@@ -58,6 +66,31 @@ namespace CDwarfs {
       module->add(chaiscript::fun(&Position::row), "row");
       module->add(chaiscript::fun(&Position::col), "col");
     }
+
+    template<>
+    void registerComponent<HP>(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::user_type<HP>(), "HP");
+      module->add(chaiscript::fun(&HP::hp), "hp");
+    }
+
+    template<>
+    void registerComponent<View>(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::user_type<View>(), "View");
+      module->add(chaiscript::fun(&View::dist), "dist");
+    }
+
+    template<>
+    void registerComponent<Speed>(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::user_type<Speed>(), "Speed");
+      module->add(chaiscript::fun(&Speed::speed), "speed");
+    }
+
+    template<>
+    void registerComponent<Points>(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::user_type<Points>(), "Points");
+      module->add(chaiscript::fun(&Points::points), "points");
+    }
+
 
   }
 }
