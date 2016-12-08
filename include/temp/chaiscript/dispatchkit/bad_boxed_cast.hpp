@@ -30,32 +30,32 @@ namespace chaiscript
     {
       public:
         bad_boxed_cast(Type_Info t_from, const std::type_info &t_to,
-            std::string t_what) noexcept
-          : from(t_from), to(&t_to), m_what(std::move(t_what))
+            std::string t_what) CHAISCRIPT_NOEXCEPT
+          : from(std::move(t_from)), to(&t_to), m_what(std::move(t_what))
         {
         }
 
         bad_boxed_cast(Type_Info t_from, const std::type_info &t_to)
-          : from(t_from), to(&t_to), m_what("Cannot perform boxed_cast: " + t_from.name() + " to: " + t_to.name())
+          : from(std::move(t_from)), to(&t_to), m_what("Cannot perform boxed_cast: " + t_from.name() + " to: " + t_to.name())
         {
         }
 
-        explicit bad_boxed_cast(std::string t_what) noexcept
-          : m_what(std::move(t_what))
+        explicit bad_boxed_cast(std::string t_what) CHAISCRIPT_NOEXCEPT
+          : to(nullptr), m_what(std::move(t_what))
         {
         }
 
         bad_boxed_cast(const bad_boxed_cast &) = default;
-        ~bad_boxed_cast() noexcept override = default;
+        virtual ~bad_boxed_cast() CHAISCRIPT_NOEXCEPT {}
 
         /// \brief Description of what error occurred
-        const char * what() const noexcept override
+        virtual const char * what() const CHAISCRIPT_NOEXCEPT CHAISCRIPT_OVERRIDE
         {
           return m_what.c_str();
         }
 
         Type_Info from; ///< Type_Info contained in the Boxed_Value
-        const std::type_info *to = nullptr; ///< std::type_info of the desired (but failed) result type
+        const std::type_info *to; ///< std::type_info of the desired (but failed) result type
 
       private:
         std::string m_what;

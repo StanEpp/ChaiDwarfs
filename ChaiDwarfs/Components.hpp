@@ -29,19 +29,19 @@ namespace CDwarfs {
     struct TouchValue : public Component<TouchValue> {
       int value;
       TouchValue() : value(0) {}
-      TouchValue(const int l_value) : value(l_value) {}
+      TouchValue(int l_value) : value(l_value) {}
     };
 
     struct TouchHeal : public Component<TouchHeal> {
       int heal;
       TouchHeal() : heal(0) {}
-      TouchHeal(const int l_heal) : heal(l_heal) {}
+      TouchHeal(int l_heal) : heal(l_heal) {}
     };
 
     struct TouchDamage : public Component<TouchDamage> {
       int damage;
       TouchDamage() : damage(0) {}
-      TouchDamage(const int l_damage) : damage(l_damage) {}
+      TouchDamage(int l_damage) : damage(l_damage) {}
     };
 
     struct Name : public Component<Name> {
@@ -53,32 +53,32 @@ namespace CDwarfs {
     struct Position : public Component<Position> {
       int row, col;
       Position() : row(0), col(0) {}
-      Position(const int l_row, const int l_col) : row(l_row), col(l_col) {}
+      Position(int l_row, int l_col) : row(l_row), col(l_col) {}
     };
 
     struct HP : public Component<HP> {
       int hp;
       int maxHP;
       HP() : hp(0), maxHP(100) {}
-      HP(const int hp, const int maxHP) : hp(hp), maxHP(maxHP) {}
+      HP(int hp, int maxHP) : hp(hp), maxHP(maxHP) {}
     };
 
     struct Speed : public Component<Speed> {
       int speed;
       Speed() : speed(0) {}
-      Speed(const int speed) : speed(speed) {}
+      Speed(int speed) : speed(speed) {}
     };
 
     struct Points : public Component<Points> {
       int points;
       Points() : points(0) {}
-      Points(const int points) : points(points) {}
+      Points(int points) : points(points) {}
     };
 
     struct View : public Component<View> {
       int dist;
       View() : dist(10) {}
-      View(const int dist) : dist(dist) {}
+      View(int dist) : dist(dist) {}
     };
   }
 }

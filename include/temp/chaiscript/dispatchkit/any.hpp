@@ -21,20 +21,23 @@ namespace chaiscript {
       class bad_any_cast : public std::bad_cast
       {
         public:
-          bad_any_cast() = default;
+          bad_any_cast() CHAISCRIPT_NOEXCEPT
+            : m_what("bad any cast")
+          {
+          }
 
           bad_any_cast(const bad_any_cast &) = default;
 
-          ~bad_any_cast() noexcept override = default;
+          virtual ~bad_any_cast() CHAISCRIPT_NOEXCEPT {}
 
           /// \brief Description of what error occurred
-          const char * what() const noexcept override
+          virtual const char * what() const CHAISCRIPT_NOEXCEPT CHAISCRIPT_OVERRIDE
           {
             return m_what.c_str();
           }
 
         private:
-          std::string m_what = "bad any cast";
+          std::string m_what;
       };
     }
   
@@ -50,10 +53,9 @@ namespace chaiscript {
 
           Data &operator=(const Data &) = delete;
 
-          virtual ~Data() = default;
+          virtual ~Data() {}
 
           virtual void *data() = 0;
-
           const std::type_info &type() const
           {
             return m_type;
@@ -72,12 +74,14 @@ namespace chaiscript {
             {
             }
 
-            void *data() override
+            virtual ~Data_Impl() {}
+
+            virtual void *data() CHAISCRIPT_OVERRIDE
             {
               return &m_data;
             }
 
-            std::unique_ptr<Data> clone() const override
+            std::unique_ptr<Data> clone() const CHAISCRIPT_OVERRIDE
             {
               return std::unique_ptr<Data>(new Data_Impl<T>(m_data));
             }
@@ -92,8 +96,6 @@ namespace chaiscript {
       public:
         // construct/copy/destruct
         Any() = default;
-        Any(Any &&) = default;
-        Any &operator=(Any &&t_any) = default;
 
         Any(const Any &t_any) 
         { 
@@ -105,6 +107,10 @@ namespace chaiscript {
           }
         }
 
+#if !defined(_MSC_VER) || _MSC_VER  != 1800
+        Any(Any &&) = default;
+        Any &operator=(Any &&t_any) = default;
+#endif
 
         template<typename ValueType,
           typename = typename std::enable_if<!std::is_same<Any, typename std::decay<ValueType>::type>::value>::type>
@@ -133,6 +139,10 @@ namespace chaiscript {
           }
 
 
+        ~Any()
+        {
+        }
+
         // modifiers
         Any & swap(Any &t_other)
         {
@@ -148,7 +158,8 @@ namespace chaiscript {
 
         const std::type_info & type() const
         {
-          if (m_data) {
+          if (m_data)
+          {
             return m_data->type();
           } else {
             return typeid(void);

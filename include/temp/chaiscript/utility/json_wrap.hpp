@@ -9,11 +9,11 @@ namespace chaiscript
   {
     public:
 
-      static Module& library(Module& m)
+      static ModulePtr library(ModulePtr m = std::make_shared<Module>())
       {
 
-        m.add(chaiscript::fun([](const std::string &t_str) { return from_json(t_str); }), "from_json");
-        m.add(chaiscript::fun(&json_wrap::to_json), "to_json");
+        m->add(chaiscript::fun([](const std::string &t_str) { return from_json(t_str); }), "from_json");
+        m->add(chaiscript::fun(&json_wrap::to_json), "to_json");
 
         return m;
 
@@ -30,7 +30,7 @@ namespace chaiscript
             {
               std::map<std::string, Boxed_Value> m;
 
-              for (const auto &p : t_json.object_range())
+              for (const auto &p : t_json.ObjectRange())
               {
                 m.insert(std::make_pair(p.first, from_json(p.second)));
               }
@@ -41,7 +41,7 @@ namespace chaiscript
             {
               std::vector<Boxed_Value> vec;
 
-              for (const auto &p : t_json.array_range()) 
+              for (const auto &p : t_json.ArrayRange()) 
               {
                 vec.emplace_back(from_json(p));
               }
@@ -49,13 +49,13 @@ namespace chaiscript
               return Boxed_Value(vec);
             }
           case json::JSON::Class::String:
-            return Boxed_Value(t_json.to_string());
+            return Boxed_Value(t_json.ToString());
           case json::JSON::Class::Floating:
-            return Boxed_Value(t_json.to_float());
+            return Boxed_Value(t_json.ToFloat());
           case json::JSON::Class::Integral:
-            return Boxed_Value(t_json.to_int());
+            return Boxed_Value(t_json.ToInt());
           case json::JSON::Class::Boolean:
-            return Boxed_Value(t_json.to_bool());
+            return Boxed_Value(t_json.ToBool());
         }
 
         throw std::runtime_error("Unknown JSON type");
@@ -102,24 +102,32 @@ namespace chaiscript
 
         try {
           Boxed_Number bn(t_bv);
+          json::JSON obj;
           if (Boxed_Number::is_floating_point(t_bv))
           {
-            return json::JSON(bn.get_as<double>());
+            obj = bn.get_as<double>();
           } else {
-            return json::JSON(bn.get_as<long>());
+            obj = bn.get_as<long>();
           }
+          return obj;
         } catch (const chaiscript::detail::exception::bad_any_cast &) {
           // not a number
         }
 
         try {
-          return json::JSON(boxed_cast<bool>(t_bv));
+          bool b = boxed_cast<bool>(t_bv);
+          json::JSON obj;
+          obj = b;
+          return obj;
         } catch (const chaiscript::exception::bad_boxed_cast &) {
           // not a bool
         }
 
         try {
-          return json::JSON(boxed_cast<std::string>(t_bv));
+          std::string s = boxed_cast<std::string>(t_bv);
+          json::JSON obj;
+          obj = s;
+          return obj;
         } catch (const chaiscript::exception::bad_boxed_cast &) {
           // not a string
         }

@@ -38,15 +38,15 @@ namespace CDwarfs {
     }
 
     void init() {
-      registerComponent<comp::TouchValue, const int>("TouchValue");
-      registerComponent<comp::TouchHeal, const int>("TouchHeal");
-      registerComponent<comp::TouchDamage, const int>("TouchDamage");
-      registerComponent<comp::Name, const std::string>("Name");
-      registerComponent<comp::Position, const int, const int>("Position");
-      registerComponent<comp::HP, const int, const int>("HP");
-      registerComponent<comp::Speed, const int>("Speed");
-      registerComponent<comp::Points, const int>("Points");
-      registerComponent<comp::View, const int>("View");
+      registerComponent<comp::TouchValue, int>("TouchValue");
+      registerComponent<comp::TouchHeal, int>("TouchHeal");
+      registerComponent<comp::TouchDamage, int>("TouchDamage");
+      registerComponent<comp::Name, std::string>("Name");
+      registerComponent<comp::Position, int, int>("Position");
+      registerComponent<comp::HP, int, int>("HP");
+      registerComponent<comp::Speed, int>("Speed");
+      registerComponent<comp::Points, int>("Points");
+      registerComponent<comp::View, int>("View");
     }
 
     EntityID::UUID createObject(const std::string& name) {

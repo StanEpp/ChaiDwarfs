@@ -25,7 +25,7 @@ namespace chaiscript
   namespace dispatch
   {
     struct option_explicit_set : std::runtime_error {
-      explicit option_explicit_set(const std::string &t_param_name)
+      option_explicit_set(const std::string &t_param_name)
         : std::runtime_error("option explicit set and parameter '" + t_param_name + "' does not exist")
       {
 
@@ -33,18 +33,20 @@ namespace chaiscript
 
       option_explicit_set(const option_explicit_set &) = default;
 
-      ~option_explicit_set() noexcept override = default;
+      virtual ~option_explicit_set() CHAISCRIPT_NOEXCEPT {}
     };
 
     class Dynamic_Object
     {
       public:
-        explicit Dynamic_Object(std::string t_type_name)
+        Dynamic_Object(std::string t_type_name)
           : m_type_name(std::move(t_type_name)), m_option_explicit(false)
         {
         }
 
-        Dynamic_Object() = default;
+        Dynamic_Object() : m_type_name(""), m_option_explicit(false)
+        {
+        }
 
         bool is_explicit() const
         {
@@ -82,10 +84,6 @@ namespace chaiscript
           }
         }
 
-        bool has_attr(const std::string &t_attr_name) const {
-          return m_attrs.find(t_attr_name) != m_attrs.end();
-        }
-
         Boxed_Value &get_attr(const std::string &t_attr_name)
         {
           return m_attrs[t_attr_name];
@@ -109,14 +107,15 @@ namespace chaiscript
           return get_attr(t_method_name);
         }
 
+
         std::map<std::string, Boxed_Value> get_attrs() const
         {
           return m_attrs;
         }
 
       private:
-        const std::string m_type_name = "";
-        bool m_option_explicit = false;
+        std::string m_type_name;
+        bool m_option_explicit;
 
         std::map<std::string, Boxed_Value> m_attrs;
     };

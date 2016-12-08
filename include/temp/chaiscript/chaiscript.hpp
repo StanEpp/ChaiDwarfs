@@ -65,7 +65,7 @@
 /// int main()
 /// {
 ///   chaiscript::ChaiScript chai;
-///   chai.add(chaiscript::fun(&function), "function");
+///   chai.add(&function, "function");
 ///
 ///   double d = chai.eval<double>("function(3, 4.75);");
 /// } 
@@ -695,10 +695,11 @@
 /// Begins a function or method definition
 ///
 /// ~~~~~~~~
-/// Function Definition ::= "def" identifier "(" [[type] arg ("," [type] arg)*] ")" [":" guard] block
-/// Method Definition ::= "def" class_name "::" method_name "(" [[type] arg ("," [type] arg)*] ")" [":" guard] block
+/// Function Definition ::= [annotation + CR/LF] "def" identifier "(" [[type] arg ("," [type] arg)*] ")" [":" guard] block
+/// Method Definition ::= [annotation + CR/LF] "def" class_name "::" method_name "(" [[type] arg ("," [type] arg)*] ")" [":" guard] block
 /// ~~~~~~~~
 /// 
+/// annotation: meta-annotation on function, currently used as documentation. Optional.
 /// identifier: name of function. Required.
 /// args: comma-delimited list of parameter names with optional type specifiers. Optional.
 /// guards: guarding statement that act as a prerequisite for the function. Optional.
@@ -816,26 +817,16 @@
 /// @namespace chaiscript::detail
 /// @brief Classes and functions reserved for internal use. Items in this namespace are not supported.
 
-#include "chaiscript_basic.hpp"
-#include "language/chaiscript_parser.hpp"
-#include "chaiscript_stdlib.hpp"
+#include "chaiscript_defines.hpp"
+
+#include "dispatchkit/dispatchkit.hpp"
+#include "dispatchkit/function_call.hpp"
+#include "dispatchkit/dynamic_object.hpp"
+#include "dispatchkit/boxed_number.hpp"
+
+#include "language/chaiscript_eval.hpp"
+#include "language/chaiscript_engine.hpp"
 
 
-namespace chaiscript 
-{
-  class ChaiScript : public ChaiScript_Basic
-  {
-    public:
-      ChaiScript(std::vector<std::string> t_modulepaths = {},
-          std::vector<std::string> t_usepaths = {},
-          const std::vector<Options> &t_opts = {})
-        : ChaiScript_Basic(
-            chaiscript::Std_Lib::library(),
-            std::make_unique<parser::ChaiScript_Parser<eval::Noop_Tracer, optimizer::Optimizer_Default>>(),
-            t_modulepaths, t_usepaths, t_opts)
-        {
-        }
-  };
-}
 
 #endif /* CHAISCRIPT_HPP_ */

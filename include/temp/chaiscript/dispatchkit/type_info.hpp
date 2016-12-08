@@ -29,8 +29,8 @@ namespace chaiscript
   class Type_Info
   {
     public:
-      constexpr Type_Info(const bool t_is_const, const bool t_is_reference, const bool t_is_pointer, const bool t_is_void, 
-          const bool t_is_arithmetic, const std::type_info *t_ti, const std::type_info *t_bare_ti)
+      CHAISCRIPT_CONSTEXPR Type_Info(bool t_is_const, bool t_is_reference, bool t_is_pointer, bool t_is_void, 
+          bool t_is_arithmetic, const std::type_info *t_ti, const std::type_info *t_bare_ti)
         : m_type_info(t_ti), m_bare_type_info(t_bare_ti),
           m_flags((static_cast<unsigned int>(t_is_const) << is_const_flag)
                 + (static_cast<unsigned int>(t_is_reference) << is_reference_flag)
@@ -40,55 +40,69 @@ namespace chaiscript
       {
       }
 
-      constexpr Type_Info() = default;
+      CHAISCRIPT_CONSTEXPR Type_Info()
+        : m_type_info(nullptr), m_bare_type_info(nullptr),
+          m_flags(1 << is_undef_flag)
+      {
+      }
 
-      constexpr bool operator<(const Type_Info &ti) const noexcept
+#if !defined(_MSC_VER) || _MSC_VER != 1800
+      Type_Info(Type_Info&&) = default;
+      Type_Info& operator=(Type_Info&&) = default;
+#endif
+
+      Type_Info(const Type_Info&) = default;
+      Type_Info& operator=(const Type_Info&) = default;
+
+
+      CHAISCRIPT_CONSTEXPR bool operator<(const Type_Info &ti) const CHAISCRIPT_NOEXCEPT
       {
         return m_type_info < ti.m_type_info;
       }
 
-      constexpr bool operator!=(const Type_Info &ti) const noexcept
+      CHAISCRIPT_CONSTEXPR bool operator!=(const Type_Info &ti) const CHAISCRIPT_NOEXCEPT
       {
         return !(operator==(ti));
       }
 
-      constexpr bool operator!=(const std::type_info &ti) const noexcept
+      CHAISCRIPT_CONSTEXPR bool operator!=(const std::type_info &ti) const CHAISCRIPT_NOEXCEPT
       {
         return !(operator==(ti));
       }
 
-      constexpr bool operator==(const Type_Info &ti) const noexcept
+      CHAISCRIPT_CONSTEXPR bool operator==(const Type_Info &ti) const CHAISCRIPT_NOEXCEPT
       {
         return ti.m_type_info == m_type_info
-           || *ti.m_type_info == *m_type_info;
+          || (ti.m_type_info && m_type_info && *ti.m_type_info == *m_type_info);
       }
 
-      constexpr bool operator==(const std::type_info &ti) const noexcept
+      CHAISCRIPT_CONSTEXPR bool operator==(const std::type_info &ti) const CHAISCRIPT_NOEXCEPT
       {
-        return !is_undef() && (*m_type_info) == ti;
+        return m_type_info != nullptr && (*m_type_info) == ti;
       }
 
-      constexpr bool bare_equal(const Type_Info &ti) const noexcept
+      CHAISCRIPT_CONSTEXPR bool bare_equal(const Type_Info &ti) const CHAISCRIPT_NOEXCEPT
       {
-        return ti.m_bare_type_info == m_bare_type_info
-           || *ti.m_bare_type_info == *m_bare_type_info;
+        return ti.m_bare_type_info == m_bare_type_info 
+          || (ti.m_bare_type_info && m_bare_type_info && *ti.m_bare_type_info == *m_bare_type_info);
       }
 
-      constexpr bool bare_equal_type_info(const std::type_info &ti) const noexcept
+      CHAISCRIPT_CONSTEXPR bool bare_equal_type_info(const std::type_info &ti) const CHAISCRIPT_NOEXCEPT
       {
-        return !is_undef() && (*m_bare_type_info) == ti;
+        return m_bare_type_info != nullptr 
+          && (*m_bare_type_info) == ti;
       }
 
-      constexpr bool is_const() const noexcept { return (m_flags & (1 << is_const_flag)) != 0; }
-      constexpr bool is_reference() const noexcept { return (m_flags & (1 << is_reference_flag)) != 0; }
-      constexpr bool is_void() const noexcept { return (m_flags & (1 << is_void_flag)) != 0; }
-      constexpr bool is_arithmetic() const noexcept { return (m_flags & (1 << is_arithmetic_flag)) != 0; }
-      constexpr bool is_undef() const noexcept { return (m_flags & (1 << is_undef_flag)) != 0; }
-      constexpr bool is_pointer() const noexcept { return (m_flags & (1 << is_pointer_flag)) != 0; }
+      CHAISCRIPT_CONSTEXPR bool is_const() const CHAISCRIPT_NOEXCEPT { return (m_flags & (1 << is_const_flag)) != 0; }
+      CHAISCRIPT_CONSTEXPR bool is_reference() const CHAISCRIPT_NOEXCEPT { return (m_flags & (1 << is_reference_flag)) != 0; }
+      CHAISCRIPT_CONSTEXPR bool is_void() const CHAISCRIPT_NOEXCEPT { return (m_flags & (1 << is_void_flag)) != 0; }
+      CHAISCRIPT_CONSTEXPR bool is_arithmetic() const CHAISCRIPT_NOEXCEPT { return (m_flags & (1 << is_arithmetic_flag)) != 0; }
+      CHAISCRIPT_CONSTEXPR bool is_undef() const CHAISCRIPT_NOEXCEPT { return (m_flags & (1 << is_undef_flag)) != 0; }
+      CHAISCRIPT_CONSTEXPR bool is_pointer() const CHAISCRIPT_NOEXCEPT { return (m_flags & (1 << is_pointer_flag)) != 0; }
 
       std::string name() const
       {
-        if (!is_undef())
+        if (m_type_info)
         {
           return m_type_info->name();
         } else {
@@ -98,7 +112,7 @@ namespace chaiscript
 
       std::string bare_name() const
       {
-        if (!is_undef())
+        if (m_bare_type_info)
         {
           return m_bare_type_info->name();
         } else {
@@ -106,23 +120,21 @@ namespace chaiscript
         }
       }
 
-      constexpr const std::type_info *bare_type_info() const
+      CHAISCRIPT_CONSTEXPR const std::type_info *bare_type_info() const
       {
         return m_bare_type_info;
       }
 
     private:
-      struct Unknown_Type {};
-
-      const std::type_info *m_type_info = &typeid(Unknown_Type);
-      const std::type_info *m_bare_type_info = &typeid(Unknown_Type);
+      const std::type_info *m_type_info;
+      const std::type_info *m_bare_type_info;
+      unsigned int m_flags;
       static const int is_const_flag = 0;
       static const int is_reference_flag = 1;
       static const int is_pointer_flag = 2;
       static const int is_void_flag = 3;
       static const int is_arithmetic_flag = 4;
       static const int is_undef_flag = 5;
-      unsigned int m_flags = (1 << is_undef_flag);
   };
 
   namespace detail
@@ -131,7 +143,9 @@ namespace chaiscript
     template<typename T>
       struct Get_Type_Info
       {
-        static constexpr Type_Info get()
+        typedef T type;
+
+        static Type_Info get()
         {
           return Type_Info(std::is_const<typename std::remove_pointer<typename std::remove_reference<T>::type>::type>::value, 
               std::is_reference<T>::value, std::is_pointer<T>::value, 
@@ -146,9 +160,9 @@ namespace chaiscript
     template<typename T>
       struct Get_Type_Info<std::shared_ptr<T> >
       {
-//        typedef T type;
+        typedef T type;
 
-        static constexpr Type_Info get()
+        static Type_Info get()
         {
           return Type_Info(std::is_const<T>::value, std::is_reference<T>::value, std::is_pointer<T>::value, 
               std::is_void<T>::value,
@@ -166,7 +180,9 @@ namespace chaiscript
     template<typename T>
       struct Get_Type_Info<const std::shared_ptr<T> &>
       {
-        static constexpr Type_Info get()
+        typedef T type;
+
+        static Type_Info get()
         {
           return Type_Info(std::is_const<T>::value, std::is_reference<T>::value, std::is_pointer<T>::value, 
               std::is_void<T>::value,
@@ -179,7 +195,9 @@ namespace chaiscript
     template<typename T>
       struct Get_Type_Info<std::reference_wrapper<T> >
       {
-        static constexpr Type_Info get()
+        typedef T type;
+
+        static Type_Info get()
         {
           return Type_Info(std::is_const<T>::value, std::is_reference<T>::value, std::is_pointer<T>::value, 
               std::is_void<T>::value,
@@ -192,7 +210,9 @@ namespace chaiscript
     template<typename T>
       struct Get_Type_Info<const std::reference_wrapper<T> &>
       {
-        static constexpr Type_Info get()
+        typedef T type;
+
+        static Type_Info get()
         {
           return Type_Info(std::is_const<T>::value, std::is_reference<T>::value, std::is_pointer<T>::value, 
               std::is_void<T>::value,
@@ -214,7 +234,7 @@ namespace chaiscript
   /// chaiscript::Type_Info ti = chaiscript::user_type(i);
   /// \endcode
   template<typename T>
-  constexpr Type_Info user_type(const T &/*t*/)
+   Type_Info user_type(const T &/*t*/)
   {
     return detail::Get_Type_Info<T>::get();
   }
@@ -229,7 +249,7 @@ namespace chaiscript
   /// chaiscript::Type_Info ti = chaiscript::user_type<int>();
   /// \endcode
   template<typename T>
-  constexpr Type_Info user_type()
+   Type_Info user_type()
   {
     return detail::Get_Type_Info<T>::get();
   }

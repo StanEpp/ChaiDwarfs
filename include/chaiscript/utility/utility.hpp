@@ -12,9 +12,8 @@
 #include <utility>
 #include <vector>
 
-#include "../chaiscript.hpp"
-#include "../dispatchkit/proxy_functions.hpp"
-#include "../dispatchkit/type_info.hpp"
+#include "../language/chaiscript_common.hpp"
+#include "../dispatchkit/register_function.hpp"
 #include "../dispatchkit/operators.hpp"
 
 
@@ -69,11 +68,7 @@ namespace chaiscript
       typename std::enable_if<std::is_enum<Enum>::value, void>::type
       add_class(ModuleType &t_module,
         const std::string &t_class_name,
-#ifdef CHAISCRIPT_GCC_4_6
-        const std::vector<std::pair<int, std::string>> &t_constants
-#else
         const std::vector<std::pair<typename std::underlying_type<Enum>::type, std::string>> &t_constants
-#endif
         )
       {
         t_module.add(chaiscript::user_type<Enum>(), t_class_name);
@@ -82,18 +77,12 @@ namespace chaiscript
         t_module.add(chaiscript::constructor<Enum (const Enum &)>(), t_class_name);
 
         using namespace chaiscript::bootstrap::operators;
-        t_module.add([](){
-              // add some comparison and assignment operators
-              return assign<Enum>(not_equal<Enum>(equal<Enum>()));
-            }());
+        equal<Enum>(t_module);
+        not_equal<Enum>(t_module);
+        assign<Enum>(t_module);
 
-#ifdef CHAISCRIPT_GCC_4_6
         t_module.add(chaiscript::fun([](const Enum &e, const int &i) { return e == i; }), "==");
         t_module.add(chaiscript::fun([](const int &i, const Enum &e) { return i == e; }), "==");
-#else
-        t_module.add(chaiscript::fun([](const Enum &e, const typename std::underlying_type<Enum>::type &i) { return e == i; }), "==");
-        t_module.add(chaiscript::fun([](const typename std::underlying_type<Enum>::type &i, const Enum &e) { return i == e; }), "==");
-#endif
 
         for (const auto &constant : t_constants)
         {
@@ -114,7 +103,9 @@ namespace chaiscript
         t_module.add(chaiscript::constructor<EnumClass(const EnumClass &)>(), t_class_name);
 
         using namespace chaiscript::bootstrap::operators;
-        t_module.add(assign<EnumClass>(not_equal<EnumClass>(equal<EnumClass>())));
+        equal<EnumClass>(t_module);
+        not_equal<EnumClass>(t_module);
+        assign<EnumClass>(t_module);
 
         for (const auto &constant : t_constants)
         {

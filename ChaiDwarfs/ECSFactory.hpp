@@ -60,12 +60,12 @@ namespace CDwarfs {
     template <class TComp, class... TArgTypes>
     struct ComponentHolder_ : public ComponentHolder {
       
-      ComponentHolder_(TArgTypes&&... values) : initArguments(std::forward<TArgTypes>(values)...) {
+      ComponentHolder_(const TArgTypes&... values) : initArguments(values...) {
         componentTypeID = TComp::componentTypeID;
       }
 
       BaseComponent* createComponent() override {
-        auto f = [](auto&&... params) { return new TComp(std::forward<decltype(params)>(params)...); };
+        auto f = [](const auto&... params) { return new TComp(params...); };
         return std::apply(f, initArguments);
       }
 
@@ -79,7 +79,7 @@ namespace CDwarfs {
     */
     struct ComponentCascading {
       template<class TComp, class... TArgs>
-      ComponentCascading& addComponent(TArgs&... params) {
+      ComponentCascading& addComponent(const TArgs&... params) {
         
         // TODO: Linear search should be avoided.
         auto it = std::find_if(componentVec->begin(), componentVec->end(), [](auto& compHolder) {
@@ -90,7 +90,7 @@ namespace CDwarfs {
           std::cerr << "Trying to add duplicate component " << typeid(TComp).name() << " for object definition of \"" << objectName << "\"!\n";
         }
 
-        componentVec->push_back(new ComponentHolder_<TComp, TArgs...>(std::forward<TArgs>(params)...));
+        componentVec->push_back(new ComponentHolder_<TComp, TArgs...>(params...));
         return *this;
       }
 

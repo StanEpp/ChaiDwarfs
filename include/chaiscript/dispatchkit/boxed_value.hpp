@@ -54,7 +54,7 @@ namespace chaiscript
 
           if (rhs.m_attrs)
           {
-            m_attrs = std::unique_ptr<std::map<std::string, std::shared_ptr<Data>>>(new std::map<std::string, std::shared_ptr<Data>>(*rhs.m_attrs));
+            m_attrs = std::make_unique<std::map<std::string, std::shared_ptr<Data>>>(*rhs.m_attrs);
           }
 
           return *this;
@@ -62,10 +62,8 @@ namespace chaiscript
 
         Data(const Data &) = delete;
 
-#if !defined(__APPLE__) && (!defined(_MSC_VER) || _MSC_VER != 1800)
         Data(Data &&) = default;
         Data &operator=(Data &&rhs) = default;
-#endif
 
 
         Type_Info m_type_info;
@@ -79,7 +77,7 @@ namespace chaiscript
 
       struct Object_Data
       {
-        static std::shared_ptr<Data> get(Boxed_Value::Void_Type, bool t_return_value)
+        static auto get(Boxed_Value::Void_Type, bool t_return_value)
         {
           return std::make_shared<Data>(
                 detail::Get_Type_Info<void>::get(),
@@ -91,13 +89,13 @@ namespace chaiscript
         }
 
         template<typename T>
-          static std::shared_ptr<Data> get(const std::shared_ptr<T> *obj, bool t_return_value)
+          static auto get(const std::shared_ptr<T> *obj, bool t_return_value)
           {
             return get(*obj, t_return_value);
           }
 
         template<typename T>
-          static std::shared_ptr<Data> get(const std::shared_ptr<T> &obj, bool t_return_value)
+          static auto get(const std::shared_ptr<T> &obj, bool t_return_value)
           {
             return std::make_shared<Data>(
                   detail::Get_Type_Info<T>::get(), 
@@ -109,7 +107,7 @@ namespace chaiscript
           }
 
         template<typename T>
-          static std::shared_ptr<Data> get(std::shared_ptr<T> &&obj, bool t_return_value)
+          static auto get(std::shared_ptr<T> &&obj, bool t_return_value)
           {
             auto ptr = obj.get();
             return std::make_shared<Data>(
@@ -121,21 +119,23 @@ namespace chaiscript
                 );
           }
 
+
+
         template<typename T>
-          static std::shared_ptr<Data> get(T *t, bool t_return_value)
+          static auto get(T *t, bool t_return_value)
           {
             return get(std::ref(*t), t_return_value);
           }
 
         template<typename T>
-          static std::shared_ptr<Data> get(const T *t, bool t_return_value)
+          static auto get(const T *t, bool t_return_value)
           {
             return get(std::cref(*t), t_return_value);
           }
 
 
         template<typename T>
-          static std::shared_ptr<Data> get(std::reference_wrapper<T> obj, bool t_return_value)
+          static auto get(std::reference_wrapper<T> obj, bool t_return_value)
           {
             auto p = &obj.get();
             return std::make_shared<Data>(
@@ -148,7 +148,20 @@ namespace chaiscript
           }
 
         template<typename T>
-          static std::shared_ptr<Data> get(T t, bool t_return_value)
+          static auto get(std::unique_ptr<T> &&obj, bool t_return_value)
+          {
+            auto ptr = obj.get();
+            return std::make_shared<Data>(
+                  detail::Get_Type_Info<T>::get(), 
+                  chaiscript::detail::Any(std::make_shared<std::unique_ptr<T>>(std::move(obj))), 
+                  false,
+                  ptr,
+                  t_return_value
+                );
+          }
+
+        template<typename T>
+          static auto get(T t, bool t_return_value)
           {
             auto p = std::make_shared<T>(std::move(t));
             auto ptr = p.get();
@@ -184,16 +197,10 @@ namespace chaiscript
         }
 
       /// Unknown-type constructor
-      Boxed_Value()
-        : m_data(Object_Data::get())
-      {
-      }
+      Boxed_Value() = default;
 
-#if !defined(_MSC_VER) || _MSC_VER != 1800
       Boxed_Value(Boxed_Value&&) = default;
       Boxed_Value& operator=(Boxed_Value&&) = default;
-#endif
-
       Boxed_Value(const Boxed_Value&) = default;
       Boxed_Value& operator=(const Boxed_Value&) = default;
 
@@ -210,107 +217,99 @@ namespace chaiscript
         return *this;
       }
 
-      const Type_Info &get_type_info() const CHAISCRIPT_NOEXCEPT
+      const Type_Info &get_type_info() const noexcept
       {
         return m_data->m_type_info;
       }
 
       /// return true if the object is uninitialized
-      bool is_undef() const CHAISCRIPT_NOEXCEPT
+      bool is_undef() const noexcept
       {
         return m_data->m_type_info.is_undef();
       }
 
-      bool is_const() const CHAISCRIPT_NOEXCEPT
+      bool is_const() const noexcept
       {
         return m_data->m_type_info.is_const();
       }
 
-      bool is_type(const Type_Info &ti) const CHAISCRIPT_NOEXCEPT
+      bool is_type(const Type_Info &ti) const noexcept
       {
         return m_data->m_type_info.bare_equal(ti);
       }
 
-      template<typename T>
-      struct Sentinel {
-        Sentinel(std::shared_ptr<T> &ptr, Data &data)
-          : m_ptr(ptr), m_data(data)
-        {
-        }
-
-        ~Sentinel()
-        {
-          // save new pointer data
-          m_data.get().m_data_ptr = m_ptr.get().get();
-          m_data.get().m_const_data_ptr = m_ptr.get().get();
-        }
-
-        Sentinel& operator=(Sentinel&&s) {
-          m_ptr = std::move(s.m_ptr);
-          m_data = std::move(s.m_data);
-        }
-
-        Sentinel(Sentinel &&s)
-          : m_ptr(std::move(s.m_ptr)),
-            m_data(std::move(s.m_data))
-        {
-        }
-
-        operator std::shared_ptr<T>&() const
-        {
-          return m_ptr.get();
-        }
-
-        Sentinel &operator=(const Sentinel &) = delete;
-        Sentinel(Sentinel&) = delete;
-
-        std::reference_wrapper<std::shared_ptr<T>> m_ptr;
-        std::reference_wrapper<Data> m_data;
-      };
-
 
       template<typename T>
-      Sentinel<T> pointer_sentinel(std::shared_ptr<T> &ptr) const
+      auto pointer_sentinel(std::shared_ptr<T> &ptr) const
       {
-        return Sentinel<T>(ptr, *(m_data.get()));
+        struct Sentinel {
+          Sentinel(std::shared_ptr<T> &t_ptr, Data &data)
+            : m_ptr(t_ptr), m_data(data)
+          {
+          }
+
+          ~Sentinel()
+          {
+            // save new pointer data
+            const auto ptr = m_ptr.get().get();
+            m_data.get().m_data_ptr = ptr;
+            m_data.get().m_const_data_ptr = ptr;
+          }
+
+          Sentinel& operator=(Sentinel&&s) = default;
+          Sentinel(Sentinel &&s) = default;
+
+          operator std::shared_ptr<T>&() const
+          {
+            return m_ptr.get();
+          }
+
+          Sentinel &operator=(const Sentinel &) = delete;
+          Sentinel(Sentinel&) = delete;
+
+          std::reference_wrapper<std::shared_ptr<T>> m_ptr;
+          std::reference_wrapper<Data> m_data;
+        };
+
+        return Sentinel(ptr, *(m_data.get()));
       }
 
-      bool is_null() const CHAISCRIPT_NOEXCEPT
+      bool is_null() const noexcept
       {
         return (m_data->m_data_ptr == nullptr && m_data->m_const_data_ptr == nullptr);
       }
 
-      const chaiscript::detail::Any & get() const CHAISCRIPT_NOEXCEPT
+      const chaiscript::detail::Any & get() const noexcept
       {
         return m_data->m_obj;
       }
 
-      bool is_ref() const CHAISCRIPT_NOEXCEPT
+      bool is_ref() const noexcept
       {
         return m_data->m_is_ref;
       }
 
-      bool is_return_value() const CHAISCRIPT_NOEXCEPT
+      bool is_return_value() const noexcept
       {
         return m_data->m_return_value;
       }
 
-      void reset_return_value() const CHAISCRIPT_NOEXCEPT
+      void reset_return_value() const noexcept
       {
         m_data->m_return_value = false;
       }
 
-      bool is_pointer() const CHAISCRIPT_NOEXCEPT
+      bool is_pointer() const noexcept
       {
         return !is_ref();
       }
 
-      void *get_ptr() const CHAISCRIPT_NOEXCEPT
+      void *get_ptr() const noexcept
       {
         return m_data->m_data_ptr;
       }
 
-      const void *get_const_ptr() const CHAISCRIPT_NOEXCEPT
+      const void *get_const_ptr() const noexcept
       {
         return m_data->m_const_data_ptr;
       }
@@ -319,7 +318,7 @@ namespace chaiscript
       {
         if (!m_data->m_attrs)
         {
-          m_data->m_attrs = std::unique_ptr<std::map<std::string, std::shared_ptr<Data>>>(new std::map<std::string, std::shared_ptr<Data>>());
+          m_data->m_attrs = std::make_unique<std::map<std::string, std::shared_ptr<Data>>>();
         }
 
         auto &attr = (*m_data->m_attrs)[t_name];
@@ -336,7 +335,7 @@ namespace chaiscript
       {
         if (t_obj.m_data->m_attrs)
         {
-          m_data->m_attrs = std::unique_ptr<std::map<std::string, std::shared_ptr<Data>>>(new std::map<std::string, std::shared_ptr<Data>>(*t_obj.m_data->m_attrs));
+          m_data->m_attrs = std::make_unique<std::map<std::string, std::shared_ptr<Data>>>(*t_obj.m_data->m_attrs);
         }
         return *this;
       }
@@ -350,7 +349,7 @@ namespace chaiscript
 
 
       /// \returns true if the two Boxed_Values share the same internal type
-      static bool type_match(const Boxed_Value &l, const Boxed_Value &r) CHAISCRIPT_NOEXCEPT
+      static bool type_match(const Boxed_Value &l, const Boxed_Value &r) noexcept
       {
         return l.get_type_info() == r.get_type_info();
       }
@@ -359,11 +358,11 @@ namespace chaiscript
       // necessary to avoid hitting the templated && constructor of Boxed_Value
       struct Internal_Construction{};
 
-      Boxed_Value(const std::shared_ptr<Data> &t_data, Internal_Construction)
-        : m_data(t_data) {
+      Boxed_Value(std::shared_ptr<Data> t_data, Internal_Construction)
+        : m_data(std::move(t_data)) {
       }
 
-      std::shared_ptr<Data> m_data;
+      std::shared_ptr<Data> m_data = Object_Data::get();
   };
 
   /// @brief Creates a Boxed_Value. If the object passed in is a value type, it is copied. If it is a pointer, std::shared_ptr, or std::reference_type
@@ -460,10 +459,14 @@ namespace chaiscript
       return detail::const_var_impl(t);
     }
 
-#ifdef CHAISCRIPT_HAS_MAGIC_STATICS
+  inline Boxed_Value void_var() {
+    static const auto v = Boxed_Value(Boxed_Value::Void_Type());
+    return v;
+  }
+
   inline Boxed_Value const_var(bool b) {
-    static auto t = detail::const_var_impl(true);
-    static auto f = detail::const_var_impl(false);
+    static const auto t = detail::const_var_impl(true);
+    static const auto f = detail::const_var_impl(false);
 
     if (b) {
       return t;
@@ -471,7 +474,6 @@ namespace chaiscript
       return f;
     }
   }
-#endif
 
 }
 

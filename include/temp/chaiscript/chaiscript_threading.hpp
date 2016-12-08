@@ -42,16 +42,28 @@ namespace chaiscript
 #ifndef CHAISCRIPT_NO_THREADS
 
       template<typename T>
-        using unique_lock = std::unique_lock<T>;
+      class unique_lock : public std::unique_lock<T>
+      {
+        public:
+          explicit unique_lock(T &t) : std::unique_lock<T>(t) {}
+      };
 
       template<typename T>
-        using shared_lock = std::unique_lock<T>;
+      class shared_lock : public std::unique_lock<T>
+      {
+        public:
+          explicit shared_lock(T &t) : std::unique_lock<T>(t) {}
+          void unlock() {}
+      };
 
       template<typename T>
-        using lock_guard = std::lock_guard<T>;
+      class lock_guard : public std::lock_guard<T>
+      {
+        public:
+          explicit lock_guard(T &t) : std::lock_guard<T>(t) {}
+      };
 
-
-      using shared_mutex = std::mutex;
+      class shared_mutex : public std::mutex { };
 
       using std::mutex;
 
@@ -107,9 +119,6 @@ namespace chaiscript
         };
 
 #else
-
-#pragma message ("Threading without thread_local support is not well supported.")
-
 
       /// Typesafe thread specific storage. If threading is enabled, this class uses a mutex protected map. If
       /// threading is not enabled, the class always returns the same data, regardless of which thread it is called from.

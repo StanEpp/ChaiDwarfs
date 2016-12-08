@@ -61,8 +61,8 @@ namespace CDwarfs {
             auto retCmd = std::visit(*visitor, currCmd);
 
             if (retCmd.size() >= 1) {
-              for (int i = retCmd.size() - 1; i >= 0; --i) {
-                cmdStack.push(retCmd[i]);
+              for (auto rIt = retCmd.rbegin(); rIt != retCmd.rend(); rIt++) {
+                cmdStack.push((*rIt));
               }
             }
           }

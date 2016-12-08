@@ -59,8 +59,13 @@ namespace chaiscript
         };
 
       template<typename Ret>
-        struct Handle_Return<std::function<Ret>> : Handle_Return<const std::function<Ret> &>
+        struct Handle_Return<std::function<Ret>>
         {
+          static Boxed_Value handle(const std::function<Ret> &f) {
+            return Boxed_Value(
+                chaiscript::make_shared<dispatch::Proxy_Function_Base, dispatch::Proxy_Function_Callable_Impl<Ret, std::function<Ret>>>(f)
+              );
+          }
         };
 
       template<typename Ret>
@@ -74,13 +79,23 @@ namespace chaiscript
         };
 
       template<typename Ret>
-        struct Handle_Return<const std::shared_ptr<std::function<Ret>> &> : Handle_Return<const std::shared_ptr<std::function<Ret>>>
+        struct Handle_Return<const std::shared_ptr<std::function<Ret>> &>
         {
+          static Boxed_Value handle(const std::shared_ptr<std::function<Ret>> &f) {
+            return Boxed_Value(
+                chaiscript::make_shared<dispatch::Proxy_Function_Base, dispatch::Assignable_Proxy_Function_Impl<Ret>>(std::ref(*f),f)
+              );
+          }
         };
 
       template<typename Ret>
-        struct Handle_Return<std::shared_ptr<std::function<Ret>>> : Handle_Return<const std::shared_ptr<std::function<Ret>>>
+        struct Handle_Return<std::shared_ptr<std::function<Ret>>>
         {
+          static Boxed_Value handle(const std::shared_ptr<std::function<Ret>> &f) {
+            return Boxed_Value(
+                chaiscript::make_shared<dispatch::Proxy_Function_Base, dispatch::Assignable_Proxy_Function_Impl<Ret>>(std::ref(*f),f)
+              );
+          }
         };
 
       template<typename Ret>
@@ -146,13 +161,21 @@ namespace chaiscript
         };
 
       template<typename Ret>
-        struct Handle_Return<std::shared_ptr<Ret>> : Handle_Return<std::shared_ptr<Ret> &>
+        struct Handle_Return<std::shared_ptr<Ret> >
         {
+          static Boxed_Value handle(const std::shared_ptr<Ret> &r)
+          {
+            return Boxed_Value(r, true);
+          }
         };
 
       template<typename Ret>
-        struct Handle_Return<const std::shared_ptr<Ret> &> : Handle_Return<std::shared_ptr<Ret> &>
+        struct Handle_Return<const std::shared_ptr<Ret> &>
         {
+          static Boxed_Value handle(const std::shared_ptr<Ret> &r)
+          {
+            return Boxed_Value(r, true);
+          }
         };
 
       template<typename Ret>
@@ -164,15 +187,10 @@ namespace chaiscript
           }
         };
 
-      template<typename Ret>
-        struct Handle_Return<const Ret>
-        {
-          static Boxed_Value handle(const Ret &r)
-          {
-            return Boxed_Value(std::cref(r));
-          }
-        };
 
+      /**
+       * Used internally for handling a return value from a Proxy_Function call
+       */
       template<typename Ret>
         struct Handle_Return<Ret &>
         {
@@ -180,8 +198,16 @@ namespace chaiscript
           {
             return Boxed_Value(std::ref(r));
           }
+
+          static Boxed_Value handle(const Ret &r)
+          {
+            return Boxed_Value(std::cref(r));
+          }
         };
 
+      /**
+       * Used internally for handling a return value from a Proxy_Function call
+       */
       template<>
         struct Handle_Return<Boxed_Value>
         {
@@ -191,19 +217,40 @@ namespace chaiscript
           }
         };
 
+      /**
+       * Used internally for handling a return value from a Proxy_Function call
+       */
       template<>
-        struct Handle_Return<const Boxed_Value> : Handle_Return<Boxed_Value>
+        struct Handle_Return<const Boxed_Value>
         {
+          static Boxed_Value handle(const Boxed_Value &r)
+          {
+            return r;
+          }
         };
 
+      /**
+       * Used internally for handling a return value from a Proxy_Function call
+       */
       template<>
-        struct Handle_Return<Boxed_Value &> : Handle_Return<Boxed_Value>
+        struct Handle_Return<Boxed_Value &>
         {
+          static Boxed_Value handle(const Boxed_Value &r)
+          {
+            return r;
+          }
         };
 
+      /**
+       * Used internally for handling a return value from a Proxy_Function call
+       */
       template<>
-        struct Handle_Return<const Boxed_Value &> : Handle_Return<Boxed_Value>
+        struct Handle_Return<const Boxed_Value &>
         {
+          static Boxed_Value handle(const Boxed_Value &r)
+          {
+            return r;
+          }
         };
 
       /**
@@ -218,9 +265,16 @@ namespace chaiscript
           }
         };
 
+      /**
+       * Used internally for handling a return value from a Proxy_Function call
+       */
       template<>
-        struct Handle_Return<const Boxed_Number> : Handle_Return<Boxed_Number>
+        struct Handle_Return<const Boxed_Number>
         {
+          static Boxed_Value handle(const Boxed_Number &r)
+          {
+            return r.bv;
+          }
         };
 
 
@@ -232,7 +286,7 @@ namespace chaiscript
         {
           static Boxed_Value handle()
           {
-            return void_var();
+            return Boxed_Value(Boxed_Value::Void_Type());
           }
         };
     }

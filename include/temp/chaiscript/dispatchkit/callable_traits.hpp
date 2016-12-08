@@ -25,7 +25,7 @@ namespace chaiscript {
       template<typename Ret, typename Class, typename ... Param>
       struct Const_Caller
       {
-        explicit Const_Caller(Ret (Class::*t_func)(Param...) const) : m_func(t_func) {}
+        Const_Caller(Ret (Class::*t_func)(Param...) const) : m_func(t_func) {}
 
         template<typename ... Inner>
         Ret operator()(const Class &o, Inner&& ... inner) const {
@@ -38,7 +38,7 @@ namespace chaiscript {
       template<typename Ret, typename ... Param>
       struct Fun_Caller
       {
-        explicit Fun_Caller(Ret( * t_func)(Param...) ) : m_func(t_func) {}
+        Fun_Caller(Ret( * t_func)(Param...) ) : m_func(t_func) {}
 
         template<typename ... Inner>
         Ret operator()(Inner&& ... inner) const {
@@ -51,7 +51,7 @@ namespace chaiscript {
       template<typename Ret, typename Class, typename ... Param>
       struct Caller
       {
-        explicit Caller(Ret (Class::*t_func)(Param...)) : m_func(t_func) {}
+        Caller(Ret (Class::*t_func)(Param...)) : m_func(t_func) {}
 
         template<typename ... Inner>
         Ret operator()(Class &o, Inner&& ... inner) const {

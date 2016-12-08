@@ -505,7 +505,7 @@ class Function
     /// \endcode
     Vector get_contained_functions() const;
 
-    /// \brief Returns a function guard as function
+    /// \brief Returns a vector of the contained functions
     /// 
     /// Example:
     /// \code
