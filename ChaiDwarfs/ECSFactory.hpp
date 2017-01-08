@@ -65,11 +65,13 @@ namespace CDwarfs {
       }
 
       BaseComponent* createComponent() override {
-        auto f = [](const auto&... params) { return new TComp(params...); };
+        auto f = [](const auto&... params) { 
+          return new TComp(params...); 
+        };
         return std::apply(f, initArguments);
       }
 
-      std::tuple<TArgTypes...> initArguments;
+      std::tuple<typename std::remove_reference_t<TArgTypes>...> initArguments;
     };
 
     /* 

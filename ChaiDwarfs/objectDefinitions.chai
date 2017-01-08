@@ -16,4 +16,4 @@ factory.defineObject("Diamond").addComp_Name("Diamond").addComp_TouchValue(100).
 factory.defineObject("Sapphire").addComp_Name("Sapphire2").addComp_TouchValue(20).addComp_TouchDamage(500).addComp_HP(50, 100)
 factory.defineObject("Emerald").addComp_Name("Emerald").addComp_TouchValue(10).addComp_TouchDamage(100).addComp_Position(0, 0)
 
-puts("Object Definitions: Everything went well!\n")
+print("Object Definitions: Everything went well!")

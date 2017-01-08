@@ -19,6 +19,6 @@ var i = factory.hasComponent_Position(sID)
 var ptr = factory.getComponent_Name(sID)
 ptr.name = "Es hat geklappt!\n"
 var ptr2 = factory.getComponent_Name(sID)
-puts(ptr2.name);
+print(ptr2.name);
 
-puts("Object Creations: Everything went well!\n")
+print("Object Creations: Everything went well!")

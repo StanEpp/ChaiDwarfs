@@ -1,4 +1,4 @@
-/**
+/*
 Functions:
 
 setSize(int rows, int cols)
@@ -12,12 +12,13 @@ DARK
 PASSABLE
 STONE
 
-**/
+*/
 
-setSize(10, 10)
+setSize(10, 10);
 
 for(var row = 0; row < 10; ++row){
 	for(var col = 0; col < 10; ++col){
+
 		setType(row, col, PASSABLE);
 		//puts("Setting " + to_string(row), + " " + to_string(col) + "\n")
 	}

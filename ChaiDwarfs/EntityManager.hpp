@@ -41,7 +41,7 @@ namespace CDwarfs {
       registerComponent<comp::TouchValue, int>("TouchValue");
       registerComponent<comp::TouchHeal, int>("TouchHeal");
       registerComponent<comp::TouchDamage, int>("TouchDamage");
-      registerComponent<comp::Name, std::string>("Name");
+      registerComponent<comp::Name, const std::string&>("Name");
       registerComponent<comp::Position, int, int>("Position");
       registerComponent<comp::HP, int, int>("HP");
       registerComponent<comp::Speed, int>("Speed");
