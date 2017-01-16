@@ -35,7 +35,7 @@ namespace CDwarfs {
     DwarfTerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap);
     ~DwarfTerrainInterface(){}
 
-    const TerrainType checkTerrain(const Dwarf&, int x, int y) const;
+    const TerrainType checkTerrain(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
   private:
     std::weak_ptr<TerrainMap> m_terrain;
   };

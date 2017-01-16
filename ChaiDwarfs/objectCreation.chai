@@ -12,7 +12,7 @@ addComp_TouchValue
 
 **/
 
-factory.createObject("Diamond")
+terrainMap.addObject("Diamond", 0, 0)
 var sID = factory.createObject("Sapphire")
 factory.createObject("Emerald")
 var i = factory.hasComponent_Position(sID)
@@ -20,5 +20,6 @@ var ptr = factory.getComponent_Name(sID)
 ptr.name = "Es hat geklappt!\n"
 var ptr2 = factory.getComponent_Name(sID)
 print(ptr2.name);
+factory.createObject("Dwarf")
 
 print("Object Creations: Everything went well!")

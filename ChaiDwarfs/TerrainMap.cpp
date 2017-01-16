@@ -38,9 +38,6 @@ void TerrainMap::load(const std::string& chaiscriptPath) {
       row.resize(cols);
       std::for_each(row.begin(), row.end(), [](auto& val) { val = TerrainType::SOIL; });
     });
-    m_rows = rows;
-    m_cols = cols;
-  
   }), "setSize");
 
   chaiscript::ModulePtr m = chaiscript::ModulePtr(new chaiscript::Module());
@@ -69,14 +66,9 @@ void TerrainMap::load(const std::string& chaiscriptPath) {
   std::cout << "Load map from \"" << chaiscriptPath << "\"\n";
   chai.eval_file(chaiscriptPath);
   std::cout << "Finished loading map!\n\n";
-
-  if (m_rows <= 0 || m_cols <= 0) {
-    throw std::runtime_error("No valid size for terrain has been set: " + std::to_string(m_rows) + " " + std::to_string(m_cols));
-  }
-
 }
 
 TerrainType TerrainMap::at(int row, int col) {
-  if (row >= m_rows || row < 0 || col >= m_cols || col < 0) return TerrainType::DARK;
+  if (row >= rows() || row < 0 || col >= columns() || col < 0) return TerrainType::DARK;
   return m_map[row][col];
 }

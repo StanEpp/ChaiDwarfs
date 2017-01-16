@@ -24,72 +24,75 @@
 #ifndef _OBJECTCOMPONENTREGISTRATIONS_HPP_
 #define _OBJECTCOMPONENTREGISTRATIONS_HPP_
 
-#include "Components.hpp"
-
 #include <chaiscript\chaiscript.hpp>
+
+#include "Components.hpp"
 
 namespace CDwarfs {
   namespace objDef {
 
-    using namespace comp;
+    using namespace CDwarfs::comp;
 
     template<class TObjComp>
-    void registerComponent(chaiscript::ModulePtr& module);
+    void inline registerComponent(chaiscript::ModulePtr& module);
 
     template<>
-    void registerComponent<TouchValue>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<TouchValue>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<TouchValue>(), "TouchValue");
       module->add(chaiscript::fun(&TouchValue::value), "value");
     }
 
     template<>
-    void registerComponent<TouchHeal>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<TouchHeal>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<TouchHeal>(), "TouchHeal");
       module->add(chaiscript::fun(&TouchHeal::heal), "heal");
     }
 
     template<>
-    void registerComponent<TouchDamage>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<TouchDamage>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<TouchDamage>(), "TouchDamage");
       module->add(chaiscript::fun(&TouchDamage::damage), "damage");
     }
 
     template<>
-    void registerComponent<Name>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<Name>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<Name>(), "Name");
       module->add(chaiscript::fun(&Name::name), "name");
     }
 
     template<>
-    void registerComponent<Position>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<Position>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<Position>(), "Position");
       module->add(chaiscript::fun(&Position::row), "row");
       module->add(chaiscript::fun(&Position::col), "col");
     }
 
     template<>
-    void registerComponent<HP>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<HP>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<HP>(), "HP");
       module->add(chaiscript::fun(&HP::hp), "hp");
     }
 
     template<>
-    void registerComponent<View>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<View>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<View>(), "View");
       module->add(chaiscript::fun(&View::dist), "dist");
     }
 
     template<>
-    void registerComponent<Speed>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<Speed>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<Speed>(), "Speed");
       module->add(chaiscript::fun(&Speed::speed), "speed");
     }
 
     template<>
-    void registerComponent<Points>(chaiscript::ModulePtr& module) {
+    void inline registerComponent<Points>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<Points>(), "Points");
       module->add(chaiscript::fun(&Points::points), "points");
     }
+
+    template<>
+    void inline registerComponent<ScriptAI>(chaiscript::ModulePtr&) {}
 
 
   }

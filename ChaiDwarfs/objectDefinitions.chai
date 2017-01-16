@@ -11,9 +11,9 @@ addComp_TouchDamage
 addComp_TouchValue
 
 **/
-
+factory.defineObject("Dwarf").addComp_Name("Dwarf").addComp_HP(100, 100).addComp_Position(0, 0).addComp_Speed(1).addComp_Points(0).addComp_View(3).addComp_ScriptAI("dwarf.chai")
 factory.defineObject("Diamond").addComp_Name("Diamond").addComp_TouchValue(100).addComp_TouchDamage(15).addComp_Position(0, 0)
-factory.defineObject("Sapphire").addComp_Name("Sapphire2").addComp_TouchValue(20).addComp_TouchDamage(500).addComp_HP(50, 100)
+factory.defineObject("Sapphire").addComp_Name("Sapphire2").addComp_TouchValue(20).addComp_TouchDamage(500).addComp_HP(50, 100).addComp_Position(0, 0)
 factory.defineObject("Emerald").addComp_Name("Emerald").addComp_TouchValue(10).addComp_TouchDamage(100).addComp_Position(0, 0)
 
 print("Object Definitions: Everything went well!")

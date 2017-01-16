@@ -37,6 +37,9 @@ namespace CDwarfs {
       }
     }
 
+    /*
+    * \brief Initializes the EntityManager. All components need to be registered here!
+    */
     void init() {
       registerComponent<comp::TouchValue, int>("TouchValue");
       registerComponent<comp::TouchHeal, int>("TouchHeal");
@@ -47,6 +50,7 @@ namespace CDwarfs {
       registerComponent<comp::Speed, int>("Speed");
       registerComponent<comp::Points, int>("Points");
       registerComponent<comp::View, int>("View");
+      registerComponent<comp::ScriptAI, const std::string&>("ScriptAI");
     }
 
     EntityID::UUID createObject(const std::string& name) {
@@ -71,6 +75,11 @@ namespace CDwarfs {
       chai.eval_file(path);
     }
 
+    /*
+    * \brief Loads a chaiscript file to create objects.
+    *
+    * \param path The path to the chaiscript file which contains the object creations.
+    */
     void loadObjectCreations(const std::string& path) {
       chaiscript::ChaiScript chai;
       chai.add(chaiscript::var(std::ref(*this)), "factory");
@@ -147,8 +156,24 @@ namespace CDwarfs {
       it->second.erase(itC);
     }
 
-  private:
+    void killEntity(EntityID::UUID ID) {
+      auto it = m_objects.find(ID);
+      if (it == m_objects.end()) return;
+      for (auto comp : it->second){
+        delete comp.second;
+      }
+      m_objects.erase(it);
+    }
 
+    const chaiscript::ModulePtr& getChaiModuleForEntityManager() {
+      return m_chaiModule;
+    }
+
+    const chaiscript::ModulePtr& getChaiModuleForComponents() {
+      return m_factory.getChaiCreateModule();
+    }
+
+  private:
 
     template<class TComp, class... TArgs>
     void registerComponent(const std::string& name) {

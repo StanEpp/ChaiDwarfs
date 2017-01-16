@@ -20,11 +20,11 @@ PASSABLE
 NOMAP
 STONE
 
-Object Enums:
-INVALID
-DIAMOND
-RUBY
-SAPPHIRE
+Object Names:
+Unknown
+OutOfReach
+Nothing
+Diamond
 
 **/
 
@@ -37,12 +37,15 @@ def main(){
 	else if (PASSABLE == terrainType) { puts("Dwarf sees passable ground!\n") }
 	else if (DARK == terrainType) { puts("Dwarf tries to look at places he should not even know!\n") }
 	puts("Position: " + to_string(getX()) + " " + to_string(getY()) + "\n")
-	
+
 	var objType = checkForObject(0, 0);
-	if(objType == INVALID) { puts ("There is no fortune here!\n")}
-	else if (objType == DIAMOND) { puts("Found a Diamond!\n")}
-	
+	if(objType == "Unknown") { puts ("It's unknown what's here!\n")}
+	else if (objType == "OutOfReach") { puts("Dwarf can't search for objects that far!\n")}
+	else if (objType == "Nothing") { puts("There's nothing here!\n")}
+	else if (objType == "Diamond") { puts("Found a Diamond!\n")}
+
+
 	moveDown();
-	
+
 	puts("\n")
 }

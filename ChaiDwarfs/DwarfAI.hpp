@@ -22,25 +22,46 @@
 
 #include "DwarfTerrainInterface.hpp"
 #include "DwarfTerrainObjectInterface.hpp"
+#include "Entity.hpp"
 
 namespace CDwarfs {
 
-  class  Dwarf;
-  class  TerrainMap;
-  struct DwarfCommand;
+  class DwarfRoundActions;
+  class EntityManager;
 
   class DwarfAI {
   public:
     DwarfAI() = delete;
-    DwarfAI(const std::shared_ptr<TerrainMap> &terrainMap, const std::shared_ptr<TerrainObjectSystem> &terrainObjSys) :
+    DwarfAI(const std::shared_ptr<TerrainMap> &terrainMap, const std::shared_ptr<TerrainObjectSystem> &terrainObjSys, const std::shared_ptr<EntityManager>& entManager) :
       m_terrain(std::make_unique<DwarfTerrainInterface>(terrainMap)),
-      m_terrainObj(std::make_unique<DwarfTerrainObjectInterface>(terrainObjSys)) {}
+      m_terrainObj(std::make_unique<DwarfTerrainObjectInterface>(terrainObjSys)),
+      m_entManager(entManager)
+    {}
 
-    virtual void init(const Dwarf&) = 0;
-    virtual DwarfCommand generateCommand(const Dwarf&) = 0;
+    virtual void init() = 0;
+    virtual DwarfRoundActions generateCommand() = 0;
+
+    void setTerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap) {
+      m_terrain = std::make_unique<DwarfTerrainInterface>(terrainMap);
+    }
+
+    void setTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) {
+      m_terrainObj = std::make_unique<DwarfTerrainObjectInterface>(terrainObjSys);
+    }
+
+    void setEntityManager(const std::shared_ptr<EntityManager>& entManager) {
+      m_entManager = entManager;
+    }
+
+    void setDwarfID(EntityID::UUID eID) {
+      m_dwarfID = eID;
+    }
+
   protected:
     std::unique_ptr<DwarfTerrainInterface>  m_terrain;
     std::unique_ptr<DwarfTerrainObjectInterface>  m_terrainObj;
+    std::shared_ptr<EntityManager> m_entManager;
+    EntityID::UUID m_dwarfID;
   };
 
 }

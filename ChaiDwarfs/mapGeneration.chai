@@ -24,7 +24,7 @@ for(var row = 0; row < 10; ++row){
 	}
 }
 
-setType(0, 5, STONE)
+setType(5, 0, STONE)
 
 // factory.defineNewObject("Diamond")
 	// .addComp_TouchHeal()

@@ -30,23 +30,26 @@
 #include <chaiscript\chaiscript.hpp>
 #include <chaiscript\utility\utility.hpp>
 
-#include "ChaiScriptTypes.hpp"
-#include "DwarfCommand.hpp"
+#include "DwarfRoundActions.hpp"
 #include "DwarfAI.hpp"
-#include "TerrainObject.hpp"
+#include "Components.hpp"
+#include "TerrainMap.hpp"
+#include "EntityManager.hpp"
+
 
 namespace CDwarfs {
 
-class ChaiScriptAI final : public DwarfAI {
+class ChaiscriptAI final : public DwarfAI {
 private:
   std::string   m_script;
   std::string   m_scriptPath;
   std::tr2::sys::file_time_type   m_lastFileUpdate;
   std::function<void()>  m_scriptEntryPoint;
+
   chaiscript::ChaiScript m_chai;
   chaiscript::ChaiScript::State m_lastValidScriptState;
   chaiscript::ChaiScript::State m_cleanScriptState;
-  DwarfCommand m_command;
+  DwarfRoundActions m_command;
 
   void loadFile(){
       std::ifstream infile(m_scriptPath.c_str(), std::ios::in | std::ios::ate | std::ios::binary);
@@ -123,27 +126,38 @@ private:
   }
 
 public:
-  ChaiScriptAI() = delete;
-  ChaiScriptAI(const std::string& scriptPath, const std::shared_ptr<TerrainMap> &terrainMap, const std::shared_ptr<TerrainObjectSystem> &terrainObjSys) : 
-    DwarfAI(terrainMap, terrainObjSys), m_scriptPath(scriptPath) {}
-  ChaiScriptAI(std::string&& scriptPath, const std::shared_ptr<TerrainMap> &terrainMap, const std::shared_ptr<TerrainObjectSystem> &terrainObjSys) :
-    DwarfAI(terrainMap, terrainObjSys), m_scriptPath(scriptPath) {}
+  ChaiscriptAI() = delete;
+  ChaiscriptAI(const std::string& scriptPath, const std::shared_ptr<TerrainMap> &terrainMap, const std::shared_ptr<TerrainObjectSystem> &terrainObjSys) : 
+    DwarfAI(terrainMap, terrainObjSys, nullptr), m_scriptPath(scriptPath) {}
+  ChaiscriptAI(const std::string& scriptPath) : DwarfAI(nullptr, nullptr, nullptr), m_scriptPath(scriptPath) {}
 
-  void init(const Dwarf& dwarf) {
-    m_chai.add(chaiscript::fun(&DwarfCommand::moveDown, std::ref(m_command)), "moveDown");
-    m_chai.add(chaiscript::fun(&DwarfCommand::moveUp, std::ref(m_command)), "moveUp");
-    m_chai.add(chaiscript::fun(&DwarfCommand::moveLeft, std::ref(m_command)), "moveLeft");
-    m_chai.add(chaiscript::fun(&DwarfCommand::moveRight, std::ref(m_command)), "moveRight");
-    m_chai.add(chaiscript::fun(&DwarfCommand::moveStop, std::ref(m_command)), "moveStop");
-    m_chai.add(chaiscript::fun(&DwarfTerrainInterface::checkTerrain, m_terrain.get(), std::ref(dwarf)), "checkTerrain");
-    m_chai.add(chaiscript::fun(&DwarfTerrainObjectInterface::checkForObject, m_terrainObj.get(), std::ref(dwarf)), "checkForObject");
+  void init() {
+    if (!m_terrain || !m_terrainObj) throw std::runtime_error("Cannot initialize ChaiscriptAI when pointers are not set!");
     
-    m_chai.add(chaiscript::fun(&Dwarf::getHP, &dwarf), "getHP");
-    m_chai.add(chaiscript::fun(&Dwarf::getSpeed, &dwarf), "getSpeed");
-    m_chai.add(chaiscript::fun([&dwarf]() { return dwarf.getPosition().x(); }), "getX");
-    m_chai.add(chaiscript::fun([&dwarf]() { return dwarf.getPosition().y(); }), "getY");
-    m_chai.add(chaiscript::fun(&Dwarf::getViewDistance, &dwarf), "getViewDistance");
-    
+    m_chai.add(chaiscript::fun(&DwarfRoundActions::moveDown, std::ref(m_command)), "moveDown");
+    m_chai.add(chaiscript::fun(&DwarfRoundActions::moveUp, std::ref(m_command)), "moveUp");
+    m_chai.add(chaiscript::fun(&DwarfRoundActions::moveLeft, std::ref(m_command)), "moveLeft");
+    m_chai.add(chaiscript::fun(&DwarfRoundActions::moveRight, std::ref(m_command)), "moveRight");
+    m_chai.add(chaiscript::fun(&DwarfRoundActions::moveStop, std::ref(m_command)), "moveStop");
+
+    auto pos = m_entManager->getComponent<comp::Position>(m_dwarfID);
+    auto view = m_entManager->getComponent<comp::View>(m_dwarfID);
+    auto speed = m_entManager->getComponent<comp::Speed>(m_dwarfID);
+    auto hp = m_entManager->getComponent<comp::HP>(m_dwarfID);
+
+    if (pos && view && speed && hp) {
+      auto terrainPtr = m_terrain.get();
+      auto terrainObjPtr = m_terrainObj.get();
+      m_chai.add(chaiscript::fun([terrainPtr, pos, view](int x, int y) { return terrainPtr->checkTerrain(pos->row, pos->col, view->dist, y, x); }), "checkTerrain");
+      m_chai.add(chaiscript::fun([terrainObjPtr, pos, view](int x, int y) { return terrainObjPtr->checkForObject(pos->row, pos->col, view->dist, y, x); }), "checkForObject");
+
+      m_chai.add(chaiscript::fun([hp]() { return hp->hp; }), "getHP");
+      m_chai.add(chaiscript::fun([speed]() { return speed->speed; }), "getSpeed");
+      m_chai.add(chaiscript::fun([pos]() { return pos->col; }), "getX");
+      m_chai.add(chaiscript::fun([pos]() { return pos->row; }), "getY");
+      m_chai.add(chaiscript::fun([view]() { return view->dist; }), "getViewDistance");
+    }
+
     chaiscript::ModulePtr m = chaiscript::ModulePtr(new chaiscript::Module());
     chaiscript::utility::add_class<TerrainType>(*m, 
       "TerrainType", 
@@ -154,20 +168,13 @@ public:
         { TerrainType::STONE, "STONE" }
       }
     );
-    chaiscript::utility::add_class<ObjectType>(*m,
-      "ObjectType",
-      { { ObjectType::INVALID, "INVALID" },
-      { ObjectType::DIAMOND, "DIAMOND" },
-      { ObjectType::RUBY, "RUBY" },
-      { ObjectType::SAPPHIRE, "SAPPHIRE" }
-      }
-    );
+
     m_chai.add(m);
 
     m_lastValidScriptState = m_cleanScriptState = m_chai.get_state();
   }
 
-  DwarfCommand generateCommand(const Dwarf&) {
+  DwarfRoundActions generateCommand() {
     m_command.clear();
     runScript();
     return m_command;

@@ -17,45 +17,32 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
-#ifndef _DATASTRUCTS_HPP_
-#define _DATASTRUCTS_HPP_
+#ifndef _DWARFROUNDACTIONS_HPP_
+#define _DWARFROUNDACTIONS_HPP_
 
-namespace CDwarfs{
+namespace CDwarfs {
 
-class Point {
-public:
-  Point() : m_x(0), m_y(0) {}
-  Point(int x, int y) : m_x(x), m_y(y) {}
+  class DwarfRoundActions {
+  public:
+    enum class MoveDirection {
+      LEFT, RIGHT, UP, DOWN, NONE
+    };
 
-  Point& operator+=(std::initializer_list<int> rhs) {
-    addX(*rhs.begin());
-    addY(*(rhs.begin() + 1));
-  }
+    DwarfRoundActions() : movement(MoveDirection::NONE) {}
 
-  void addX(int val) {
-    m_x += val;
-    if (m_x < 0) m_x = 0;
-  }
+    void moveUp()    { movement = MoveDirection::UP; }
+    void moveDown()  { movement = MoveDirection::DOWN; }
+    void moveRight() { movement = MoveDirection::RIGHT; }
+    void moveLeft()  { movement = MoveDirection::LEFT; }
+    void moveStop()  { movement = MoveDirection::NONE; }
 
-  void addY(int val) {
-    m_y += val;
-    if (m_y < 0) m_y = 0;
-  }
+    void clear() {
+      movement = MoveDirection::NONE;
+    }
 
-  int x() const {
-    return m_x;
-  }
+    MoveDirection movement;
 
-  int y() const {
-    return m_y;
-  }
-
-private:
-  int m_x;
-  int m_y;
-
-};
-
+  };
 }
 
-#endif
+#endif // !_DWARFROUNDACTIONS_HPP_

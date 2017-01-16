@@ -26,20 +26,20 @@
 
 namespace CDwarfs {
 
+  class TerrainMap;
+
   class CommandSystem {
   public:
-    CommandSystem(EntityManager& entManager) : m_entManager(entManager) {}
+    CommandSystem() = delete;
+    CommandSystem(const std::shared_ptr<EntityManager>& entManager) : m_entManager(entManager) {}
 
-    ~CommandSystem() {
-      for (auto ptr : m_visitors) {
-        if (ptr) delete ptr;
-      }
-    }
+    ~CommandSystem() {}
 
-    void init() {
+    void init(const std::shared_ptr<TerrainMap>& terrainMap) {
       addNewComponentSystem<compSys::TouchHeal_Sys>();
       addNewComponentSystem<compSys::TouchDamage_Sys>();
       addNewComponentSystem<compSys::Damage_Sys>();
+      addNewComponentSystem<compSys::Move_Sys>(terrainMap);
     }
 
     void pushCommand(cmd::Command cmd) {
@@ -54,10 +54,10 @@ namespace CDwarfs {
         m_cmdQueue.pop();
 
         while (!cmdStack.empty()) {
-          auto currCmd = cmdStack.top();
+          auto& currCmd = cmdStack.top();
           cmdStack.pop();
 
-          for (auto visitor : m_visitors) {
+          for (auto& visitor : m_visitors) {
             auto retCmd = std::visit(*visitor, currCmd);
 
             if (retCmd.size() >= 1) {
@@ -72,14 +72,14 @@ namespace CDwarfs {
 
   private:
 
-    template<class TSys>
-    inline void addNewComponentSystem() {
-      m_visitors.push_back(new TSys(m_entManager));
+    template<class TSys, class... Params>
+    inline void addNewComponentSystem(Params&&... args) {
+      m_visitors.push_back(std::make_shared<TSys>(m_entManager, std::forward<Params...>(args)...));
     }
 
     std::queue<cmd::Command>  m_cmdQueue;
-    std::vector<compSys::BaseVisitor*>  m_visitors;
-    EntityManager& m_entManager;
+    std::vector<std::shared_ptr<compSys::BaseVisitor>>  m_visitors;
+    std::shared_ptr<EntityManager> m_entManager;
   };
 }
 

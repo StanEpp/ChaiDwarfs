@@ -53,9 +53,7 @@ public:
   }
 
 private:
-  std::vector<std::vector<TerrainType> >  m_map;
-  int m_rows;
-  int m_cols;
+  std::vector<std::vector<TerrainType>>  m_map;
 
 };
 

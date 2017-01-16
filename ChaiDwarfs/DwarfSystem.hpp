@@ -22,62 +22,87 @@
 
 #include <vector>
 
-#include "ChaiScriptTypes.hpp"
-#include "Dwarf.hpp"
-#include "DwarfAI.hpp"
+#include "EntityManager.hpp"
+#include "CommandSystem.hpp"
+#include "Components.hpp"
+#include "DwarfRoundActions.hpp"
 
 namespace CDwarfs {
 
-class DwarfSystem {
+  class DwarfSystem {
+  public:
+    DwarfSystem(const std::shared_ptr<EntityManager>& entityManager, const std::shared_ptr<CommandSystem>& cmdSystem) : 
+      m_entityManager(entityManager), m_cmdSystem(cmdSystem) {}
+    DwarfSystem() = delete;
+    DwarfSystem(DwarfSystem&) = delete; DwarfSystem& operator=(DwarfSystem&) = delete;
+    DwarfSystem(DwarfSystem&&) = delete; DwarfSystem& operator=(DwarfSystem&&) = delete;
+    ~DwarfSystem() = default;
 
-  struct DwarfWithAI{
-    Dwarf dwarf;
-    std::unique_ptr<DwarfAI> ai;
-    DwarfWithAI(unsigned int ID) : dwarf(ID), ai(nullptr) {}
-  };
+    EntityID::UUID add(
+      const std::string& dwarfType,
+      const std::shared_ptr<TerrainMap> &terrainMap, 
+      const std::shared_ptr<TerrainObjectSystem> &terrainObjSys) 
+    {
+      auto ID = m_entityManager->createObject(dwarfType);
+      m_DwarfIDs.push_back(ID);
+      
+      auto ai = m_entityManager->getComponent<comp::AIComponent>(ID);
+      
+      if (ai) {
+        ai->ai->setTerrainInterface(terrainMap);
+        ai->ai->setTerrainObjectInterface(terrainObjSys);
+        ai->ai->setEntityManager(m_entityManager);
+        ai->ai->setDwarfID(ID);
+        ai->ai->init();
+      }
 
-public:
-  DwarfSystem() = default;
-  DwarfSystem(DwarfSystem&) = delete; DwarfSystem& operator=(DwarfSystem&) = delete;
-  DwarfSystem(DwarfSystem&&) = delete; DwarfSystem& operator=(DwarfSystem&&) = delete;
-  ~DwarfSystem() = default;
-
-  Dwarf& getDwarf(DwarfID ID) {
-    return m_Dwarfs[ID].dwarf;
-  }
-
-  template<class AI, class... AIArgs>
-  Dwarf& add(AIArgs&&... aiParams) {
-    auto ID = static_cast<unsigned int>(m_Dwarfs.size());
-    m_Dwarfs.emplace_back(ID);
-    auto& dwarfPack = m_Dwarfs[ID];
-    dwarfPack.ai = std::make_unique<AI>(std::forward<AIArgs>(aiParams)...);
-    dwarfPack.ai->init(dwarfPack.dwarf);
-
-    return getDwarf(ID);
-  }
-
-  void erase(DwarfID ID) {
-    if (ID >= m_Dwarfs.size()) return;
-    m_Dwarfs.erase(m_Dwarfs.cbegin() + ID);
-  }
-
-  std::vector<DwarfCommand> generateCommands() {
-    std::vector<DwarfCommand> commands;
-    commands.resize(m_Dwarfs.size());
-    for (auto& dwarfPack : m_Dwarfs) {
-      auto ID = dwarfPack.dwarf.getID();
-      auto& cmd = commands[ID];
-      cmd = dwarfPack.ai->generateCommand(dwarfPack.dwarf);
-      cmd.dwarfID = dwarfPack.dwarf.getID();
+      return ID;
     }
-    return commands;
-  }
 
-private:
-  std::vector<DwarfWithAI>  m_Dwarfs;
+    void erase(EntityID::UUID ID) {
+      if (ID >= m_DwarfIDs.size()) return;
+      m_DwarfIDs.erase(m_DwarfIDs.cbegin() + ID);
+      m_entityManager->killEntity(ID);
+    }
 
-};
+    void updateDwarfs() {
+      for (auto eID : m_DwarfIDs) {
+        auto ai = m_entityManager->getComponent<comp::AIComponent>(eID);
+        if (ai) {
+          auto actions = ai->ai->generateCommand();
+          
+          switch (actions.movement) {
+            case DwarfRoundActions::MoveDirection::LEFT: {
+              cmd::Cmd_MoveLeft cmdLeft;
+              cmdLeft.dest = eID;
+              m_cmdSystem->pushCommand(cmdLeft);
+            } break;
+            case DwarfRoundActions::MoveDirection::RIGHT: {
+              cmd::Cmd_MoveRight cmdRight;
+              cmdRight.dest = eID;
+              m_cmdSystem->pushCommand(cmdRight);
+            } break;
+            case DwarfRoundActions::MoveDirection::UP: {
+              cmd::Cmd_MoveUp cmdUp;
+              cmdUp.dest = eID;
+              m_cmdSystem->pushCommand(cmdUp);
+            } break;
+            case DwarfRoundActions::MoveDirection::DOWN: {
+              cmd::Cmd_MoveDown cmdDown;
+              cmdDown.dest = eID;
+              m_cmdSystem->pushCommand(cmdDown);
+            } break;
+          }
+
+        }
+      }
+    }
+
+  private:
+    std::vector<EntityID::UUID>    m_DwarfIDs;
+    std::shared_ptr<EntityManager> m_entityManager;
+    std::shared_ptr<CommandSystem> m_cmdSystem;
+  };
 
 }
 

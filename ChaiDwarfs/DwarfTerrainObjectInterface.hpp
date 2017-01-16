@@ -21,12 +21,11 @@
 #define _DWARFTERRAINOBJECTINTERFACE_HPP_
 
 #include <memory>
+#include <string>
 
 namespace CDwarfs {
-  class Dwarf;
-  class Point;
+
   class TerrainObjectSystem;
-  enum class ObjectType : unsigned int;
 
   class DwarfTerrainObjectInterface final{
   public:
@@ -34,7 +33,7 @@ namespace CDwarfs {
     DwarfTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>&);
     ~DwarfTerrainObjectInterface() {}
 
-    const ObjectType checkForObject(const Dwarf&, int x, int y) const;
+    const std::string& checkForObject(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
   private:
     std::weak_ptr<TerrainObjectSystem> m_terrainObjSys;
   };

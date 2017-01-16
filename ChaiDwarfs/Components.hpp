@@ -21,65 +21,83 @@
 #ifndef _COMPONENTS_HPP_
 #define _COMPONENTS_HPP_
 
+#include <memory>
+#include <string>
+
 #include "BaseComponent.hpp"
+#include "DwarfAI.hpp"
 
 namespace CDwarfs {
   namespace comp {
 
     struct TouchValue : public Component<TouchValue> {
       int value;
-      TouchValue() : value(0) {}
-      TouchValue(int l_value) : value(l_value) {}
+      TouchValue();
+      TouchValue(int l_value);
     };
 
     struct TouchHeal : public Component<TouchHeal> {
       int heal;
-      TouchHeal() : heal(0) {}
-      TouchHeal(int l_heal) : heal(l_heal) {}
+      TouchHeal();
+      TouchHeal(int l_heal);
     };
 
     struct TouchDamage : public Component<TouchDamage> {
       int damage;
-      TouchDamage() : damage(0) {}
-      TouchDamage(int l_damage) : damage(l_damage) {}
+      TouchDamage();
+      TouchDamage(int l_damage);
     };
 
     struct Name : public Component<Name> {
       std::string name;
-      Name() : name() {}
-      Name(const std::string& l_name) : name(l_name) {}
+      Name();
+      Name(const std::string& l_name);
     };
 
     struct Position : public Component<Position> {
       int row, col;
-      Position() : row(0), col(0) {}
-      Position(int l_row, int l_col) : row(l_row), col(l_col) {}
+      Position();
+      Position(int l_row, int l_col);
     };
 
     struct HP : public Component<HP> {
       int hp;
       int maxHP;
-      HP() : hp(0), maxHP(100) {}
-      HP(int hp, int maxHP) : hp(hp), maxHP(maxHP) {}
+      HP();
+      HP(int hp, int maxHP);
     };
 
     struct Speed : public Component<Speed> {
       int speed;
-      Speed() : speed(0) {}
-      Speed(int speed) : speed(speed) {}
+      Speed();
+      Speed(int speed);
     };
 
     struct Points : public Component<Points> {
       int points;
-      Points() : points(0) {}
-      Points(int points) : points(points) {}
+      Points();
+      Points(int points);
     };
 
     struct View : public Component<View> {
       int dist;
-      View() : dist(10) {}
-      View(int dist) : dist(dist) {}
+      View();
+      View(int dist);
     };
+
+    struct AIComponent : public Component<AIComponent>{
+      std::unique_ptr<DwarfAI> ai;
+      AIComponent() = delete;
+      AIComponent(std::unique_ptr<DwarfAI>&& ai);
+    };
+
+    struct ScriptAI : public AIComponent {
+      std::string filePath;
+      ScriptAI();
+      ScriptAI(const std::string& filePath);
+    };
+
+
   }
 }
 

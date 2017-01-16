@@ -91,12 +91,14 @@ namespace CDwarfs {
         if (it != componentVec->end()) {
           std::cerr << "Trying to add duplicate component " << typeid(TComp).name() << " for object definition of \"" << objectName << "\"!\n";
         }
+        else {
+          componentVec->push_back(std::make_shared<ComponentHolder_<TComp, TArgs...>>(params...));
+        }
 
-        componentVec->push_back(new ComponentHolder_<TComp, TArgs...>(params...));
         return *this;
       }
 
-      std::vector<ComponentHolder*>* componentVec;
+      std::vector<std::shared_ptr<ComponentHolder>>* componentVec;
       std::string objectName;
     };
 
@@ -113,14 +115,7 @@ namespace CDwarfs {
     ECSFactory& operator=(ECSFactory&) = delete;
     ECSFactory& operator=(ECSFactory&&) = delete;
 
-    ~ECSFactory() {
-      // Delete all components and component holder!
-      for (auto& objects : m_objectDefinitions) {
-        for (auto ptr : objects.second) {
-          if (ptr) delete ptr;
-        }
-      }
-    }
+    ~ECSFactory() {}
 
     /*
     * \brief Registers a component in the factory which can be used to define objects in chaiscript.
@@ -214,7 +209,7 @@ namespace CDwarfs {
     ComponentCascading     m_compCascading;
 
     std::unordered_set<ComponentUUID>                                m_componentRegistrations;
-    std::unordered_map<std::string, std::vector<ComponentHolder*>>   m_objectDefinitions;
+    std::unordered_map<std::string, std::vector<std::shared_ptr<ComponentHolder>>>   m_objectDefinitions;
   };
 
 }
