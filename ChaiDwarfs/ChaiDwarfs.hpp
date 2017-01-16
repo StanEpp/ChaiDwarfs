@@ -55,12 +55,12 @@ namespace CDwarfs {
 
 
     void init() { 
-      m_terrain->load("mapGeneration.chai");
+      m_terrain->load("scripts/mapGeneration.chai");
 
       m_entManager->init();
-      m_entManager->loadObjectDefinitions("objectDefinitions.chai");
+      m_entManager->loadObjectDefinitions("scripts/objectDefinitions.chai");
       
-      m_terrainObjSys->loadObjects("objectCreation.chai");
+      m_terrainObjSys->loadObjects("scripts/objectCreation.chai");
       
       m_cmdSystem->init(m_terrain);
     }
@@ -77,9 +77,9 @@ namespace CDwarfs {
           m_dwarfSys->updateDwarfs();
           m_cmdSystem->processQueue();
           lastTimePoint = timer.currentTime();
-          /*counter++;*/
+          //counter++;
         }
-        /*if (counter == 15) m_running = false;*/
+        //if (counter == 15) m_running = false;
       }
     
     }
