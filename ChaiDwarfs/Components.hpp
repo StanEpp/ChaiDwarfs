@@ -30,6 +30,14 @@
 namespace CDwarfs {
   namespace comp {
 
+    struct FlaggedDestroyed : public Component<FlaggedDestroyed> {
+      FlaggedDestroyed();
+    };
+
+    struct TouchDestroy : public Component<TouchDestroy> {
+      TouchDestroy();
+    };
+
     struct TouchValue : public Component<TouchValue> {
       int value;
       TouchValue();

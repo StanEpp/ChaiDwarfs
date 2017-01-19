@@ -23,6 +23,11 @@
 
 namespace CDwarfs {
   namespace comp {
+
+    FlaggedDestroyed::FlaggedDestroyed() {}
+
+    TouchDestroy::TouchDestroy() {}
+
     TouchValue::TouchValue() : value(0) {}
     TouchValue::TouchValue(int l_value) : value(l_value) {}
 

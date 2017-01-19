@@ -144,8 +144,9 @@ public:
     auto view = m_entManager->getComponent<comp::View>(m_dwarfID);
     auto speed = m_entManager->getComponent<comp::Speed>(m_dwarfID);
     auto hp = m_entManager->getComponent<comp::HP>(m_dwarfID);
+    auto points = m_entManager->getComponent<comp::Points>(m_dwarfID);
 
-    if (pos && view && speed && hp) {
+    if (pos && view && speed && hp && points) {
       auto terrainPtr = m_terrain.get();
       auto terrainObjPtr = m_terrainObj.get();
       m_chai.add(chaiscript::fun([terrainPtr, pos, view](int x, int y) { return terrainPtr->checkTerrain(pos->row, pos->col, view->dist, y, x); }), "checkTerrain");
@@ -156,6 +157,7 @@ public:
       m_chai.add(chaiscript::fun([pos]() { return pos->col; }), "getX");
       m_chai.add(chaiscript::fun([pos]() { return pos->row; }), "getY");
       m_chai.add(chaiscript::fun([view]() { return view->dist; }), "getViewDistance");
+      m_chai.add(chaiscript::fun([points]() { return points->points; }), "getPoints");
     }
 
     chaiscript::ModulePtr m = chaiscript::ModulePtr(new chaiscript::Module());

@@ -27,6 +27,7 @@
 namespace CDwarfs {
 
   class TerrainMap;
+  class TerrainObjectSystem;
 
   class CommandSystem {
   public:
@@ -35,11 +36,14 @@ namespace CDwarfs {
 
     ~CommandSystem() {}
 
-    void init(const std::shared_ptr<TerrainMap>& terrainMap) {
+    void init(const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) {
+      addNewComponentSystem<compSys::TouchValue_Sys>();
+      addNewComponentSystem<compSys::TouchDestroy_Sys>();
       addNewComponentSystem<compSys::TouchHeal_Sys>();
       addNewComponentSystem<compSys::TouchDamage_Sys>();
       addNewComponentSystem<compSys::Damage_Sys>();
-      addNewComponentSystem<compSys::Move_Sys>(terrainMap);
+      addNewComponentSystem<compSys::Points_Sys>();
+      addNewComponentSystem<compSys::Move_Sys>(terrainMap, terrainObjSys);
     }
 
     void pushCommand(cmd::Command cmd) {
@@ -54,7 +58,7 @@ namespace CDwarfs {
         m_cmdQueue.pop();
 
         while (!cmdStack.empty()) {
-          auto& currCmd = cmdStack.top();
+          auto currCmd = cmdStack.top();
           cmdStack.pop();
 
           for (auto& visitor : m_visitors) {
@@ -74,7 +78,7 @@ namespace CDwarfs {
 
     template<class TSys, class... Params>
     inline void addNewComponentSystem(Params&&... args) {
-      m_visitors.push_back(std::make_shared<TSys>(m_entManager, std::forward<Params...>(args)...));
+      m_visitors.push_back(std::make_shared<TSys>(m_entManager, std::forward<Params>(args)...));
     }
 
     std::queue<cmd::Command>  m_cmdQueue;

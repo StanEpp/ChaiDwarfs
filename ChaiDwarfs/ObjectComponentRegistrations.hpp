@@ -92,6 +92,11 @@ namespace CDwarfs {
     }
 
     template<>
+    void inline registerComponent<TouchDestroy>(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::user_type<TouchDestroy>(), "DestroyOnTouch");
+    }
+
+    template<>
     void inline registerComponent<ScriptAI>(chaiscript::ModulePtr&) {}
 
 

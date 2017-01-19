@@ -41,7 +41,12 @@ namespace CDwarfs {
     std::shared_ptr<TerrainObjectSystem>    m_terrainObjSys;
     bool  m_running;
     
-    
+    void killAllDestroyedEntities() {
+      auto vec = m_entManager->getAllEntitiesWithComponent<comp::FlaggedDestroyed>();
+      for (auto ID : vec) {
+        m_entManager->killEntity(ID);
+      }
+    }
 
   public:
     ChaiDwarfs() : 
@@ -62,7 +67,7 @@ namespace CDwarfs {
       
       m_terrainObjSys->loadObjects("scripts/objectCreation.chai");
       
-      m_cmdSystem->init(m_terrain);
+      m_cmdSystem->init(m_terrain, m_terrainObjSys);
     }
 
     void run() {
@@ -76,6 +81,7 @@ namespace CDwarfs {
         if (timer.haveMilliSecondsPassed(500, lastTimePoint)) {
           m_dwarfSys->updateDwarfs();
           m_cmdSystem->processQueue();
+          killAllDestroyedEntities();
           lastTimePoint = timer.currentTime();
           //counter++;
         }

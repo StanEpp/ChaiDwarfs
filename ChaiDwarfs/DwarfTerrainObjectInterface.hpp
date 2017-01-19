@@ -33,7 +33,7 @@ namespace CDwarfs {
     DwarfTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>&);
     ~DwarfTerrainObjectInterface() {}
 
-    const std::string& checkForObject(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
+    const std::string checkForObject(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
   private:
     std::weak_ptr<TerrainObjectSystem> m_terrainObjSys;
   };

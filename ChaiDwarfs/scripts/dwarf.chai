@@ -30,22 +30,30 @@ Diamond
 
 def main(){
 	puts("Executing Script...!\n")
+	var goDown = true
 	var terrainType = checkTerrain(0, 1)
 	if(NOMAP == terrainType){ puts("There is no map!\n") }
 	else if (SOIL == terrainType) { puts("Dwarf sees Soil!\n") }
-	else if (STONE == terrainType) { puts("Dwarf sees Stone!\n") }
+	else if (STONE == terrainType) { puts("Dwarf sees Stone!\n"); goDown = !goDown; }
 	else if (PASSABLE == terrainType) { puts("Dwarf sees passable ground!\n") }
-	else if (DARK == terrainType) { puts("Dwarf tries to look at places he should not even know!\n") }
-	puts("Position: " + to_string(getX()) + " " + to_string(getY()) + "\n")
+	else if (DARK == terrainType) { puts("Dwarf tries to look at places he should not even know!\n"); goDown = !goDown; }
 
-	var objType = checkForObject(0, 0);
-	if(objType == "Unknown") { puts ("It's unknown what's here!\n")}
+	var objType = checkForObject(0, 1);
+	if(objType == "Unknown") { puts ("It's unknown what's there!\n")}
 	else if (objType == "OutOfReach") { puts("Dwarf can't search for objects that far!\n")}
-	else if (objType == "Nothing") { puts("There's nothing here!\n")}
+	else if (objType == "Nothing") { puts("There's nothing!\n")}
 	else if (objType == "Diamond") { puts("Found a Diamond!\n")}
+	else if (objType == "Emerald") { puts("Found an Emerald!\n")}
+	else if (objType == "Sapphire") { puts("Found a Sapphire!\n")}
 
+	puts("Position: " + to_string(getY()) + " " + to_string(getX()) + "\n")
+	print("Points: " + to_string(getPoints()))
 
-	moveDown();
+	if(goDown){
+		moveDown();
+	} else {
+		moveUp();
+	}
 
 	puts("\n")
 }

@@ -26,6 +26,7 @@
 #include "EntityManager.hpp"
 #include "Components.hpp"
 #include "TerrainMap.hpp"
+#include "TerrainObjectSystem.hpp"
 
 namespace CDwarfs {
   namespace compSys {
@@ -53,18 +54,40 @@ namespace CDwarfs {
       std::shared_ptr<EntityManager> m_entManager;
     };
 
+    class TouchValue_Sys : public BaseVisitor {
+    public:
+      TouchValue_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
+
+      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) {
+        std::cout << "TouchValue_Sys\n";
+        ReturnedCommands ret;
+        auto touchValue = m_entManager->getComponent<comp::TouchValue>(cmd.touched);
+        if (touchValue) {
+          auto points = m_entManager->getComponent<comp::Points>(cmd.touching);
+          if (points) {
+            std::cout << " exec\n";
+            cmd::Cmd_Points cmdPoints;
+            cmdPoints.dest = cmd.touching;
+            cmdPoints.points = touchValue->value;
+            ret.push_back(cmdPoints);
+          }
+        }
+        return ret;
+      }
+    };
 
     class TouchHeal_Sys : public BaseVisitor {
     public:
       TouchHeal_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
       virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) {
-        std::cout << "TouchHeal_Sys" << std::endl;
+        std::cout << "TouchHeal_Sys\n";
         ReturnedCommands ret;
         auto touchHeal = m_entManager->getComponent<comp::TouchHeal>(cmd.touched);
         if (touchHeal) {
           auto hp = m_entManager->getComponent<comp::HP>(cmd.touching);
           if (hp) {
+            std::cout << " exec\n";
             cmd::Cmd_Heal cmdHeal;
             cmdHeal.dest = cmd.touching;
             cmdHeal.heal = touchHeal->heal;
@@ -80,10 +103,11 @@ namespace CDwarfs {
       TouchDamage_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
       virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) {
-        std::cout << "TouchDamage_Sys" << std::endl;
+        std::cout << "TouchDamage_Sys\n";
         ReturnedCommands ret;
         auto touchDamage = m_entManager->getComponent<comp::TouchDamage>(cmd.touched);
         if (touchDamage) {
+          std::cout << " exec\n";
           auto hp = m_entManager->getComponent<comp::HP>(cmd.touching);
           if (hp) {
             cmd::Cmd_Damage cmdDmg;
@@ -92,8 +116,21 @@ namespace CDwarfs {
             ret.push_back(cmdDmg);
           }
         }
-        ret.push_back(cmd::Cmd_Damage());
         return ret;
+      }
+    };
+
+    class TouchDestroy_Sys : public BaseVisitor {
+    public:
+      TouchDestroy_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
+
+      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) {
+        std::cout << "TouchDestroy_Sys\n";
+        if (m_entManager->getComponent<comp::TouchDestroy>(cmd.touched)) {
+          m_entManager->addComponent<comp::FlaggedDestroyed>(cmd.touched);
+          std::cout << " exec\n";
+        }
+        return ReturnedCommands();
       }
     };
 
@@ -102,17 +139,29 @@ namespace CDwarfs {
       Damage_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
       virtual ReturnedCommands operator()(const cmd::Cmd_Damage& cmd) {
-        std::cout << "Damage_Sys" << std::endl;
+        std::cout << "Damage_Sys\n";
         auto hp = m_entManager->getComponent<comp::HP>(cmd.dest);
-        if (hp) hp->hp -= cmd.damage;
+        if (hp) { hp->hp -= cmd.damage; std::cout << " exec\n"; }
+        return ReturnedCommands();
+      }
+    };
+
+    class Points_Sys : public BaseVisitor {
+    public:
+      Points_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
+
+      virtual ReturnedCommands operator()(const cmd::Cmd_Points& cmd) {
+        std::cout << "Points_Sys\n";
+        auto points = m_entManager->getComponent<comp::Points>(cmd.dest);
+        if (points) { points->points += cmd.points; std::cout << " exec\n"; }
         return ReturnedCommands();
       }
     };
 
     class Move_Sys : public BaseVisitor {
     public:
-      Move_Sys(const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<TerrainMap> terrainMap) : 
-        BaseVisitor(entManager), m_terrainMap(terrainMap) {}
+      Move_Sys(const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) :
+        BaseVisitor(entManager), m_terrainMap(terrainMap), m_terrainObjSys(terrainObjSys) {}
 
       virtual ReturnedCommands operator()(const cmd::Cmd_MoveUp& cmd) {
         return executeMove(-1, 0, cmd.dest);
@@ -132,18 +181,28 @@ namespace CDwarfs {
 
     private:
       ReturnedCommands executeMove(int rowDiff, int colDiff, EntityID::UUID entID) {
-        std::cout << "Move_Sys" << std::endl;
+        std::cout << "Move_Sys\n";
+        ReturnedCommands ret;
         auto pos = m_entManager->getComponent<comp::Position>(entID);
         if (pos) {
           if (m_terrainMap->at(pos->row + rowDiff, pos->col + colDiff) == TerrainType::PASSABLE) {
+            std::cout << " exec\n";
+            auto objects = m_terrainObjSys->at(pos->row + rowDiff, pos->col + colDiff);
+            for (auto& ent : objects) {
+              cmd::Cmd_Touch touchCmd;
+              touchCmd.touched = ent.first;
+              touchCmd.touching = entID;
+              ret.push_back(touchCmd);
+            }
             pos->row += rowDiff;
             pos->col += colDiff;
           }
         }
-        return ReturnedCommands();
+        return ret;
       }
 
       std::shared_ptr<TerrainMap> m_terrainMap;
+      std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
     };
 
   }

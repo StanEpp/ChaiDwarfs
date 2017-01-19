@@ -23,9 +23,8 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include "Entity.hpp"
+#include "EntityManager.hpp"
 #include "Components.hpp"
-#include "ComponentSystem.hpp"
 
 namespace CDwarfs {
 
@@ -41,10 +40,10 @@ namespace CDwarfs {
     ~TerrainObjectSystem() { }
 
     // TODO: Optimize via quadtree
-    std::vector<std::pair<EntityID::UUID, std::string>> at(int x, int y) const {
-      auto posEqual = [x, y](const comp::Position* pos) {
-        if (pos->col == x && pos->row == y) { return true; }
-        else { return false; }
+    std::vector<std::pair<EntityID::UUID, std::string>> at(int row, int col) const {
+      auto posEqual = [row, col](const comp::Position* pos) {
+        if (pos->col == col && pos->row == row) return true; 
+        return false;
       };
 
       std::vector<std::pair<EntityID::UUID, std::string>> ret;
@@ -64,7 +63,7 @@ namespace CDwarfs {
       chaiscript::ChaiScript chai;
 
       chai.add(chaiscript::var(std::ref(*this)), "terrainMap");
-      chai.add(chaiscript::fun(&TerrainObjectSystem::add), "addObject");
+      chai.add(chaiscript::fun(&TerrainObjectSystem::add), "placeObject");
 
       chai.add(chaiscript::var(std::ref(*(m_entManager.get()))), "factory");
       chai.add(chaiscript::fun(&EntityManager::createObject), "createObject");

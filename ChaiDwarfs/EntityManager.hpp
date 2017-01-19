@@ -51,6 +51,7 @@ namespace CDwarfs {
       registerComponent<comp::Points, int>("Points");
       registerComponent<comp::View, int>("View");
       registerComponent<comp::ScriptAI, const std::string&>("ScriptAI");
+      registerComponent<comp::TouchDestroy>("DestroyOnTouch");
     }
 
     EntityID::UUID createObject(const std::string& name) {
