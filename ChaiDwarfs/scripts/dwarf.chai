@@ -30,13 +30,13 @@ Diamond
 
 def main(){
 	puts("Executing Script...!\n")
-	var goDown = true
+
 	var terrainType = checkTerrain(0, 1)
 	if(NOMAP == terrainType){ puts("There is no map!\n") }
 	else if (SOIL == terrainType) { puts("Dwarf sees Soil!\n") }
-	else if (STONE == terrainType) { puts("Dwarf sees Stone!\n"); goDown = !goDown; }
+	else if (STONE == terrainType) { puts("Dwarf sees Stone!\n"); }
 	else if (PASSABLE == terrainType) { puts("Dwarf sees passable ground!\n") }
-	else if (DARK == terrainType) { puts("Dwarf tries to look at places he should not even know!\n"); goDown = !goDown; }
+	else if (DARK == terrainType) { puts("Dwarf tries to look at places he should not even know!\n"); }
 
 	var objType = checkForObject(0, 1);
 	if(objType == "Unknown") { puts ("It's unknown what's there!\n")}
@@ -46,14 +46,10 @@ def main(){
 	else if (objType == "Emerald") { puts("Found an Emerald!\n")}
 	else if (objType == "Sapphire") { puts("Found a Sapphire!\n")}
 
-	puts("Position: " + to_string(getY()) + " " + to_string(getX()) + "\n")
+	print("Position: " + to_string(getY()) + " " + to_string(getX()))
 	print("Points: " + to_string(getPoints()))
 
-	if(goDown){
-		moveDown();
-	} else {
-		moveUp();
-	}
+	moveDown();
 
 	puts("\n")
 }

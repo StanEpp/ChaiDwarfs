@@ -80,6 +80,7 @@ namespace CDwarfs {
       while (m_running) {
         if (timer.haveMilliSecondsPassed(500, lastTimePoint)) {
           m_dwarfSys->updateDwarfs();
+          m_terrainObjSys->objectCollisions(m_cmdSystem);
           m_cmdSystem->processQueue();
           killAllDestroyedEntities();
           lastTimePoint = timer.currentTime();

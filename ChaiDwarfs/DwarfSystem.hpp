@@ -92,6 +92,11 @@ namespace CDwarfs {
               cmdDown.dest = eID;
               m_cmdSystem->pushCommand(cmdDown);
             } break;
+            case DwarfRoundActions::MoveDirection::NONE: {
+              cmd::Cmd_MoveNone cmdNone;
+              cmdNone.dest = eID;
+              m_cmdSystem->pushCommand(cmdNone);
+            } break;
           }
 
         }

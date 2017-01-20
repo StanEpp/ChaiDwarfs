@@ -61,9 +61,13 @@ namespace CDwarfs {
       EntityID::UUID dest;
     };
 
+    struct Cmd_MoveNone {
+      EntityID::UUID dest;
+    };
+
     using Command = std::variant<
       Cmd_Touch, Cmd_Heal, Cmd_Damage, Cmd_Points,
-      Cmd_MoveUp, Cmd_MoveDown, Cmd_MoveLeft, Cmd_MoveRight>;
+      Cmd_MoveUp, Cmd_MoveDown, Cmd_MoveLeft, Cmd_MoveRight, Cmd_MoveNone>;
   }
 }
 

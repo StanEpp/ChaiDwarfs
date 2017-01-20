@@ -20,82 +20,41 @@
 #ifndef _TERRAINOBJECTSYSTEM_HPP_
 #define _TERRAINOBJECTSYSTEM_HPP_
 
+#include <memory>
+#include <string>
 #include <vector>
-#include <algorithm>
-#include <iostream>
-#include "EntityManager.hpp"
-#include "Components.hpp"
+
+#include "Entity.hpp"
 
 namespace CDwarfs {
+
+  class CommandSystem;
+  class EntityManager;
 
   class TerrainObjectSystem {
   public:
     TerrainObjectSystem() = delete;
-    TerrainObjectSystem(const std::shared_ptr<EntityManager> entManager) : m_entManager(entManager) {}
+    TerrainObjectSystem(const std::shared_ptr<EntityManager> entManager);
     TerrainObjectSystem(TerrainObjectSystem&) = delete;
     TerrainObjectSystem(TerrainObjectSystem&&) = delete;
     TerrainObjectSystem& operator=(TerrainObjectSystem&) = delete;
     TerrainObjectSystem& operator=(TerrainObjectSystem&&) = delete;
 
-    ~TerrainObjectSystem() { }
+    ~TerrainObjectSystem();
 
-    // TODO: Optimize via quadtree
-    std::vector<std::pair<EntityID::UUID, std::string>> at(int row, int col) const {
-      auto posEqual = [row, col](const comp::Position* pos) {
-        if (pos->col == col && pos->row == row) return true; 
-        return false;
-      };
+    std::vector<std::pair<EntityID::UUID, std::string>> at(int row, int col) const;
 
-      std::vector<std::pair<EntityID::UUID, std::string>> ret;
+    void loadObjects(const std::string& filepath);
 
-      for (auto objID : m_objects) {
-        if (auto objptr = m_entManager->getComponent<comp::Position>(objID)) {
-          std::string name = "Unknown";
-          if (auto nameComp = m_entManager->getComponent<comp::Name>(objID)) name = nameComp->name;
-          if (posEqual(objptr)) ret.push_back(std::make_pair(objID, name));
-        }
-      }
+    bool erase(EntityID::UUID ID);
 
-      return ret;
-    }
-
-    void loadObjects(const std::string& filepath) {
-      chaiscript::ChaiScript chai;
-
-      chai.add(chaiscript::var(std::ref(*this)), "terrainMap");
-      chai.add(chaiscript::fun(&TerrainObjectSystem::add), "placeObject");
-
-      chai.add(chaiscript::var(std::ref(*(m_entManager.get()))), "factory");
-      chai.add(chaiscript::fun(&EntityManager::createObject), "createObject");
-
-      chai.add(m_entManager->getChaiModuleForComponents());
-      chai.add(m_entManager->getChaiModuleForEntityManager());
-      chai.eval_file(filepath);
-    }
-
-    bool erase(EntityID::UUID ID) {
-      auto ent = std::find(m_objects.cbegin(), m_objects.cend(), ID);
-      if (ent == m_objects.cend()) return false;
-      m_objects.erase(ent);
-      return true;
-    }
+    void objectCollisions(std::shared_ptr<CommandSystem>& cmdSys);
 
   private:
 
-    EntityID::UUID add(const std::string& name, int row, int col) {
-      auto ID = m_entManager->createObject(name);
-      auto pos = m_entManager->getComponent<comp::Position>(ID);
-      if (!pos) throw std::runtime_error("Object " + name + " has no position component. Can't be placed on the terrain.");
-      pos->row = row; 
-      pos->col = col;
-      m_objects.push_back(ID);
-      m_entManager->listenToEntityDestruction(ID, [this](EntityID::UUID killedID) {
-        this->erase(killedID);
-      });
-      return ID;
-    }
+    EntityID::UUID add(const std::string& name, int row, int col);
 
-    std::vector<EntityID::UUID>  m_objects;
+    std::vector<EntityID::UUID>    m_objects;
     std::shared_ptr<EntityManager> m_entManager;
   };
 

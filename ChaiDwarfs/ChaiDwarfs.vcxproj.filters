@@ -110,5 +110,8 @@
     <ClCompile Include="Components.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="TerrainObjectSystem.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
