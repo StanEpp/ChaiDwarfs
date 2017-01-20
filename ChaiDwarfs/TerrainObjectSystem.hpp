@@ -89,6 +89,9 @@ namespace CDwarfs {
       pos->row = row; 
       pos->col = col;
       m_objects.push_back(ID);
+      m_entManager->listenToEntityDestruction(ID, [this](EntityID::UUID killedID) {
+        this->erase(killedID);
+      });
       return ID;
     }
 

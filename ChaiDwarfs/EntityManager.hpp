@@ -164,6 +164,23 @@ namespace CDwarfs {
         delete comp.second;
       }
       m_objects.erase(it);
+      
+      auto cbIt = m_destroyCB.find(ID);
+      if (cbIt != m_destroyCB.end()) {
+        for (auto& cb : cbIt->second) {
+          cb(ID);
+        }
+      }
+    }
+
+    void listenToEntityDestruction(EntityID::UUID eID, std::function<void(EntityID::UUID)> cb) {
+      auto it = m_destroyCB.find(eID);
+      if (it != m_destroyCB.end()) {
+        it->second.push_back(cb);
+      }
+      else {
+        m_destroyCB[eID].push_back(cb);
+      }
     }
 
     const chaiscript::ModulePtr& getChaiModuleForEntityManager() {
@@ -192,6 +209,8 @@ namespace CDwarfs {
     chaiscript::ModulePtr  m_chaiModule;
     // TODO: Think whether weak_ptr for BaseComponent makes sense.
     std::unordered_map<EntityID::UUID, ECSFactory::ComponentList>  m_objects;
+
+    std::unordered_map <EntityID::UUID, std::vector<std::function<void(EntityID::UUID)>>> m_destroyCB;
   };
 
 }
