@@ -34,6 +34,12 @@
     <Filter Include="Headerdateien\Systems">
       <UniqueIdentifier>{5a29ed87-17d2-4d88-aff3-a492d3eb9ce6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\Systems\Rendering">
+      <UniqueIdentifier>{47e269df-e2fa-405f-8d25-3bca073d1d2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\GLFW">
+      <UniqueIdentifier>{7eec37d8-d0e0-48a4-85f9-7109702210c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChaiDwarfs.hpp">
@@ -93,6 +99,21 @@
     <ClInclude Include="DwarfRoundActions.hpp">
       <Filter>Headerdateien\CommandSystem</Filter>
     </ClInclude>
+    <ClInclude Include="RenderSystem.hpp">
+      <Filter>Headerdateien\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowGLFW.hpp">
+      <Filter>Headerdateien\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="TileRenderer.hpp">
+      <Filter>Headerdateien\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderBaseModel.hpp">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -111,6 +132,18 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TerrainObjectSystem.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderSystem.cpp">
+      <Filter>Headerdateien\Systems\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="gl3w.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TileRenderer.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

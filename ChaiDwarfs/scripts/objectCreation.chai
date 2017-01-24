@@ -25,5 +25,6 @@ terrainMap.placeObject("Diamond", 1, 0)
 terrainMap.placeObject("Sapphire", 2, 0)
 terrainMap.placeObject("Emerald", 3, 0)
 terrainMap.placeObject("Emerald", 4, 0)
+terrainMap.placeObject("Diamond", 4, 0)
 
 print("Object Creations: Everything went well!")

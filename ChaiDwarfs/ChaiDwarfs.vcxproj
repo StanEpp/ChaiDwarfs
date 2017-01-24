@@ -70,9 +70,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\x64\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -94,6 +96,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>glfw3dll.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -125,6 +128,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>glfw3dll.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -144,17 +148,26 @@
     <ClInclude Include="ObjectComponentRegistrations.hpp" />
     <ClInclude Include="Components.hpp" />
     <ClInclude Include="ECSFactory.hpp" />
+    <ClInclude Include="RenderSystem.hpp" />
+    <ClInclude Include="ShaderBaseModel.hpp" />
+    <ClInclude Include="ShaderManager.hpp" />
     <ClInclude Include="TerrainMap.hpp" />
     <ClInclude Include="TerrainObjectSystem.hpp" />
+    <ClInclude Include="TileRenderer.hpp" />
     <ClInclude Include="Timer.hpp" />
+    <ClInclude Include="WindowGLFW.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Components.cpp" />
     <ClCompile Include="DwarfTerrainInterface.cpp" />
     <ClCompile Include="DwarfTerrainObjectInterface.cpp" />
+    <ClCompile Include="gl3w.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RenderSystem.cpp" />
+    <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="TerrainMap.cpp" />
     <ClCompile Include="TerrainObjectSystem.cpp" />
+    <ClCompile Include="TileRenderer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

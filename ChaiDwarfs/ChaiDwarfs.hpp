@@ -21,6 +21,7 @@
 #ifndef _CHAIDWARFS_HPP_
 #define _CHAIDWARFS_HPP_
 
+#include "RenderSystem.hpp"
 #include "DwarfSystem.hpp"
 #include "TerrainMap.hpp"
 #include "Timer.hpp"
@@ -29,16 +30,18 @@
 #include "EntityManager.hpp"
 #include "CommandSystem.hpp"
 
+
 namespace CDwarfs {
 
   class ChaiDwarfs {
   private:
-    std::shared_ptr<EntityManager> m_entManager;
-    std::shared_ptr<CommandSystem> m_cmdSystem;
+    std::shared_ptr<EntityManager>        m_entManager;
+    std::shared_ptr<CommandSystem>        m_cmdSystem;
+    std::shared_ptr<DwarfSystem>          m_dwarfSys;
+    std::shared_ptr<TerrainMap>           m_terrain;
+    std::shared_ptr<TerrainObjectSystem>  m_terrainObjSys;
+    std::shared_ptr<render::RenderSystem> m_renderer;
 
-    std::shared_ptr<DwarfSystem>   m_dwarfSys;
-    std::shared_ptr<TerrainMap>    m_terrain;
-    std::shared_ptr<TerrainObjectSystem>    m_terrainObjSys;
     bool  m_running;
     
     void killAllDestroyedEntities() {
@@ -55,7 +58,8 @@ namespace CDwarfs {
       m_dwarfSys(std::make_shared<DwarfSystem>(m_entManager, m_cmdSystem)),
       m_running(true),
       m_terrain(std::make_shared<TerrainMap>()),
-      m_terrainObjSys(std::make_shared<TerrainObjectSystem>(m_entManager))
+      m_terrainObjSys(std::make_shared<TerrainObjectSystem>(m_entManager)),
+      m_renderer(std::make_shared<render::RenderSystem>(m_terrainObjSys, m_terrain, m_entManager, m_dwarfSys))
       {}
 
 
@@ -68,6 +72,8 @@ namespace CDwarfs {
       m_terrainObjSys->loadObjects("scripts/objectCreation.chai");
       
       m_cmdSystem->init(m_terrain, m_terrainObjSys);
+
+      m_renderer->init(1024, 768, "ChaiDwarfs");
     }
 
     void run() {
@@ -86,6 +92,8 @@ namespace CDwarfs {
           lastTimePoint = timer.currentTime();
           //counter++;
         }
+
+        m_renderer->render();
         //if (counter == 15) m_running = false;
       }
     
