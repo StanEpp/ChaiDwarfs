@@ -108,11 +108,11 @@
     <ClInclude Include="TileRenderer.hpp">
       <Filter>Headerdateien\Systems\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderManager.hpp">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderBaseModel.hpp">
-      <Filter>Headerdateien</Filter>
+      <Filter>Headerdateien\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManager.hpp">
+      <Filter>Headerdateien\Systems\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
