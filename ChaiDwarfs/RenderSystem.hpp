@@ -21,12 +21,6 @@
 #ifndef _RENDERSYSTEM_HPP_
 #define _RENDERSYSTEM_HPP_
 
-#ifndef _GL3W_
-#define _GL3W_
-#include <GL\gl3w.h>
-#include <GLFW\glfw3.h>
-#endif
-
 #include <memory>
 #include <string>
 
@@ -41,19 +35,27 @@ namespace CDwarfs {
 
     class WindowGLFW;
     class TileRenderer;
+    class ScreenquadRenderer;
     class ShaderManager;
+    class Texture2D;
+    class OrthographicCamera;
+    class GLFWInput;
 
     class RenderSystem {
     public:
       RenderSystem() = delete;
       RenderSystem(const std::shared_ptr<TerrainObjectSystem>&, const std::shared_ptr<TerrainMap>&,
-        const std::shared_ptr<EntityManager>&, const std::shared_ptr<DwarfSystem>&);
+        const std::shared_ptr<EntityManager>&, const std::shared_ptr<DwarfSystem>&, const std::shared_ptr<GLFWInput>&);
       ~RenderSystem();
       
       void init(int wnd_Width, int wnd_Height, const std::string& windowName);
-      void render();
+      void render(double dt);
+
+      std::shared_ptr<WindowGLFW> getWindow();
+      const std::shared_ptr<TileRenderer> getTileRenderer();
       
     private:
+
       std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
       std::shared_ptr<TerrainMap>          m_terrainMap;
       std::shared_ptr<EntityManager>       m_entManager;
@@ -61,11 +63,14 @@ namespace CDwarfs {
 
       std::shared_ptr<ShaderManager>       m_shaderManager;
       std::shared_ptr<TileRenderer>        m_tileRend;
+      std::shared_ptr<ScreenquadRenderer>  m_screenquad;
+
+      std::shared_ptr<Texture2D>           m_outputTexture;
+
+      std::shared_ptr<OrthographicCamera>  m_camera;
 
       std::shared_ptr<WindowGLFW>          m_window;
-
-      GLuint m_vao, m_vbo;
-      GLuint m_screenquadProg;
+      std::shared_ptr<GLFWInput>           m_input;
 
     };
 

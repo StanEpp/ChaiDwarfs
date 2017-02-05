@@ -28,6 +28,10 @@ namespace CDwarfs {
 
   class TerrainMap;
   class TerrainObjectSystem;
+  
+  namespace render {
+    class TileRenderer;
+  }
 
   class CommandSystem {
   public:
@@ -36,7 +40,7 @@ namespace CDwarfs {
 
     ~CommandSystem() {}
 
-    void init(const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) {
+    void init(const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys, const std::shared_ptr<render::TileRenderer>& tileRenderer) {
       addNewComponentSystem<compSys::TouchValue_Sys>();
       addNewComponentSystem<compSys::TouchDestroy_Sys>();
       addNewComponentSystem<compSys::TouchHeal_Sys>();
@@ -44,6 +48,8 @@ namespace CDwarfs {
       addNewComponentSystem<compSys::Damage_Sys>();
       addNewComponentSystem<compSys::Points_Sys>();
       addNewComponentSystem<compSys::Move_Sys>(terrainMap, terrainObjSys);
+      addNewComponentSystem<compSys::ChangeTerrainType_Sys>(terrainMap, terrainObjSys);
+      addNewComponentSystem<compSys::ChangeTileType_Rendering_Sys>(tileRenderer);
     }
 
     void pushCommand(cmd::Command cmd) {

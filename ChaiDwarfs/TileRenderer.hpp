@@ -21,25 +21,64 @@
 #ifndef _TILERENDERER_HPP_
 #define _TILERENDERER_HPP_
 
+#ifndef _GL3W_
+#define _GL3W_
+#include <GL\gl3w.h>
+#include <GLFW\glfw3.h>
+#endif
+
 #include <memory>
+#include <vector>
+#include "TerrainMap.hpp"
+
+#pragma warning(disable : 4201)
+#include <glm\glm.hpp>
+#pragma warning(default : 4201)
 
 namespace CDwarfs {
 
   class TerrainMap;
-
+  
   namespace render {
+
+    class Texture2D;
+    class Texture2DArray;
+    class ShaderManager;
+    class OrthographicCamera;
 
     class TileRenderer {
     public:
       TileRenderer() = delete;
-      TileRenderer(const std::shared_ptr<TerrainMap>& terrainMap);
+      TileRenderer(const std::shared_ptr<ShaderManager>& shaderManager, const std::shared_ptr<TerrainMap>& terrainMap);
       ~TileRenderer();
 
-      void init();
+      void init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera);
       void render();
 
+      void setTileType(int row, int col, TerrainType newType);
+
+      glm::vec2 posToScreenCoord(int row, int col);
+
     private:
-      std::shared_ptr<TerrainMap> m_terrainMap;
+      void initTiles();
+
+      std::shared_ptr<TerrainMap>         m_terrainMap;
+      std::shared_ptr<Texture2DArray>     m_textureAtlas;
+      std::shared_ptr<ShaderManager>      m_shaderManager;
+      std::shared_ptr<OrthographicCamera> m_camera;
+
+      std::vector<std::underlying_type_t<TerrainType>>  m_tiles;
+
+      GLuint  m_gl_fboID;
+      GLuint  m_gl_vboVertexID, m_gl_vboTerrain1ID, m_gl_vboTerrain2ID;
+      GLuint  m_gl_vao1ID, m_gl_vao2ID;
+      GLuint  m_tileRenderingProg;
+      GLsizei m_numVertices;
+
+      GLint m_glsl_projMatLoc;
+
+      float m_quadSize;
+      bool  m_useVAO1;
     };
 
   }

@@ -68,6 +68,11 @@ void TerrainMap::load(const std::string& chaiscriptPath) {
   std::cout << "Finished loading map!\n\n";
 }
 
+void TerrainMap::set(int row, int col, TerrainType newType) {
+  if (row >= rows() || row < 0 || col >= columns() || col < 0) return;
+  m_map[row][col] = newType;
+}
+
 TerrainType TerrainMap::at(int row, int col) {
   if (row >= rows() || row < 0 || col >= columns() || col < 0) return TerrainType::DARK;
   return m_map[row][col];

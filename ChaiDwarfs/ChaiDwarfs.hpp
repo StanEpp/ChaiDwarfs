@@ -29,7 +29,7 @@
 #include "TerrainObjectSystem.hpp"
 #include "EntityManager.hpp"
 #include "CommandSystem.hpp"
-
+#include "GLFWInput.hpp"
 
 namespace CDwarfs {
 
@@ -40,6 +40,8 @@ namespace CDwarfs {
     std::shared_ptr<DwarfSystem>          m_dwarfSys;
     std::shared_ptr<TerrainMap>           m_terrain;
     std::shared_ptr<TerrainObjectSystem>  m_terrainObjSys;
+    
+    std::shared_ptr<render::GLFWInput>    m_input;
     std::shared_ptr<render::RenderSystem> m_renderer;
 
     bool  m_running;
@@ -59,7 +61,8 @@ namespace CDwarfs {
       m_running(true),
       m_terrain(std::make_shared<TerrainMap>()),
       m_terrainObjSys(std::make_shared<TerrainObjectSystem>(m_entManager)),
-      m_renderer(std::make_shared<render::RenderSystem>(m_terrainObjSys, m_terrain, m_entManager, m_dwarfSys))
+      m_input(std::make_shared<render::GLFWInput>()),
+      m_renderer(std::make_shared<render::RenderSystem>(m_terrainObjSys, m_terrain, m_entManager, m_dwarfSys, m_input))
       {}
 
 
@@ -71,9 +74,11 @@ namespace CDwarfs {
       
       m_terrainObjSys->loadObjects("scripts/objectCreation.chai");
       
-      m_cmdSystem->init(m_terrain, m_terrainObjSys);
+      m_renderer->init(1280, 720, "ChaiDwarfs");
 
-      m_renderer->init(1024, 768, "ChaiDwarfs");
+      m_cmdSystem->init(m_terrain, m_terrainObjSys, m_renderer->getTileRenderer());
+
+      m_input->bindInputToWindow(*m_renderer->getWindow());
     }
 
     void run() {
@@ -84,6 +89,8 @@ namespace CDwarfs {
 
       //int counter = 0;
       while (m_running) {
+        m_input->updateInput();
+
         if (timer.haveMilliSecondsPassed(500, lastTimePoint)) {
           m_dwarfSys->updateDwarfs();
           m_terrainObjSys->objectCollisions(m_cmdSystem);
@@ -92,8 +99,8 @@ namespace CDwarfs {
           lastTimePoint = timer.currentTime();
           //counter++;
         }
-
-        m_renderer->render();
+        
+        m_renderer->render(1.0);
         //if (counter == 15) m_running = false;
       }
     

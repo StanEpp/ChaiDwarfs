@@ -22,18 +22,26 @@
 #include <iostream>
 #include "ShaderManager.hpp"
 #include "TileRenderer.hpp"
+#include "ScreenquadRenderer.hpp"
+#include "Texture.hpp"
 #include "WindowGLFW.hpp"
-
+#include "GLFWInput.hpp"
+#include "OrthographicCamera.hpp"
 
 using namespace CDwarfs;
 using namespace CDwarfs::render;
 
 RenderSystem::RenderSystem(const std::shared_ptr<TerrainObjectSystem>& terrainObjSys, const std::shared_ptr<TerrainMap>& terrainMap,
-  const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<DwarfSystem>& dwarfSys) :
+  const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<DwarfSystem>& dwarfSys, const std::shared_ptr<GLFWInput>& input) :
   m_terrainObjSys(terrainObjSys), m_terrainMap(terrainMap), m_entManager(entManager), m_dwarfSys(dwarfSys),
-  m_shaderManager(std::make_shared<ShaderManager>()), m_tileRend(nullptr), m_window(nullptr) {}
+  m_shaderManager(std::make_shared<ShaderManager>()), m_tileRend(std::make_shared<TileRenderer>(m_shaderManager, terrainMap)), m_screenquad(std::make_shared<ScreenquadRenderer>(m_shaderManager)),
+  m_camera(std::make_shared<OrthographicCamera>()), m_window(nullptr), m_input(input) {}
 
 RenderSystem::~RenderSystem() {}
+
+std::shared_ptr<WindowGLFW> RenderSystem::getWindow() {
+  return m_window;
+}
 
 void RenderSystem::init(int wnd_Width, int wnd_Height, const std::string& windowName) {
 
@@ -46,69 +54,24 @@ void RenderSystem::init(int wnd_Width, int wnd_Height, const std::string& window
   std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << '\n';
   std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << '\n';
 
+  m_camera->init(wnd_Width, wnd_Height, m_input);
 
-  GLfloat screenquadPos[] = { -1.f, -1.f, 0.f, 0.f,   1.f, -1.f, 1.f, 0.f,   -1.f, 1.f, 0.f, 1.f,
-                              -1.f,  1.f, 0.f, 1.f,   1.f, -1.f, 1.f, 0.f,    1.f, 1.f, 1.f, 1.f };
+  m_outputTexture = std::make_shared<Texture2D>(wnd_Width, wnd_Height);
 
-
-  glGenVertexArrays(1, &m_vao);
-  glBindVertexArray(m_vao);
-  
-  glGenBuffers(1, &m_vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(screenquadPos), screenquadPos, GL_STATIC_DRAW);
-
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*4, 0);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*4, (void*)(sizeof(GLfloat)*2));
-  glBindVertexArray(0);
-
-  m_shaderManager->compileShader(R"_(
-    #version 430
-    layout(location=0) in vec2 pos;
-    layout(location=1) in vec2 uv;
-
-    out vec2 ex_uv;
-
-    void main(void){
-      gl_Position = vec4(pos, 0, 1);
-      ex_uv = uv;
-    }
-    )_", "vertexShader", GL_VERTEX_SHADER);
-
-  m_shaderManager->compileShader(R"_(
-    #version 430
-    smooth in vec2 ex_uv;
-    out vec4 color;
-
-    uniform sampler2D tex;
-
-    void main(void){
-      color = texture2D(tex, ex_uv);
-    }
-    )_", "fragmentShader", GL_FRAGMENT_SHADER);
-
-  m_screenquadProg = m_shaderManager->createProgram("screenquadProg");
-  m_shaderManager->attachShader("vertexShader", "screenquadProg");
-  m_shaderManager->attachShader("fragmentShader", "screenquadProg");
-  m_shaderManager->linkProgram("screenquadProg");
-  m_shaderManager->deleteShader("vertexShader");
-  m_shaderManager->deleteShader("fragmentShader");
-
+  m_screenquad->init(wnd_Width, wnd_Height, m_outputTexture);
+  m_tileRend->init(m_outputTexture, m_camera);
 }
 
-void RenderSystem::render() {
-  glClearColor(0.f, 0.f, 0.f, 0.f);
-  glClear(GL_COLOR_BUFFER_BIT);
+const std::shared_ptr<TileRenderer> RenderSystem::getTileRenderer() {
+  return m_tileRend;
+}
 
-  glBindVertexArray(m_vao);
+void RenderSystem::render(double dt) {
+  m_camera->update(1.0);
 
-  glDrawArrays(GL_TRIANGLES, 0, 6);
+  m_tileRend->render();
 
-  m_shaderManager->useProgram(m_screenquadProg);
-
-  glBindVertexArray(0);
+  m_screenquad->render();
 
   m_window->swapBuffers();
 }

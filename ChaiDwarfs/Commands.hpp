@@ -65,8 +65,18 @@ namespace CDwarfs {
       EntityID::UUID dest;
     };
 
+    struct Cmd_ChangeTerrainType {
+      int row, col;
+      TerrainType newType;
+    };
+
+    struct Cmd_ChangeTileType {
+      int row, col;
+      TerrainType newType;
+    };
+
     using Command = std::variant<
-      Cmd_Touch, Cmd_Heal, Cmd_Damage, Cmd_Points,
+      Cmd_Touch, Cmd_Heal, Cmd_Damage, Cmd_Points, Cmd_ChangeTerrainType, Cmd_ChangeTileType,
       Cmd_MoveUp, Cmd_MoveDown, Cmd_MoveLeft, Cmd_MoveRight, Cmd_MoveNone>;
   }
 }

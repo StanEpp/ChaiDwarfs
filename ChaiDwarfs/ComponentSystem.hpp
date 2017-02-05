@@ -27,6 +27,7 @@
 #include "Components.hpp"
 #include "TerrainMap.hpp"
 #include "TerrainObjectSystem.hpp"
+#include "TileRenderer.hpp"
 
 namespace CDwarfs {
   namespace compSys {
@@ -50,6 +51,8 @@ namespace CDwarfs {
       virtual ReturnedCommands operator()(const cmd::Cmd_MoveLeft&) { return ReturnedCommands(); }
       virtual ReturnedCommands operator()(const cmd::Cmd_MoveRight&) { return ReturnedCommands(); }
       virtual ReturnedCommands operator()(const cmd::Cmd_MoveNone&) { return ReturnedCommands(); }
+      virtual ReturnedCommands operator()(const cmd::Cmd_ChangeTerrainType&) { return ReturnedCommands(); }
+      virtual ReturnedCommands operator()(const cmd::Cmd_ChangeTileType&) { return ReturnedCommands(); }
 
     protected:
       std::shared_ptr<EntityManager> m_entManager;
@@ -59,7 +62,7 @@ namespace CDwarfs {
     public:
       TouchValue_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) override {
         //std::cout << "TouchValue_Sys\n";
         ReturnedCommands ret;
         auto touchValue = m_entManager->getComponent<comp::TouchValue>(cmd.touched);
@@ -81,7 +84,7 @@ namespace CDwarfs {
     public:
       TouchHeal_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) override {
         //std::cout << "TouchHeal_Sys\n";
         ReturnedCommands ret;
         auto touchHeal = m_entManager->getComponent<comp::TouchHeal>(cmd.touched);
@@ -103,7 +106,7 @@ namespace CDwarfs {
     public:
       TouchDamage_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) override {
         //std::cout << "TouchDamage_Sys\n";
         ReturnedCommands ret;
         auto touchDamage = m_entManager->getComponent<comp::TouchDamage>(cmd.touched);
@@ -125,7 +128,7 @@ namespace CDwarfs {
     public:
       TouchDestroy_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) override {
         //std::cout << "TouchDestroy_Sys\n";
         if (m_entManager->getComponent<comp::TouchDestroy>(cmd.touched)) {
           m_entManager->addComponent<comp::FlaggedDestroyed>(cmd.touched);
@@ -139,7 +142,7 @@ namespace CDwarfs {
     public:
       Damage_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_Damage& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_Damage& cmd) override {
         //std::cout << "Damage_Sys\n";
         auto hp = m_entManager->getComponent<comp::HP>(cmd.dest);
         if (hp) { hp->hp -= cmd.damage; /*std::cout << " exec\n";*/ }
@@ -151,7 +154,7 @@ namespace CDwarfs {
     public:
       Points_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_Points& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_Points& cmd) override {
         //std::cout << "Points_Sys\n";
         auto points = m_entManager->getComponent<comp::Points>(cmd.dest);
         if (points) { points->points += cmd.points; /*std::cout << " exec\n";*/ }
@@ -164,23 +167,23 @@ namespace CDwarfs {
       Move_Sys(const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) :
         BaseVisitor(entManager), m_terrainMap(terrainMap), m_terrainObjSys(terrainObjSys) {}
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_MoveUp& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_MoveUp& cmd) override {
         return executeMove(-1, 0, cmd.dest);
       }
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_MoveDown& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_MoveDown& cmd) override {
         return executeMove(1, 0, cmd.dest);
       }
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_MoveLeft& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_MoveLeft& cmd) override {
         return executeMove(0, -1, cmd.dest);
       }
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_MoveRight& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_MoveRight& cmd) override {
         return executeMove(0, 1, cmd.dest);
       }
 
-      virtual ReturnedCommands operator()(const cmd::Cmd_MoveNone& cmd) {
+      virtual ReturnedCommands operator()(const cmd::Cmd_MoveNone& cmd) override {
         return executeMove(0, 0, cmd.dest);
       }
 
@@ -191,6 +194,14 @@ namespace CDwarfs {
         auto pos = m_entManager->getComponent<comp::Position>(entID);
         if (pos) {
           if (m_terrainMap->at(pos->row + rowDiff, pos->col + colDiff) == TerrainType::PASSABLE) {
+            /// TODO: Remove!
+            cmd::Cmd_ChangeTerrainType changeCmd;
+            changeCmd.row = pos->row;
+            changeCmd.col = pos->col+1;
+            changeCmd.newType = TerrainType::STONE;
+            ret.push_back(changeCmd);
+            ///
+
             //std::cout << " exec\n";
             auto objects = m_terrainObjSys->at(pos->row + rowDiff, pos->col + colDiff);
             for (auto& ent : objects) {
@@ -216,6 +227,43 @@ namespace CDwarfs {
       std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
     };
 
+    class ChangeTerrainType_Sys : public BaseVisitor{
+    public:
+      ChangeTerrainType_Sys(const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) :
+        BaseVisitor(entManager), m_terrainMap(terrainMap), m_terrainObjSys(terrainObjSys) {}
+
+      virtual ReturnedCommands operator()(const cmd::Cmd_ChangeTerrainType& cmd) override { 
+        ReturnedCommands ret;
+        //TODO: Implement further checking if change is valid!
+        m_terrainMap->set(cmd.row, cmd.col, cmd.newType);
+        cmd::Cmd_ChangeTileType newCmd;
+        newCmd.row = cmd.row;
+        newCmd.col = cmd.col;
+        newCmd.newType = cmd.newType;
+        ret.push_back(newCmd);
+
+        return ret;
+      }
+
+    private:
+      std::shared_ptr<TerrainMap> m_terrainMap;
+      std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
+    };
+
+    class ChangeTileType_Rendering_Sys : public BaseVisitor {
+    public:
+
+      ChangeTileType_Rendering_Sys(const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<render::TileRenderer>& tileRenderer) :
+        BaseVisitor(entManager), m_tileRenderer(tileRenderer) {}
+
+      virtual ReturnedCommands operator()(const cmd::Cmd_ChangeTileType& cmd) override { 
+        m_tileRenderer->setTileType(cmd.row, cmd.col, cmd.newType);
+        return ReturnedCommands(); 
+      }
+
+    private:
+      std::shared_ptr<render::TileRenderer> m_tileRenderer;
+    };
   }
 }
 

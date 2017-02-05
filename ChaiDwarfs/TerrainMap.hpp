@@ -28,8 +28,8 @@ namespace CDwarfs{
   
 enum class TerrainType : unsigned int {
   SOIL = 0,
-  STONE,
   PASSABLE,
+  STONE,
   DARK,      // Everything outside the terrain bounds.
   NO_MAP,    // When there's no map at all and you try to access one.
 };
@@ -43,6 +43,8 @@ public:
   void load(const std::string& chaiscriptPath);
 
   TerrainType at(int row, int col);
+
+  void set(int row, int col, TerrainType newType);
 
   inline int rows() {
     return static_cast<int>(m_map.size());
