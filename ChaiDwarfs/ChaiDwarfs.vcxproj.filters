@@ -135,6 +135,9 @@
     <ClInclude Include="Texture2DArray.hpp">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="SpriteRenderer.hpp">
+      <Filter>Headerdateien\Systems\Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -183,6 +186,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="Texture2DArray.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteRenderer.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

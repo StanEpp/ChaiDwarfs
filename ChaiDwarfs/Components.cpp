@@ -60,5 +60,8 @@ namespace CDwarfs {
     ScriptAI::ScriptAI() : AIComponent(std::make_unique<ChaiscriptAI>("")), filePath("") {}
     ScriptAI::ScriptAI(const std::string& filePath) : AIComponent(std::make_unique<ChaiscriptAI>(filePath)), filePath(filePath) {}
 
+    Sprites::Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths) : sprites(filePaths) {}
+
+    AnimatedSprites::AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths) : sprites(filePaths) {}
   }
 }

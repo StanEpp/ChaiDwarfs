@@ -24,6 +24,7 @@
 #ifndef _OBJECTCOMPONENTREGISTRATIONS_HPP_
 #define _OBJECTCOMPONENTREGISTRATIONS_HPP_
 
+#include <string>
 #include <chaiscript\chaiscript.hpp>
 
 #include "Components.hpp"
@@ -99,6 +100,31 @@ namespace CDwarfs {
     template<>
     void inline registerComponent<ScriptAI>(chaiscript::ModulePtr&) {}
 
+    template<>
+    void inline registerComponent<Sprites>(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::user_type<Sprites>(), "Sprites");
+      module->add(chaiscript::fun(&Sprites::sprites), "sprites");
+    }
+
+    template<>
+    void inline registerComponent<AnimatedSprites>(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::user_type<AnimatedSprites>(), "AnimatedSprites");
+      module->add(chaiscript::fun(&AnimatedSprites::sprites), "sprites");
+    }
+
+    void inline registerConversions(chaiscript::ModulePtr& module) {
+      module->add(chaiscript::type_conversion<std::vector<chaiscript::Boxed_Value>, std::vector<std::pair<std::string, std::string>>>(
+        [](const std::vector<chaiscript::Boxed_Value>& vs) {
+        std::vector<std::pair<std::string, std::string>> retVec;
+        std::transform(vs.begin(), vs.end(), std::back_inserter(retVec), [](const chaiscript::Boxed_Value &bv) {
+          auto boxedPair = chaiscript::boxed_cast<std::pair<chaiscript::Boxed_Value, chaiscript::Boxed_Value>>(bv);
+          auto firstStr = chaiscript::boxed_cast<std::string>(boxedPair.first);
+          auto secondStr = chaiscript::boxed_cast<std::string>(boxedPair.second);
+          return std::make_pair(std::move(firstStr), std::move(secondStr));
+        });
+        return retVec;
+      }));
+    }
 
   }
 }

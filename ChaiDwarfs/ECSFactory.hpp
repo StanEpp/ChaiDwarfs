@@ -107,6 +107,7 @@ namespace CDwarfs {
 
     ECSFactory() : m_chaiDefModule(std::make_shared<chaiscript::Module>()), m_chaiCreateModule(std::make_shared<chaiscript::Module>()) {
       m_chaiDefModule->add(chaiscript::fun(&ECSFactory::defineObject), "defineObject");
+      objDef::registerConversions(m_chaiCreateModule);
       //m_chaiCreateModule->add(chaiscript::fun(&ECSFactory::createObject), "createObject");
     }
     // Rule of five!

@@ -172,6 +172,7 @@ glm::vec2 TileRenderer::posToScreenCoord(int row, int col) {
 }
 
 void TileRenderer::render() {
+  // TODO: Wrong! Frame is always one tile update behind!
   if (m_useVAO1) {
     glBindBuffer(GL_ARRAY_BUFFER, m_gl_vboTerrain2ID);
     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(std::underlying_type_t<TerrainType>) * m_tiles.size(), m_tiles.data());

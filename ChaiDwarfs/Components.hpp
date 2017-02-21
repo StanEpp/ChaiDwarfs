@@ -23,6 +23,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "BaseComponent.hpp"
 #include "DwarfAI.hpp"
@@ -105,6 +106,21 @@ namespace CDwarfs {
       ScriptAI(const std::string& filePath);
     };
 
+    struct Sprites : public Component<Sprites> {
+      std::vector<std::pair<std::string, std::string>> sprites;
+      Sprites() = default;
+      Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths);
+    };
+
+    struct AnimatedSprites : public Component<AnimatedSprites> {
+      std::vector<std::pair<std::string, std::string>> sprites;
+      // These data get filled by the SpriteRenderer upon loading the images
+      // playing, duration, currTime, numKeyframes
+      std::vector<std::tuple<bool, float, float, int>> animationState;
+
+      AnimatedSprites() = default;
+      AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths);
+    };
 
   }
 }

@@ -154,6 +154,7 @@
     <ClInclude Include="ScreenquadRenderer.hpp" />
     <ClInclude Include="ShaderBaseModel.hpp" />
     <ClInclude Include="ShaderManager.hpp" />
+    <ClInclude Include="SpriteRenderer.hpp" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TerrainMap.hpp" />
     <ClInclude Include="TerrainObjectSystem.hpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="ScreenquadRenderer.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="TerrainMap.cpp" />
     <ClCompile Include="TerrainObjectSystem.cpp" />
     <ClCompile Include="Texture.cpp" />

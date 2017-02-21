@@ -52,6 +52,8 @@ namespace CDwarfs {
       registerComponent<comp::View, int>("View");
       registerComponent<comp::ScriptAI, const std::string&>("ScriptAI");
       registerComponent<comp::TouchDestroy>("DestroyOnTouch");
+      registerComponent<comp::Sprites, const std::vector<std::pair<std::string, std::string>>&>("Sprites");
+      registerComponent<comp::AnimatedSprites, const std::vector<std::pair<std::string, std::string>>&>("AnimatedSprites");
     }
 
     EntityID::UUID createObject(const std::string& name) {
@@ -73,6 +75,8 @@ namespace CDwarfs {
       chai.add(chaiscript::var(std::ref(m_factory)), "factory");
       chai.add(m_factory.getChaiDefModule());
       chai.add(m_factory.getChaiCreateModule());
+      chai.add(chaiscript::bootstrap::standard_library::vector_type<std::vector<std::pair<std::string, std::string>>>("Dat"));
+      chai.add(chaiscript::bootstrap::standard_library::pair_type<std::vector<std::pair<std::string, std::string>>::value_type>("DatEl"));
       chai.eval_file(path);
     }
 
