@@ -1,8 +1,12 @@
 // This file is distributed under the BSD License.
 // See "license.txt" for details.
 // Copyright 2009-2012, Jonathan Turner (jonathan@emptycrate.com)
-// Copyright 2009-2016, Jason Turner (jason@emptycrate.com)
+// Copyright 2009-2017, Jason Turner (jason@emptycrate.com)
 // http://www.chaiscript.com
+
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 
 #ifndef CHAISCRIPT_HANDLE_RETURN_HPP_
 #define CHAISCRIPT_HANDLE_RETURN_HPP_
@@ -27,9 +31,7 @@ namespace chaiscript
 
     namespace detail
     {
-      /**
-       * Used internally for handling a return value from a Proxy_Function call
-       */
+      /// Used internally for handling a return value from a Proxy_Function call
       template<typename Ret>
         struct Handle_Return
         {
@@ -154,6 +156,18 @@ namespace chaiscript
         struct Handle_Return<const std::shared_ptr<Ret> &> : Handle_Return<std::shared_ptr<Ret> &>
         {
         };
+
+
+      template<typename Ret>
+        struct Handle_Return<std::unique_ptr<Ret>> : Handle_Return<std::unique_ptr<Ret> &>
+        {
+          static Boxed_Value handle(std::unique_ptr<Ret> &&r)
+          {
+            return Boxed_Value(std::move(r), true);
+          }
+        };
+
+
 
       template<typename Ret>
         struct Handle_Return<const Ret &>

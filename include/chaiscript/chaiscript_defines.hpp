@@ -1,7 +1,7 @@
 // This file is distributed under the BSD License.
 // See "license.txt" for details.
 // Copyright 2009-2012, Jonathan Turner (jonathan@emptycrate.com)
-// Copyright 2009-2016, Jason Turner (jason@emptycrate.com)
+// Copyright 2009-2017, Jason Turner (jason@emptycrate.com)
 // http://www.chaiscript.com
 
 #ifndef CHAISCRIPT_DEFINES_HPP_
@@ -9,7 +9,8 @@
 
 #ifdef _MSC_VER
 #define CHAISCRIPT_STRINGIZE(x) "" #x
-#define CHAISCRIPT_COMPILER_VERSION CHAISCRIPT_STRINGIZE(_MSC_FULL_VER)
+#define CHAISCRIPT_STRINGIZE_EXPANDED(x) CHAISCRIPT_STRINGIZE(x)
+#define CHAISCRIPT_COMPILER_VERSION CHAISCRIPT_STRINGIZE_EXPANDED(_MSC_FULL_VER)
 #define CHAISCRIPT_MSVC _MSC_VER
 #define CHAISCRIPT_HAS_DECLSPEC
 
@@ -47,10 +48,6 @@ static_assert(_MSC_FULL_VER >= 190024210, "Visual C++ 2015 Update 3 or later req
 #endif
 #endif
 
-#if defined(CHAISCRIPT_MSVC) ||  (defined(__GNUC__) && __GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8) || (defined(__llvm__) && !defined(CHAISCRIPT_LIBCPP))
-/// \todo Make this support other compilers when possible
-#define CHAISCRIPT_HAS_THREAD_LOCAL
-#endif
 
 #if defined(__llvm__)
 #define CHAISCRIPT_CLANG

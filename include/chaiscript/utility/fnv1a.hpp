@@ -1,7 +1,7 @@
 // This file is distributed under the BSD License.
 // See "license.txt" for details.
 // Copyright 2009-2012, Jonathan Turner (jonathan@emptycrate.com)
-// Copyright 2009-2016, Jason Turner (jason@emptycrate.com)
+// Copyright 2009-2017, Jason Turner (jason@emptycrate.com)
 // http://www.chaiscript.com
 
 #ifndef CHAISCRIPT_UTILITY_FNV1A_HPP_
@@ -21,6 +21,11 @@ namespace chaiscript
 
 
     static constexpr std::uint32_t fnv1a_32(const char *s, std::uint32_t h = 0x811c9dc5) {
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
+
 #ifdef CHAISCRIPT_MSVC
 #pragma warning(push)
 #pragma warning(disable : 4307)
@@ -29,6 +34,11 @@ namespace chaiscript
 #ifdef CHAISCRIPT_MSVC
 #pragma warning(pop)
 #endif
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
+
     }
 
 

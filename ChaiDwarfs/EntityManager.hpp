@@ -75,8 +75,6 @@ namespace CDwarfs {
       chai.add(chaiscript::var(std::ref(m_factory)), "factory");
       chai.add(m_factory.getChaiDefModule());
       chai.add(m_factory.getChaiCreateModule());
-      chai.add(chaiscript::bootstrap::standard_library::vector_type<std::vector<std::pair<std::string, std::string>>>("Dat"));
-      chai.add(chaiscript::bootstrap::standard_library::pair_type<std::vector<std::pair<std::string, std::string>>::value_type>("DatEl"));
       chai.eval_file(path);
     }
 
