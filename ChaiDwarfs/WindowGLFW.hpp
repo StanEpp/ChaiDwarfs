@@ -10,18 +10,21 @@
 #include <stdexcept>
 
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace render {
 
     class WindowGLFW {
     private:
-      int _width, _height;
-      std::string _windowName;
-      bool  _fullscreen, _vSync, _initialized;
-      GLFWwindow * _window;
+      int _width{ 1024 };
+      int _height{ 768 };
+      std::string _windowName{ "GLFW Window" };
+      bool _fullscreen{ false };
+      bool _vSync{ false };
+      bool _initialized{ false };
+      GLFWwindow* _window{ nullptr };
 
     public:
-      WindowGLFW() : _width(1024), _height(768), _windowName("GLFW Window"), _fullscreen(false), _vSync(false), _initialized(false), _window(nullptr) {}
+      WindowGLFW() {}
       WindowGLFW(int width, int height, const std::string& windowName, bool fullscreen, bool vSync = false) :
         _width(width), _height(height), _windowName(windowName), _fullscreen(fullscreen), _vSync(vSync), _initialized(false), _window(nullptr) {}
       WindowGLFW(WindowGLFW&) = delete;

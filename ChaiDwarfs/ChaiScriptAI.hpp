@@ -37,7 +37,7 @@
 #include "EntityManager.hpp"
 
 
-namespace CDwarfs {
+namespace cdwarfs {
 
 class ChaiscriptAI final : public DwarfAI {
 private:

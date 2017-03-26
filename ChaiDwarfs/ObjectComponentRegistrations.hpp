@@ -29,10 +29,10 @@
 
 #include "Components.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace objDef {
 
-    using namespace CDwarfs::comp;
+    using namespace cdwarfs::comp;
 
     template<class TObjComp>
     void inline registerComponent(chaiscript::ModulePtr& module);
@@ -110,6 +110,7 @@ namespace CDwarfs {
     void inline registerComponent<AnimatedSprites>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<AnimatedSprites>(), "AnimatedSprites");
       module->add(chaiscript::fun(&AnimatedSprites::sprites), "sprites");
+      module->add(chaiscript::fun(&AnimatedSprites::duration), "duration");
     }
 
     void inline registerConversions(chaiscript::ModulePtr& module) {

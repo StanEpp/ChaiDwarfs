@@ -22,7 +22,7 @@
 #include <chaiscript\chaiscript.hpp>
 #include <chaiscript\utility\utility.hpp>
 
-using namespace CDwarfs;
+using namespace cdwarfs;
 
 void TerrainMap::load(const std::string& chaiscriptPath) {
   

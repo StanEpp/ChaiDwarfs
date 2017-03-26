@@ -27,15 +27,17 @@
 #include <GLFW\glfw3.h>
 #endif
 
+#include <optional>
+#include <string>
 #include "TextureManager.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace render {
     class Texture2D {
     public:
       Texture2D();
 
-      Texture2D(const std::string& filename,
+      Texture2D(const std::string& filepath,
         GLint internal_format = GL_RGBA,    //format to store the image in
         GLenum image_format = GL_RGBA,      //format the image is in
         GLint level = 0,                    //mipmapping level
@@ -47,19 +49,40 @@ namespace CDwarfs {
         GLint level = 0,                     //mipmapping level
         GLint border = 0);
 
+      Texture2D(const Texture2D&);
+      Texture2D(Texture2D&&);
+      Texture2D& operator=(const Texture2D&);
+      Texture2D& operator=(Texture2D&&);
+
       ~Texture2D();
 
-      inline GLuint texID() { return m_gl_texID; }
-      inline int width() { return m_width; }
-      inline int height() { return m_height; }
-      inline int channels() { return m_numChannels; }
+      inline GLuint texID() const { return m_gl_texID; }
+      inline int width() const { return m_width; }
+      inline int height() const { return m_height; }
+      inline int channels() const { return m_numChannels; }
+      inline GLint internalFormat() const { return m_internal_format; };
+      inline GLint level() const { return m_level; };
+      inline GLint border() const { return m_border; };
+      inline auto filename() const { return m_filepath; };
+      inline GLenum imageFormat() const { return m_image_format; };
 
     private:
       void init();
 
+      void makeDeepCopy(const Texture2D& tex);
+      void makeMove(Texture2D&& tex);
+
       static TextureManager& m_texManager;
-      GLuint m_gl_texID;
-      int m_width, m_height, m_numChannels;
+
+      std::optional<std::string> m_filepath{};
+      int m_width{ 0 };
+      int m_height{ 0 };
+      int m_numChannels{ 0 };
+      GLuint m_gl_texID{ 0 };
+      GLint m_internal_format{ GL_RGBA };
+      GLenum m_image_format{ GL_RGBA };
+      GLint m_level{ 0 };
+      GLint m_border{ 0 };
     };
   }
 }

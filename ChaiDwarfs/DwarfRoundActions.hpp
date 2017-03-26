@@ -20,7 +20,7 @@
 #ifndef _DWARFROUNDACTIONS_HPP_
 #define _DWARFROUNDACTIONS_HPP_
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class DwarfRoundActions {
   public:
@@ -28,7 +28,7 @@ namespace CDwarfs {
       LEFT, RIGHT, UP, DOWN, NONE
     };
 
-    DwarfRoundActions() : movement(MoveDirection::NONE) {}
+    DwarfRoundActions() {}
 
     void moveUp()    { movement = MoveDirection::UP; }
     void moveDown()  { movement = MoveDirection::DOWN; }
@@ -40,7 +40,7 @@ namespace CDwarfs {
       movement = MoveDirection::NONE;
     }
 
-    MoveDirection movement;
+    MoveDirection movement{ MoveDirection::NONE };
 
   };
 }

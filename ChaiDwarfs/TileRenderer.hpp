@@ -35,7 +35,7 @@
 #include <glm\glm.hpp>
 #pragma warning(default : 4201)
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class TerrainMap;
   
@@ -58,6 +58,7 @@ namespace CDwarfs {
       void setTileType(int row, int col, TerrainType newType);
 
       glm::vec2 posToScreenCoord(int row, int col);
+      float quadSize();
 
     private:
       void initTiles();
@@ -69,16 +70,19 @@ namespace CDwarfs {
 
       std::vector<std::underlying_type_t<TerrainType>>  m_tiles;
 
-      GLuint  m_gl_fboID;
-      GLuint  m_gl_vboVertexID, m_gl_vboTerrain1ID, m_gl_vboTerrain2ID;
-      GLuint  m_gl_vao1ID, m_gl_vao2ID;
-      GLuint  m_tileRenderingProg;
-      GLsizei m_numVertices;
+      GLuint  m_gl_fboID{ 0 };
+      GLuint  m_gl_vboVertexID{ 0 };
+      GLuint  m_gl_vboTerrain1ID{ 0 };
+      GLuint  m_gl_vboTerrain2ID{ 0 };
+      GLuint  m_gl_vao1ID{ 0 };
+      GLuint  m_gl_vao2ID{ 0 };
+      GLuint  m_tileRenderingProg{ 0 };
+      GLsizei m_numVertices{ 0 };
 
-      GLint m_glsl_projMatLoc;
+      GLint m_glsl_projMatLoc{ -1 };
 
-      float m_quadSize;
-      bool  m_useVAO1;
+      float m_quadSize{ 0.1f };
+      bool  m_useVAO1{ true };
     };
 
   }

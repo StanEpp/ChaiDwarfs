@@ -22,7 +22,7 @@
 #include "DwarfTerrainInterface.hpp"
 #include "TerrainMap.hpp"
 
-using namespace CDwarfs;
+using namespace cdwarfs;
 
 DwarfTerrainInterface::DwarfTerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap) :
   m_terrain(terrainMap) {}

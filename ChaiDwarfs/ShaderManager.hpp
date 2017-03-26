@@ -34,7 +34,7 @@
 
 #include "ShaderBaseModel.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace render {
 
 
@@ -53,26 +53,6 @@ namespace CDwarfs {
     *  Note that not all the functionalities of this class are used in this project.
     */
     class ShaderManager {
-    private:
-      ShaderBaseModel _shaderData;
-      std::array<bool, GL_MAX_UNIFORM_BUFFER_BINDINGS> _ubo_points;
-
-      // static ShaderManager* _instance;
-
-      // ShaderManager();
-
-      std::string   getFileContents(const std::string&) const;
-
-      template<typename T, typename... Args>
-      void checkForHomogenousTypes() {
-        static_assert(are_same<T, Args...>::value, "The arguments in the uniform loading method are not of the same type!");
-      }
-
-      template<typename... Args>
-      void uploadUniforms(GLuint uniID, Args... args);
-
-      const std::string errVal(GLenum error);
-
     public:
 
       ShaderManager();
@@ -166,6 +146,27 @@ namespace CDwarfs {
       }
 
       // static  ShaderManager* Inst();
+
+    private:
+      ShaderBaseModel _shaderData;
+      std::array<bool, GL_MAX_UNIFORM_BUFFER_BINDINGS> _ubo_points;
+
+      // static ShaderManager* _instance;
+
+      // ShaderManager();
+
+      std::string   getFileContents(const std::string&) const;
+
+      template<typename T, typename... Args>
+      void checkForHomogenousTypes() {
+        static_assert(are_same<T, Args...>::value, "The arguments in the uniform loading method are not of the same type!");
+      }
+
+      template<typename... Args>
+      void uploadUniforms(GLuint uniID, Args... args);
+
+      const std::string errVal(GLenum error);
+
     };
 
   }

@@ -24,7 +24,7 @@
 #include <string>
 #include <algorithm>
 
-namespace CDwarfs{
+namespace cdwarfs{
   
 enum class TerrainType : unsigned int {
   SOIL = 0,

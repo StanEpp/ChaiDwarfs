@@ -9,7 +9,7 @@
 
 #include <memory>
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace render {
     class ShaderManager;
     class Texture2D;
@@ -26,10 +26,12 @@ namespace CDwarfs {
       std::shared_ptr<Texture2D>     m_displayTexture;
       std::shared_ptr<Texture2D>     m_backgroundTexture;
 
-      GLuint m_vao, m_vbo;
-      GLuint m_screenquadProg;
-      GLint  m_glsl_scaleLoc;
-      float  m_scaleX, m_scaleY;
+      GLuint m_vao{ 0 };
+      GLuint m_vbo{ 0 };
+      GLuint m_screenquadProg{ 0 };
+      GLint  m_glsl_scaleLoc{ -1 };
+      float  m_scaleX{ 1.f };
+      float  m_scaleY{ 1.f };
     };
 
   }

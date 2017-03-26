@@ -23,7 +23,7 @@
 
 #include <cstdint>
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class EntityID {
   public:

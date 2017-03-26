@@ -1,10 +1,35 @@
+/*
+*  Copyright(c) 2016 - 2017 Stanislaw Eppinger
+*  Scripting based game called ChaiDwarfs
+*
+*  This file is part of ChaiDwarfs.
+*
+*  ChaiDwarfs is free software : you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.If not, see <http://www.gnu.org/licenses/>
+*
+*/
+
 #include "ScreenquadRenderer.hpp"
 #include "ShaderManager.hpp"
 #include "Texture.hpp"
 
-using namespace CDwarfs::render;
+using namespace cdwarfs::render;
 
-ScreenquadRenderer::ScreenquadRenderer(const std::shared_ptr<ShaderManager>& shaderManager) : m_shaderManager(shaderManager) {}
+ScreenquadRenderer::ScreenquadRenderer(
+  const std::shared_ptr<ShaderManager>& shaderManager
+  ) : 
+  m_shaderManager(shaderManager)
+  {}
 
 void ScreenquadRenderer::init(int windowWidth, int windowHeight, const std::shared_ptr<Texture2D>& displayTexture) {
 
@@ -70,7 +95,7 @@ void ScreenquadRenderer::init(int windowWidth, int windowHeight, const std::shar
 }
 
 void ScreenquadRenderer::render() {
-  // Enable blending to in order to see the background after rendering the field.
+  // Enable blending in order to see the background after rendering the field.
   glEnable(GL_BLEND);
   glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
   glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
@@ -87,7 +112,6 @@ void ScreenquadRenderer::render() {
   glBindTexture(GL_TEXTURE_2D, m_displayTexture->texID());
   m_shaderManager->loadUniform(m_glsl_scaleLoc, 1.f, 1.f);
   glDrawArrays(GL_TRIANGLES, 0, 6);
-
 
   glBindTexture(GL_TEXTURE_2D, 0);
   m_shaderManager->resetProgram();

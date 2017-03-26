@@ -23,7 +23,7 @@
 #include <memory>
 #include <string>
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class TerrainObjectSystem;
 

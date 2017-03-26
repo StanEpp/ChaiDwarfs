@@ -22,57 +22,58 @@
 
 #include <variant>
 #include "Entity.hpp"
+#include "TerrainMap.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace cmd {
     struct Cmd_Touch {
-      EntityID::UUID  touched;
-      EntityID::UUID  touching;
+      EntityID::UUID  touched{ 0 };
+      EntityID::UUID  touching{ 0 };
     };
 
     struct Cmd_Heal {
-      EntityID::UUID dest;
-      int heal;
+      EntityID::UUID dest{ 0 };
+      int heal{ 0 };
     };
 
     struct Cmd_Damage {
-      EntityID::UUID dest;
-      int damage;
+      EntityID::UUID dest{ 0 };
+      int damage{ 0 };
     };
 
     struct Cmd_Points {
-      EntityID::UUID dest;
-      int points;
+      EntityID::UUID dest{ 0 };
+      int points{ 0 };
     };
 
     struct Cmd_MoveUp {
-      EntityID::UUID dest;
+      EntityID::UUID dest{ 0 };
     };
 
     struct Cmd_MoveDown {
-      EntityID::UUID dest;
+      EntityID::UUID dest{ 0 };
     };
 
     struct Cmd_MoveLeft {
-      EntityID::UUID dest;
+      EntityID::UUID dest{ 0 };
     };
 
     struct Cmd_MoveRight {
-      EntityID::UUID dest;
+      EntityID::UUID dest{ 0 };
     };
 
     struct Cmd_MoveNone {
-      EntityID::UUID dest;
+      EntityID::UUID dest{ 0 };
     };
 
     struct Cmd_ChangeTerrainType {
-      int row, col;
-      TerrainType newType;
+      int row{ 0 }, col{ 0 };
+      TerrainType newType{ TerrainType::SOIL };
     };
 
     struct Cmd_ChangeTileType {
-      int row, col;
-      TerrainType newType;
+      int row{ 0 }, col{ 0 };
+      TerrainType newType{ TerrainType::SOIL };
     };
 
     using Command = std::variant<

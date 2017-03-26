@@ -1,3 +1,25 @@
+
+/*
+*  Copyright(c) 2016 - 2017 Stanislaw Eppinger
+*  Scripting based game called ChaiDwarfs
+*
+*  This file is part of ChaiDwarfs.
+*
+*  ChaiDwarfs is free software : you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.If not, see <http://www.gnu.org/licenses/>
+*
+*/
+
 #include "OrthographicCamera.hpp"
 
 #ifndef _GL3W_
@@ -12,12 +34,9 @@
 #include <glm\gtc\matrix_transform.hpp>
 #pragma warning(default : 4201)
 
-using namespace CDwarfs::render;
+using namespace cdwarfs::render;
 
-OrthographicCamera::OrthographicCamera() : 
-  m_width(-1), m_height(-1), m_aspectratio(-1.f),
-  m_orthoProj(1.f), m_scale{ 1.f, 1.f, 0.f }, m_translate{ 0.f, 0.f, 0.f }, m_MVP(1.f),
-  m_input(nullptr) {}
+OrthographicCamera::OrthographicCamera() {}
 
 void OrthographicCamera::init(int width, int height, const std::shared_ptr<GLFWInput>& input) {
   m_input = input;

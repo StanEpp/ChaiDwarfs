@@ -26,7 +26,7 @@
 
 #include "Entity.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class CommandSystem;
   class EntityManager;

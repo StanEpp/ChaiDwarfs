@@ -24,7 +24,7 @@
 #include "DwarfTerrainObjectInterface.hpp"
 #include "Entity.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class DwarfRoundActions;
   class EntityManager;
@@ -61,7 +61,7 @@ namespace CDwarfs {
     std::unique_ptr<DwarfTerrainInterface>  m_terrain;
     std::unique_ptr<DwarfTerrainObjectInterface>  m_terrainObj;
     std::shared_ptr<EntityManager> m_entManager;
-    EntityID::UUID m_dwarfID;
+    EntityID::UUID m_dwarfID{ 0 };
   };
 
 }

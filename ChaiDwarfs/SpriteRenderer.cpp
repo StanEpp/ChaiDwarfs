@@ -1,15 +1,283 @@
+/*
+*  Copyright(c) 2016 - 2017 Stanislaw Eppinger
+*  Scripting based game called ChaiDwarfs
+*
+*  This file is part of ChaiDwarfs.
+*
+*  ChaiDwarfs is free software : you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.If not, see <http://www.gnu.org/licenses/>
+*
+*/
+
 #include "SpriteRenderer.hpp"
 #include "EntityManager.hpp"
+#include "TileRenderer.hpp"
+#include "ShaderManager.hpp"
+#include "OrthographicCamera.hpp"
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
+#include <filesystem>
 
-using namespace CDwarfs;
-using namespace CDwarfs::render;
 
-SpriteRenderer::SpriteRenderer(std::shared_ptr<EntityManager> entManager) : m_entManager(entManager) {}
+using namespace cdwarfs;
+using namespace cdwarfs::render;
 
-void SpriteRenderer::init() {
-  
+SpriteRenderer::SpriteRenderer(
+  const std::shared_ptr<EntityManager>& entManager,
+  const std::shared_ptr<TileRenderer>& tileRenderer,
+  const std::shared_ptr<ShaderManager>& shaderManager
+  ) : 
+  m_entManager(entManager),
+  m_tileRenderer(tileRenderer),
+  m_shaderManager(shaderManager)
+  {}
+
+void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera) {
+  m_camera = camera;
+
+  auto entities = m_entManager->getAllEntitiesWithComponent<comp::Sprites>();
+
+  // Generate all the Sprite structs for internal use in SpriteRenderer
+  for (const auto& ent : entities) {
+    auto pos = m_entManager->getComponent<comp::Position>(ent);
+    if (!pos) continue; //TODO: Maybe log the missing position for this sprites?
+    auto sprites = m_entManager->getComponent<comp::Sprites>(ent);
+    for (const auto& sprite : sprites->sprites) {
+      if (std::tr2::sys::exists(sprite.second)) { //TODO: Maybe log that file couldn't be found?
+        auto screenPos = m_tileRenderer->posToScreenCoord(pos->row, pos->col);
+        m_sprites[ent][sprite.first] = Sprite{ {}, {}, sprite.second, screenPos.x, screenPos.y};
+      }
+    }
+  }
+
+  entities = m_entManager->getAllEntitiesWithComponent<comp::AnimatedSprites>();
+  // Generate all the AnimatedSprite structs for internal use in SpriteRenderer
+  for (const auto& ent : entities) {
+    auto pos = m_entManager->getComponent<comp::Position>(ent);
+    if (!pos) continue; //TODO: Maybe log the missing position for this sprites?
+    auto sprites = m_entManager->getComponent<comp::AnimatedSprites>(ent);
+    for (const auto& sprite : sprites->sprites) {
+
+      // Check how many keyframes there are
+      auto posIt = std::find(sprite.second.rbegin(), sprite.second.rend(), '.');
+      auto prefix = std::string(sprite.second.begin(), posIt.base() - 1);
+      auto suffix = std::string(posIt.base() - 1, sprite.second.end());
+      unsigned int numKeyframes = 0;
+      for (int i = 0; i < 99; ++i) {
+        auto filePath = prefix;
+        if (i < 10) filePath += "0";
+        filePath += std::to_string(i) + suffix;
+        if (!std::tr2::sys::exists(filePath)) break;
+        numKeyframes++;
+      }
+      if (numKeyframes == 0) continue;
+      // Some Keyframes have been found => Create AnimatedSprite struct
+      auto screenPos = m_tileRenderer->posToScreenCoord(pos->row, pos->col);
+      m_animSprites[ent][sprite.first] = AnimatedSprite{ {}, {}, sprite.second, screenPos.x, screenPos.y, false, 500.0, 0.0, numKeyframes };
+    }
+  }
+
+  // Load the images and create textures for rendering
+  for (auto& spriteList : m_sprites) {
+    for (auto& sprite : spriteList.second) {
+      sprite.second.texture = Texture2D(sprite.second.filePath);
+    }
+  }
+
+  for (auto& spriteList : m_animSprites) {
+    for (auto& sprite : spriteList.second) {
+      std::vector<std::string> filePaths;
+      filePaths.reserve(sprite.second.numKeyFrames);
+      for (size_t i = 0; i < sprite.second.numKeyFrames; ++i) {
+        auto posIt = std::find(sprite.second.filePath.rbegin(), sprite.second.filePath.rend(), '.');
+        auto prefix = std::string(sprite.second.filePath.begin(), posIt.base() - 1);
+        auto suffix = std::string(posIt.base() - 1, sprite.second.filePath.end());
+        auto filePath = prefix;
+        if (i < 10) filePath += '0';
+        filePath += std::to_string(i) + suffix;
+        filePaths.push_back(std::move(filePath));
+      }
+      sprite.second.textureArray = Texture2DArray(filePaths);
+    }
+  }
+
+  /**********
+
+  v3/4(x,y)---v6(x,y)
+  |          |
+  |          |
+  |          |
+  v1(x,y)--- v2/5(x,y)
+  (0,0)
+
+  **********/
+  auto q = m_tileRenderer->quadSize();
+  std::vector<float> quad = {
+    0.f, 0.f, 0.f, 0.f, //v1
+    q, 0.f, 1.f, 0.f,   //v2
+    0.f, q, 0.f, 1.f,   //v3
+    0.f, q, 0.f, 1.f,   //v4
+    q, 0.f, 1.f, 0.f,   //v5
+    q, q, 1.f, 1.f      //v6
+  };
+
+  m_shaderManager->compileShader(R"_(
+    #version 430
+    layout(location=0) in vec2 pos;
+    layout(location=1) in vec2 uv;
+
+    uniform mat4 proj;
+    uniform mat4 vp;
+    out vec2 ex_uv;
+
+    void main(void){
+      gl_Position = proj * vp * vec4(pos, 0, 1);
+      ex_uv = uv;
+    }
+    )_", "vertexShader", GL_VERTEX_SHADER);
+
+  m_shaderManager->compileShader(R"_(
+    #version 430
+    smooth in vec2 ex_uv;
+    out vec4 color;
+
+    uniform sampler2D tex;
+
+    void main(void){
+      color = texture2D(tex, ex_uv);
+    }
+    )_", "fragmentShaderSprite", GL_FRAGMENT_SHADER);
+
+  m_shaderManager->compileShader(R"_(
+    #version 430
+    smooth in vec2 ex_uv;
+    out vec4 color;
+
+    uniform sampler2DArray spriteAtlas;
+    uniform uint keyFrame;
+
+    void main(void){
+      color = texture(spriteAtlas, vec3(ex_uv, keyFrame));
+    }
+    )_", "fragmentShaderAnimatedSprite", GL_FRAGMENT_SHADER);
+
+  m_glsl_spriteProg = m_shaderManager->createProgram("spriteProg");
+  m_shaderManager->attachShader("vertexShader", "spriteProg");
+  m_shaderManager->attachShader("fragmentShaderSprite", "spriteProg");
+  m_shaderManager->linkProgram("spriteProg");
+
+  m_glsl_animSpriteProg = m_shaderManager->createProgram("animSpriteProg");
+  m_shaderManager->attachShader("vertexShader", "animSpriteProg");
+  m_shaderManager->attachShader("fragmentShaderAnimatedSprite", "animSpriteProg");
+  m_shaderManager->linkProgram("animSpriteProg");
+
+  m_shaderManager->deleteShader("vertexShader");
+  m_shaderManager->deleteShader("fragmentShaderSprite");
+  m_shaderManager->deleteShader("fragmentShaderAnimatedSprite");
+
+  // Create Framebuffer Object 
+  glGenFramebuffers(1, &m_gl_fboID);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_gl_fboID);
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, targetTexture->texID(), 0);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  GLenum activeDrawBuffers = GL_COLOR_ATTACHMENT0;
+  glNamedFramebufferDrawBuffers(m_gl_fboID, 1, &activeDrawBuffers);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  glGenBuffers(1, &m_gl_vboVertexID);
+  glBindBuffer(GL_ARRAY_BUFFER, m_gl_vboVertexID);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * quad.size(), quad.data(), GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+  glGenVertexArrays(1, &m_gl_vaoID);
+  glBindVertexArray(m_gl_vaoID);
+  glBindBuffer(GL_ARRAY_BUFFER, m_gl_vboVertexID);
+  glEnableVertexAttribArray(0);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, 0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)(sizeof(float) * 2));
+  glBindVertexArray(0);
+
+  m_glsl_projMatLoc = m_shaderManager->getUniformLocation(m_glsl_spriteProg, "proj");
+  m_glsl_vpMatLoc = m_shaderManager->getUniformLocation(m_glsl_spriteProg, "vp");
+  m_glsl_Anim_projMatLoc = m_shaderManager->getUniformLocation(m_glsl_animSpriteProg, "proj");
+  m_glsl_Anim_vpMatLoc = m_shaderManager->getUniformLocation(m_glsl_animSpriteProg, "vp");
+  m_glsl_Anim_keyFrameLoc = m_shaderManager->getUniformLocation(m_glsl_animSpriteProg, "keyFrame");
+
+}
+
+void SpriteRenderer::spriteUpdate(EntityID::UUID entID, std::string spriteKey, int nextRow, int nextCol) {
+  auto spriteIt = m_sprites.find(entID);
+  if (spriteIt != m_sprites.end()) {
+    auto spriteKeyIt = spriteIt->second.find(spriteKey);
+    if (spriteKeyIt != spriteIt->second.end()) {
+      spriteKeyIt->second.nextRow = nextRow;
+      spriteKeyIt->second.nextCol = nextCol;
+    }
+  }
+
+  auto animSpriteIt = m_animSprites.find(entID);
+  if (animSpriteIt != m_animSprites.end()) {
+    auto animSpriteKeyIt = animSpriteIt->second.find(spriteKey);
+    if (animSpriteKeyIt != animSpriteIt->second.end()) {
+      animSpriteKeyIt->second.nextRow = nextRow;
+      animSpriteKeyIt->second.nextCol = nextCol;
+      animSpriteKeyIt->second.playing = true;
+      animSpriteKeyIt->second.currTime = 0.0;
+    }
+  }
 }
 
 void SpriteRenderer::render(double dt) {
+
+  glBindVertexArray(m_gl_vaoID);
+  glBindFramebuffer(GL_FRAMEBUFFER, m_gl_fboID);
+
+  glEnable(GL_BLEND);
+  glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+  glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+
+  m_shaderManager->useProgram(m_glsl_spriteProg);
+  m_shaderManager->loadMatrix4(m_glsl_projMatLoc, m_camera->mvpPtr());
+
+  for (const auto& spriteList : m_sprites) {
+    for (const auto& sprite : spriteList.second) {
+      auto vpMat = glm::translate(glm::mat4(1.f), glm::vec3(sprite.second.screenX, sprite.second.screenY, 0.f));
+      m_shaderManager->loadMatrix4(m_glsl_vpMatLoc, glm::value_ptr(vpMat));
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, sprite.second.texture.texID());
+      glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+  }
+  
+  m_shaderManager->useProgram(m_glsl_animSpriteProg);
+  m_shaderManager->loadMatrix4(m_glsl_Anim_projMatLoc, m_camera->mvpPtr());
+  for (const auto& spriteList : m_animSprites) {
+    for (const auto& sprite : spriteList.second) {
+      m_shaderManager->loadMatrix4(m_glsl_Anim_vpMatLoc, glm::value_ptr(glm::translate(glm::mat4(1.f), glm::vec3(sprite.second.screenX, sprite.second.screenY, 0.f))));
+      m_shaderManager->loadUniform(m_glsl_Anim_keyFrameLoc, static_cast<unsigned int>(sprite.second.currKeyFrame));
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D_ARRAY, sprite.second.textureArray.texID());
+      glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+  }
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+  m_shaderManager->resetProgram();
+
+  glDisable(GL_BLEND);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glBindVertexArray(0);
 
 }

@@ -20,7 +20,7 @@
 
 #include "shaderManager.hpp"
 
-using namespace CDwarfs::render;
+using namespace cdwarfs::render;
 
 /////// Specialization of the uploadUniforms template method
 template<>

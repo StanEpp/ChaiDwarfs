@@ -21,7 +21,7 @@
 #include "DwarfTerrainObjectInterface.hpp"
 #include "TerrainObjectSystem.hpp"
 
-using namespace CDwarfs;
+using namespace cdwarfs;
 
 DwarfTerrainObjectInterface::DwarfTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) : 
   m_terrainObjSys(terrainObjSys){}

@@ -27,7 +27,7 @@
 #include "Components.hpp"
 #include "DwarfRoundActions.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class DwarfSystem {
   public:

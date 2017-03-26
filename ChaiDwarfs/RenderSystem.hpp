@@ -24,7 +24,7 @@
 #include <memory>
 #include <string>
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class TerrainObjectSystem;
   class TerrainMap;
@@ -40,6 +40,7 @@ namespace CDwarfs {
     class Texture2D;
     class OrthographicCamera;
     class GLFWInput;
+    class SpriteRenderer;
 
     class RenderSystem {
     public:
@@ -53,6 +54,7 @@ namespace CDwarfs {
 
       std::shared_ptr<WindowGLFW> getWindow();
       const std::shared_ptr<TileRenderer> getTileRenderer();
+      const std::shared_ptr<SpriteRenderer> getSpriteRenderer();
       
     private:
 
@@ -64,6 +66,7 @@ namespace CDwarfs {
       std::shared_ptr<ShaderManager>       m_shaderManager;
       std::shared_ptr<TileRenderer>        m_tileRend;
       std::shared_ptr<ScreenquadRenderer>  m_screenquad;
+      std::shared_ptr<SpriteRenderer>      m_spriteRend;
 
       std::shared_ptr<Texture2D>           m_outputTexture;
 

@@ -1,10 +1,31 @@
+/*
+*  Copyright(c) 2016 - 2017 Stanislaw Eppinger
+*  Scripting based game called ChaiDwarfs
+*
+*  This file is part of ChaiDwarfs.
+*
+*  ChaiDwarfs is free software : you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.If not, see <http://www.gnu.org/licenses/>
+*
+*/
+
 #include "TextureManager.hpp"
 #include <iostream>
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-using namespace CDwarfs::render;
+using namespace cdwarfs::render;
 
 GLuint TextureManager::loadTexture2D(const std::string& filename,//where to load the file from
   GLsizei& width,            //contains the width of the image after successful loading
@@ -78,15 +99,13 @@ GLuint TextureManager::loadTexture2DArray(const std::vector<std::string>& filena
   GLenum image_format       //format the image is in
   )
 {
-
   width = height = numChannels =  -1;
   GLsizei tempWidth = width;
   GLsizei tempHeight = height;
   GLsizei tempNumChannels = numChannels;
   std::vector<unsigned char*> loadedImages(filenames.size(), nullptr);
-  bool successfulLoaded = true;
 
-  for (size_t i = 0; i < filenames.size() && successfulLoaded; ++i) {
+  for (size_t i = 0; i < filenames.size(); ++i) {
     auto& filename = filenames[i];
     stbi_set_flip_vertically_on_load(true);
     auto data = stbi_load(filename.c_str(), &width, &height, &numChannels, 0);
@@ -94,10 +113,10 @@ GLuint TextureManager::loadTexture2DArray(const std::vector<std::string>& filena
 
     if (i != 0) {
       if (tempWidth != width || tempHeight != height || tempNumChannels != numChannels || data == nullptr) {
-        successfulLoaded = false;
+        throw std::invalid_argument("ERROR: Image \"" + filename + "\" from texture array is not of same size or depth as the others!");
       }
     } else {
-      if (!data) successfulLoaded = false;
+      if (!data) throw std::runtime_error("ERROR: Could not load \"" + filename + "\" properly!");
       tempWidth = width; 
       tempHeight = height;
       tempNumChannels = numChannels;
@@ -106,21 +125,19 @@ GLuint TextureManager::loadTexture2DArray(const std::vector<std::string>& filena
 
   GLuint retValue = 0;
 
-  if (successfulLoaded) {
-    glGenTextures(1, &retValue);
-    if (retValue != 0) {
-      glBindTexture(GL_TEXTURE_2D_ARRAY, retValue);
-      glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width, height, loadedImages.size());
+  glGenTextures(1, &retValue);
+  if (retValue != 0) {
+    glBindTexture(GL_TEXTURE_2D_ARRAY, retValue);
+    glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width, height, loadedImages.size());
 
-      for (size_t i = 0; i < loadedImages.size(); ++i) {
-        glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, image_format, GL_UNSIGNED_BYTE, loadedImages[i]);
-      }
-
-      glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
-
-      auto newTexRef = new TexRef(retValue);
-      m_textures[retValue] = newTexRef;
+    for (size_t i = 0; i < loadedImages.size(); ++i) {
+      glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1, image_format, GL_UNSIGNED_BYTE, loadedImages[i]);
     }
+
+    glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+
+    auto newTexRef = new TexRef(retValue);
+    m_textures[retValue] = newTexRef;
   }
 
   for (auto ptr : loadedImages) {

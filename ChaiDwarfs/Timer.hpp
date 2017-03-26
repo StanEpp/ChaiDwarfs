@@ -27,8 +27,8 @@ struct Timer {
 
   const int ticksPerSecond = 25;
   const int maxFrameskip = 5;
-  int skippedFrames;
-  int framesRendered;
+  int skippedFrames{ 0 };
+  int framesRendered{ 0 };
 
   TimerType start;
   TimerType currTime;
@@ -37,13 +37,11 @@ struct Timer {
   TimerType lastFpsUpdate;
   TimerType lastFrameRendered;
 
-  std::chrono::milliseconds skipTicks;
+  std::chrono::milliseconds skipTicks{ 0 };
 
   Timer() : 
-    skippedFrames(0), framesRendered(0), 
     start(currentTime()), currTime(currentTime()), dt(currentTime()),
-    nextGameTick(currentTime()), lastFpsUpdate(currentTime()), lastFrameRendered(currentTime()),
-    skipTicks(0)
+    nextGameTick(currentTime()), lastFpsUpdate(currentTime()), lastFrameRendered(currentTime())
   {
     skipTicks = std::chrono::milliseconds(1000 / ticksPerSecond);
   }

@@ -28,7 +28,7 @@
 #include "BaseComponent.hpp"
 #include "DwarfAI.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace comp {
 
     struct FlaggedDestroyed : public Component<FlaggedDestroyed> {
@@ -40,19 +40,19 @@ namespace CDwarfs {
     };
 
     struct TouchValue : public Component<TouchValue> {
-      int value;
+      int value{ 0 };
       TouchValue();
       TouchValue(int l_value);
     };
 
     struct TouchHeal : public Component<TouchHeal> {
-      int heal;
+      int heal{ 0 };
       TouchHeal();
       TouchHeal(int l_heal);
     };
 
     struct TouchDamage : public Component<TouchDamage> {
-      int damage;
+      int damage{ 0 };
       TouchDamage();
       TouchDamage(int l_damage);
     };
@@ -64,32 +64,32 @@ namespace CDwarfs {
     };
 
     struct Position : public Component<Position> {
-      int row, col;
+      int row{ 0 }, col{ 0 };
       Position();
       Position(int l_row, int l_col);
     };
 
     struct HP : public Component<HP> {
-      int hp;
-      int maxHP;
+      int hp{ 0 };
+      int maxHP{ 100 };
       HP();
       HP(int hp, int maxHP);
     };
 
     struct Speed : public Component<Speed> {
-      int speed;
+      int speed{ 0 };
       Speed();
       Speed(int speed);
     };
 
     struct Points : public Component<Points> {
-      int points;
+      int points{ 0 };
       Points();
       Points(int points);
     };
 
     struct View : public Component<View> {
-      int dist;
+      int dist{ 10 };
       View();
       View(int dist);
     };
@@ -114,12 +114,10 @@ namespace CDwarfs {
 
     struct AnimatedSprites : public Component<AnimatedSprites> {
       std::vector<std::pair<std::string, std::string>> sprites;
-      // These data get filled by the SpriteRenderer upon loading the images
-      // playing, duration, currTime, numKeyframes
-      std::vector<std::tuple<bool, float, float, int>> animationState;
-
+      double duration{ 500 };
       AnimatedSprites() = default;
       AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths);
+      AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths, double duration);
     };
 
   }

@@ -31,28 +31,9 @@
 #include "CommandSystem.hpp"
 #include "GLFWInput.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class ChaiDwarfs {
-  private:
-    std::shared_ptr<EntityManager>        m_entManager;
-    std::shared_ptr<CommandSystem>        m_cmdSystem;
-    std::shared_ptr<DwarfSystem>          m_dwarfSys;
-    std::shared_ptr<TerrainMap>           m_terrain;
-    std::shared_ptr<TerrainObjectSystem>  m_terrainObjSys;
-    
-    std::shared_ptr<render::GLFWInput>    m_input;
-    std::shared_ptr<render::RenderSystem> m_renderer;
-
-    bool  m_running;
-    
-    void killAllDestroyedEntities() {
-      auto vec = m_entManager->getAllEntitiesWithComponent<comp::FlaggedDestroyed>();
-      for (auto ID : vec) {
-        m_entManager->killEntity(ID);
-      }
-    }
-
   public:
     ChaiDwarfs() : 
       m_entManager(std::make_shared<EntityManager>()),
@@ -104,6 +85,25 @@ namespace CDwarfs {
         //if (counter == 15) m_running = false;
       }
     
+    }
+
+  private:
+    std::shared_ptr<EntityManager>        m_entManager;
+    std::shared_ptr<CommandSystem>        m_cmdSystem;
+    std::shared_ptr<DwarfSystem>          m_dwarfSys;
+    std::shared_ptr<TerrainMap>           m_terrain;
+    std::shared_ptr<TerrainObjectSystem>  m_terrainObjSys;
+
+    std::shared_ptr<render::GLFWInput>    m_input;
+    std::shared_ptr<render::RenderSystem> m_renderer;
+
+    bool  m_running;
+
+    void killAllDestroyedEntities() {
+      auto vec = m_entManager->getAllEntitiesWithComponent<comp::FlaggedDestroyed>();
+      for (auto ID : vec) {
+        m_entManager->killEntity(ID);
+      }
     }
 
   };

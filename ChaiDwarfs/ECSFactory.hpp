@@ -36,11 +36,11 @@
 #include <chaiscript\chaiscript.hpp>
 #include <chaiscript\utility\utility.hpp>
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class ECSFactory{
     /*
-    * Base class for ComponentHolder. Contains the component type ID of the component it holds and provides  
+    * Base class for ComponentHolder. Contains the component type ID of the component it holds and provides
     * the "createComponent" interface to create the specific component.
     */
     struct ComponentHolder {
@@ -54,8 +54,8 @@ namespace CDwarfs {
     * When chaiscript calls e.g. "addComp_TouchValue(42)" during object definition then the argument "42" will be saved in this struct.
     * When the component "Comp" will be created the arguments will be passed to the constructor of the component.
     *
-    * \tparam Comp The component type
-    * \tparam ArgTypes Template parameter pack that contains the types of the arguments
+    * \tparam TComp The component type
+    * \tparam TArgTypes Template parameter pack that contains the types of the arguments
     */
     template <class TComp, class... TArgTypes>
     struct ComponentHolder_ : public ComponentHolder {
@@ -125,13 +125,13 @@ namespace CDwarfs {
     *          "registerComponent<TouchValue, const int>("TouchVal")" creates and exposes two functions to chaiscript, "addComp_TouchVal()" 
     *          and "addComp_TouchVal(int)".
     * \param name The name exposed in chaiscript. Will generate the function "addComp_[name]". 
-    * \tparam T The component type to be registered
-    * \tparam Args the types of the component's constructor parameters
+    * \tparam TComp The component type to be registered
+    * \tparam TArgs the types of the component's constructor parameters
     * \return Signals whether registrations was successful
     */
     template<class TComp, class... TArgs>
     bool registerComponent(const std::string &name) {
-      static_assert(std::is_base_of_v<BaseComponent, TComp>, "Component trying to register in a factory has wrong base class!");
+      static_assert(std::is_base_of_v<BaseComponent, TComp>, "Component trying to register in ECS factory has wrong base class!");
 
       if (m_componentRegistrations.find(TComp::componentTypeID) != m_componentRegistrations.end()) {
         std::cerr << "Component \"" << name << "\" has already been registered!\n";
@@ -159,7 +159,7 @@ namespace CDwarfs {
     * \brief Creates a new object definition with the given name.
     *
     * Create a new definition for an object with the given name and returns a component cascading 
-    * object which allows to add components to the newly creted object definition.
+    * object which allows to add components to the newly created object definition.
     * \param name The name of the newly created object definition.
     * \return Component cascading object to do the following "defineObject("Diamond").addComp<TouchValue>()" in C++
     *         or e.g. "defineObject("Diamond").addComp_TouchValue()" in chaiscript
@@ -209,7 +209,7 @@ namespace CDwarfs {
     chaiscript::ModulePtr  m_chaiDefModule, m_chaiCreateModule;
     ComponentCascading     m_compCascading;
 
-    std::unordered_set<ComponentUUID>                                m_componentRegistrations;
+    std::unordered_set<ComponentUUID>                                                m_componentRegistrations;
     std::unordered_map<std::string, std::vector<std::shared_ptr<ComponentHolder>>>   m_objectDefinitions;
   };
 

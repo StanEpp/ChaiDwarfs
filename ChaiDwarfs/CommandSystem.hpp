@@ -24,7 +24,7 @@
 #include <stack>
 #include "ComponentSystem.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
 
   class TerrainMap;
   class TerrainObjectSystem;

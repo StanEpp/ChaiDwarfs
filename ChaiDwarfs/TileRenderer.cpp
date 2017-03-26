@@ -30,13 +30,16 @@
 #include <glm\gtc\matrix_transform.hpp>
 #pragma warning(default : 4201)
 
-using namespace CDwarfs;
-using namespace CDwarfs::render;
+using namespace cdwarfs;
+using namespace cdwarfs::render;
 
-TileRenderer::TileRenderer(const std::shared_ptr<ShaderManager>& shaderManager, const std::shared_ptr<TerrainMap>& terrainMap) : 
-  m_terrainMap(terrainMap), m_textureAtlas(nullptr), m_shaderManager(shaderManager), m_camera(nullptr),
-  m_gl_fboID(0), m_gl_vboVertexID(0), m_gl_vboTerrain1ID(0), m_gl_vboTerrain2ID(0), m_gl_vao1ID(0), m_gl_vao2ID(0), 
-  m_tileRenderingProg(0), m_glsl_projMatLoc(-1), m_quadSize(0.1f), m_useVAO1(true) {}
+TileRenderer::TileRenderer(
+  const std::shared_ptr<ShaderManager>& shaderManager,
+  const std::shared_ptr<TerrainMap>& terrainMap
+  ) : 
+  m_terrainMap(terrainMap),
+  m_shaderManager(shaderManager)
+  {}
 
 TileRenderer::~TileRenderer(){}
 
@@ -50,14 +53,15 @@ void TileRenderer::initTiles() {
 }
 
 void TileRenderer::setTileType(int row, int col, TerrainType newType) {
-  //TODO: Check which tile of the type needs to be inserted. Check surrounding types to do that.
+  //TODO: Check which type of the tile needs to be inserted. Check surrounding tiles to do that.
+  using TerrType = std::underlying_type_t<TerrainType>;
   auto cols = m_terrainMap->columns();
-  m_tiles[row * cols * 6 + col * 6 + 0] = static_cast<std::underlying_type_t<TerrainType>>(newType);
-  m_tiles[row * cols * 6 + col * 6 + 1] = static_cast<std::underlying_type_t<TerrainType>>(newType);
-  m_tiles[row * cols * 6 + col * 6 + 2] = static_cast<std::underlying_type_t<TerrainType>>(newType);
-  m_tiles[row * cols * 6 + col * 6 + 3] = static_cast<std::underlying_type_t<TerrainType>>(newType);
-  m_tiles[row * cols * 6 + col * 6 + 4] = static_cast<std::underlying_type_t<TerrainType>>(newType);
-  m_tiles[row * cols * 6 + col * 6 + 5] = static_cast<std::underlying_type_t<TerrainType>>(newType);
+  m_tiles[row * cols * 6 + col * 6 + 0] = static_cast<TerrType>(newType);
+  m_tiles[row * cols * 6 + col * 6 + 1] = static_cast<TerrType>(newType);
+  m_tiles[row * cols * 6 + col * 6 + 2] = static_cast<TerrType>(newType);
+  m_tiles[row * cols * 6 + col * 6 + 3] = static_cast<TerrType>(newType);
+  m_tiles[row * cols * 6 + col * 6 + 4] = static_cast<TerrType>(newType);
+  m_tiles[row * cols * 6 + col * 6 + 5] = static_cast<TerrType>(newType);
 }
 
 void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera) {
@@ -168,7 +172,11 @@ void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const s
 }
 
 glm::vec2 TileRenderer::posToScreenCoord(int row, int col) {
-  return glm::vec2(static_cast<float>(col) * m_quadSize - 1.f, static_cast<float>(m_terrainMap->rows() - row) * m_quadSize - 1.f);
+  return glm::vec2(static_cast<float>(col) * m_quadSize - 1.f, 1.f - static_cast<float>(row + 1) * m_quadSize);
+}
+
+float TileRenderer::quadSize() {
+  return m_quadSize;
 }
 
 void TileRenderer::render() {

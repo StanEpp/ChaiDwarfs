@@ -25,17 +25,17 @@
 
 int main(){
 
-  //std::cout << CDwarfs::TouchValue::componentTypeID << '\n';
-  //std::cout << CDwarfs::TouchDamage::componentTypeID << '\n';
-  //std::cout << CDwarfs::Name::componentTypeID << '\n';
-  //std::cout << CDwarfs::Position::componentTypeID << '\n';
-  //std::cout << CDwarfs::DwarfHP::componentTypeID << '\n';
-  //std::cout << CDwarfs::DwarfPosition::componentTypeID << '\n';
+  //std::cout << cdwarfs::TouchValue::componentTypeID << '\n';
+  //std::cout << cdwarfs::TouchDamage::componentTypeID << '\n';
+  //std::cout << cdwarfs::Name::componentTypeID << '\n';
+  //std::cout << cdwarfs::Position::componentTypeID << '\n';
+  //std::cout << cdwarfs::DwarfHP::componentTypeID << '\n';
+  //std::cout << cdwarfs::DwarfPosition::componentTypeID << '\n';
 
   //std::cin.get();
 
   try {
-    CDwarfs::ChaiDwarfs app;
+    cdwarfs::ChaiDwarfs app;
     app.init();
     app.run();
   }

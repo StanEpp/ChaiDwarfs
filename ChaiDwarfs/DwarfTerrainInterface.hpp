@@ -23,7 +23,7 @@
 
 #include <memory>
 
-namespace CDwarfs {
+namespace cdwarfs {
   class Dwarf;
   class Point;
   class TerrainMap;

@@ -29,7 +29,7 @@
 #include "TerrainObjectSystem.hpp"
 #include "TileRenderer.hpp"
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace compSys {
 
     class BaseVisitor {
@@ -164,8 +164,15 @@ namespace CDwarfs {
 
     class Move_Sys : public BaseVisitor {
     public:
-      Move_Sys(const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) :
-        BaseVisitor(entManager), m_terrainMap(terrainMap), m_terrainObjSys(terrainObjSys) {}
+      Move_Sys(
+        const std::shared_ptr<EntityManager>& entManager,
+        const std::shared_ptr<TerrainMap>& terrainMap,
+        const std::shared_ptr<TerrainObjectSystem>& terrainObjSys
+      ) :
+        BaseVisitor(entManager),
+        m_terrainMap(terrainMap),
+        m_terrainObjSys(terrainObjSys)
+      {}
 
       virtual ReturnedCommands operator()(const cmd::Cmd_MoveUp& cmd) override {
         return executeMove(-1, 0, cmd.dest);
@@ -229,8 +236,15 @@ namespace CDwarfs {
 
     class ChangeTerrainType_Sys : public BaseVisitor{
     public:
-      ChangeTerrainType_Sys(const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) :
-        BaseVisitor(entManager), m_terrainMap(terrainMap), m_terrainObjSys(terrainObjSys) {}
+      ChangeTerrainType_Sys(
+        const std::shared_ptr<EntityManager>& entManager,
+        const std::shared_ptr<TerrainMap>& terrainMap,
+        const std::shared_ptr<TerrainObjectSystem>& terrainObjSys
+      ) :
+        BaseVisitor(entManager),
+        m_terrainMap(terrainMap),
+        m_terrainObjSys(terrainObjSys)
+      {}
 
       virtual ReturnedCommands operator()(const cmd::Cmd_ChangeTerrainType& cmd) override { 
         ReturnedCommands ret;
@@ -252,9 +266,13 @@ namespace CDwarfs {
 
     class ChangeTileType_Rendering_Sys : public BaseVisitor {
     public:
-
-      ChangeTileType_Rendering_Sys(const std::shared_ptr<EntityManager>& entManager, const std::shared_ptr<render::TileRenderer>& tileRenderer) :
-        BaseVisitor(entManager), m_tileRenderer(tileRenderer) {}
+      ChangeTileType_Rendering_Sys(
+        const std::shared_ptr<EntityManager>& entManager,
+        const std::shared_ptr<render::TileRenderer>& tileRenderer
+      ) :
+        BaseVisitor(entManager),
+        m_tileRenderer(tileRenderer)
+      {}
 
       virtual ReturnedCommands operator()(const cmd::Cmd_ChangeTileType& cmd) override { 
         m_tileRenderer->setTileType(cmd.row, cmd.col, cmd.newType);

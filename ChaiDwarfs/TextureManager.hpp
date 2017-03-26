@@ -32,7 +32,7 @@
 #include <vector>
 #include <unordered_map>
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace render {
     class TextureManager {
     public:
@@ -76,10 +76,10 @@ namespace CDwarfs {
       TextureManager() = default;
       
       struct TexRef {
-        GLuint texID;
-        unsigned int refCount;
+        GLuint texID{ 0 };
+        unsigned int refCount{ 0 };
         std::string filename;
-        TexRef() : texID(0), refCount(0), filename(){}
+        TexRef() {}
         TexRef(GLuint texID) : texID(texID), refCount(1){}
         TexRef(GLuint texID, const std::string& filename) : texID(texID), refCount(1), filename(filename){}
       };

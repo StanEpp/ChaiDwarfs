@@ -23,7 +23,7 @@
 
 #include <cstdint>
 
-namespace CDwarfs {
+namespace cdwarfs {
 
 using  ComponentUUID = uint_fast64_t;
 

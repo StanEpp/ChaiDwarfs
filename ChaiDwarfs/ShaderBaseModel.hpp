@@ -30,23 +30,12 @@
 #include <map>
 #include <string>
 
-namespace CDwarfs {
+namespace cdwarfs {
   namespace render {
 
     class ShaderBaseModel {
 
       friend class ShaderManager;
-
-    private:
-      std::map<std::string, GLuint> _shader;
-      std::map<std::string, GLuint> _shaderProgram;
-
-      //May only be instantiated in ShaderManager
-      ShaderBaseModel() {}
-      ShaderBaseModel(ShaderBaseModel&) = delete;
-      ShaderBaseModel(ShaderBaseModel&&) = delete;
-      ShaderBaseModel& operator=(ShaderBaseModel&) = delete;
-      ShaderBaseModel& operator=(ShaderBaseModel&&) = delete;
 
     public:
 
@@ -81,6 +70,17 @@ namespace CDwarfs {
       void deleteShaderProgram(const std::string& ShaderProgramKey) {
         _shaderProgram.erase(ShaderProgramKey);
       }
+
+    private:
+      std::map<std::string, GLuint> _shader;
+      std::map<std::string, GLuint> _shaderProgram;
+
+      //May only be instantiated in ShaderManager
+      ShaderBaseModel() {}
+      ShaderBaseModel(ShaderBaseModel&) = delete;
+      ShaderBaseModel(ShaderBaseModel&&) = delete;
+      ShaderBaseModel& operator=(ShaderBaseModel&) = delete;
+      ShaderBaseModel& operator=(ShaderBaseModel&&) = delete;
 
     };
 
