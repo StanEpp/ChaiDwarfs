@@ -110,8 +110,7 @@ namespace cdwarfs {
     void inline registerComponent<AnimatedSprites>(chaiscript::ModulePtr& module) {
       module->add(chaiscript::user_type<AnimatedSprites>(), "AnimatedSprites");
       module->add(chaiscript::fun(&AnimatedSprites::sprites), "sprites");
-      module->add(chaiscript::fun(&AnimatedSprites::duration), "duration");
-    }
+     }
 
     void inline registerConversions(chaiscript::ModulePtr& module) {
       module->add(chaiscript::type_conversion<std::vector<chaiscript::Boxed_Value>, std::vector<std::pair<std::string, std::string>>>(

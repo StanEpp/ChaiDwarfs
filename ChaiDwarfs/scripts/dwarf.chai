@@ -32,11 +32,11 @@ def main(){
 	puts("Executing Script...!\n")
 
 	var terrainType = checkTerrain(0, 1)
-	if(NOMAP == terrainType){ puts("There is no map!\n") }
-	else if (SOIL == terrainType) { puts("Dwarf sees Soil!\n") }
-	else if (STONE == terrainType) { puts("Dwarf sees Stone!\n"); }
-	else if (PASSABLE == terrainType) { puts("Dwarf sees passable ground!\n") }
-	else if (DARK == terrainType) { puts("Dwarf tries to look at places he should not even know!\n"); }
+	if(NOMAP == terrainType){ puts("There is no map!\n"); moveDown(); }
+	else if (SOIL == terrainType) { puts("Dwarf sees Soil!\n"); moveDown(); }
+	else if (STONE == terrainType) { puts("Dwarf sees Stone!\n"); moveDown(); }
+	else if (PASSABLE == terrainType) { puts("Dwarf sees passable ground!\n"); moveDown(); }
+	else if (DARK == terrainType) { puts("Dwarf tries to look at places he should not even know!\n"); moveRight();}
 
 	var objType = checkForObject(0, 1);
 	if(objType == "Unknown") { puts ("It's unknown what's there!\n")}
@@ -49,7 +49,7 @@ def main(){
 	print("Position: " + to_string(getY()) + " " + to_string(getX()))
 	print("Points: " + to_string(getPoints()))
 
-	moveDown();
+
 
 	puts("\n")
 }

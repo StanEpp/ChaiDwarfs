@@ -45,7 +45,7 @@ namespace cdwarfs {
     */
     struct ComponentHolder {
       ComponentUUID componentTypeID;
-      virtual BaseComponent* createComponent() = 0;
+      virtual BaseComponent* createComponent() const = 0;
       virtual ~ComponentHolder(){}
     };
 
@@ -64,7 +64,7 @@ namespace cdwarfs {
         componentTypeID = TComp::componentTypeID;
       }
 
-      BaseComponent* createComponent() override {
+      BaseComponent* createComponent() const override {
         auto f = [](const auto&... params) { 
           return new TComp(params...); 
         };
@@ -84,11 +84,11 @@ namespace cdwarfs {
       ComponentCascading& addComponent(const TArgs&... params) {
         
         // TODO: Linear search should be avoided.
-        auto it = std::find_if(componentVec->begin(), componentVec->end(), [](auto& compHolder) {
+        const auto it = std::find_if(componentVec->cbegin(), componentVec->cend(), [](const auto& compHolder) {
           return compHolder->componentTypeID == TComp::componentTypeID;
         });
 
-        if (it != componentVec->end()) {
+        if (it != componentVec->cend()) {
           std::cerr << "Trying to add duplicate component " << typeid(TComp).name() << " for object definition of \"" << objectName << "\"!\n";
         }
         else {
@@ -142,7 +142,7 @@ namespace cdwarfs {
 
       m_chaiDefModule->add(chaiscript::fun(&ComponentCascading::addComponent<TComp>), "addComp_" + name);
       
-      // TODO: Exchange with C++17's 'constexpr if' when visual studio starts supporting it. 
+      // TODO: Exchange with C++17's 'constexpr if' when visual studio starts supporting it.
       __pragma(warning(push))
       __pragma(warning(disable:4127))
       if (sizeof...(TArgs) != 0) {
@@ -168,7 +168,7 @@ namespace cdwarfs {
       if (m_objectDefinitions.find(name) != m_objectDefinitions.end()) {
         throw std::runtime_error("Object with name \"" + name + "\" is already defined!");
       }
-      auto newDef = m_objectDefinitions.insert({ name, {} });
+      const auto newDef = m_objectDefinitions.insert({ name, {} });
       if (!newDef.second) throw std::runtime_error("Couldn't create definition for object \"" + name + "\"!\n");
       m_compCascading.componentVec = &(newDef.first->second);
       m_compCascading.objectName = name;
@@ -182,12 +182,12 @@ namespace cdwarfs {
     * \return The ID of the newly created Entity
     */
     ComponentList createObject(const std::string &name) {
-      auto definition = m_objectDefinitions.find(name);
-      if ( definition == m_objectDefinitions.end()) {
+      const auto definition = m_objectDefinitions.find(name);
+      if (definition == m_objectDefinitions.end()) {
         throw std::runtime_error("Object with name \"" + name + "\" has not been defined and cannot be created!");
       }
 
-      auto& compHolder = definition->second;
+      const auto& compHolder = definition->second;
       ComponentList compList;
 
       for (size_t i = 0; i < compHolder.size(); ++i) {

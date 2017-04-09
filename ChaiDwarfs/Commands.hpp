@@ -66,6 +66,26 @@ namespace cdwarfs {
       EntityID::UUID dest{ 0 };
     };
 
+    struct Cmd_MoveSpriteRight {
+      EntityID::UUID dest{ 0 };
+      int row{ 0 }, col{ 0 };
+    };
+
+    struct Cmd_MoveSpriteLeft {
+      EntityID::UUID dest{ 0 };
+      int row{ 0 }, col{ 0 };
+    };
+
+    struct Cmd_MoveSpriteUp {
+      EntityID::UUID dest{ 0 };
+      int row{ 0 }, col{ 0 };
+    };
+
+    struct Cmd_MoveSpriteDown {
+      EntityID::UUID dest{ 0 };
+      int row{ 0 }, col{ 0 };
+    };
+
     struct Cmd_ChangeTerrainType {
       int row{ 0 }, col{ 0 };
       TerrainType newType{ TerrainType::SOIL };
@@ -78,7 +98,8 @@ namespace cdwarfs {
 
     using Command = std::variant<
       Cmd_Touch, Cmd_Heal, Cmd_Damage, Cmd_Points, Cmd_ChangeTerrainType, Cmd_ChangeTileType,
-      Cmd_MoveUp, Cmd_MoveDown, Cmd_MoveLeft, Cmd_MoveRight, Cmd_MoveNone>;
+      Cmd_MoveUp, Cmd_MoveDown, Cmd_MoveLeft, Cmd_MoveRight, Cmd_MoveNone, 
+      Cmd_MoveSpriteRight, Cmd_MoveSpriteLeft, Cmd_MoveSpriteUp, Cmd_MoveSpriteDown>;
   }
 }
 

@@ -24,14 +24,15 @@
 #include <stack>
 #include "ComponentSystem.hpp"
 
+namespace cdwarfs::render {
+  class TileRenderer;
+  class SpriteRenderer;
+}
+
 namespace cdwarfs {
 
   class TerrainMap;
   class TerrainObjectSystem;
-  
-  namespace render {
-    class TileRenderer;
-  }
 
   class CommandSystem {
   public:
@@ -40,7 +41,11 @@ namespace cdwarfs {
 
     ~CommandSystem() {}
 
-    void init(const std::shared_ptr<TerrainMap>& terrainMap, const std::shared_ptr<TerrainObjectSystem>& terrainObjSys, const std::shared_ptr<render::TileRenderer>& tileRenderer) {
+    void init(const std::shared_ptr<TerrainMap>& terrainMap,
+      const std::shared_ptr<TerrainObjectSystem>& terrainObjSys,
+      const std::shared_ptr<render::TileRenderer>& tileRenderer,
+      const std::shared_ptr<render::SpriteRenderer>& spriteRenderer) 
+    {
       addNewComponentSystem<compSys::TouchValue_Sys>();
       addNewComponentSystem<compSys::TouchDestroy_Sys>();
       addNewComponentSystem<compSys::TouchHeal_Sys>();
@@ -50,6 +55,7 @@ namespace cdwarfs {
       addNewComponentSystem<compSys::Move_Sys>(terrainMap, terrainObjSys);
       addNewComponentSystem<compSys::ChangeTerrainType_Sys>(terrainMap, terrainObjSys);
       addNewComponentSystem<compSys::ChangeTileType_Rendering_Sys>(tileRenderer);
+      addNewComponentSystem<compSys::MoveSprite_Sys>(spriteRenderer);
     }
 
     void pushCommand(cmd::Command cmd) {

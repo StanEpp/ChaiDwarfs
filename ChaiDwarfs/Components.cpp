@@ -63,6 +63,5 @@ namespace cdwarfs {
     Sprites::Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths) : sprites(filePaths) {}
 
     AnimatedSprites::AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths) : sprites(filePaths) {}
-    AnimatedSprites::AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths, double duration) : sprites(filePaths), duration(duration) {}
   }
 }

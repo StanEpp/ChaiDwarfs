@@ -54,9 +54,13 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
     auto sprites = m_entManager->getComponent<comp::Sprites>(ent);
     for (const auto& sprite : sprites->sprites) {
       if (std::tr2::sys::exists(sprite.second)) { //TODO: Maybe log that file couldn't be found?
-        auto screenPos = m_tileRenderer->posToScreenCoord(pos->row, pos->col);
-        m_sprites[ent][sprite.first] = Sprite{ {}, {}, sprite.second, screenPos.x, screenPos.y};
+        m_sprites[ent][sprite.first] = Sprite{ sprite.second };
       }
+    }
+    if (m_sprites.find(ent) != m_sprites.end()) {
+      auto screenPos = m_tileRenderer->posToScreenCoord(pos->row, pos->col);
+      m_sprites[ent].screenX = screenPos.x;
+      m_sprites[ent].screenY = screenPos.y;
     }
   }
 
@@ -67,7 +71,6 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
     if (!pos) continue; //TODO: Maybe log the missing position for this sprites?
     auto sprites = m_entManager->getComponent<comp::AnimatedSprites>(ent);
     for (const auto& sprite : sprites->sprites) {
-
       // Check how many keyframes there are
       auto posIt = std::find(sprite.second.rbegin(), sprite.second.rend(), '.');
       auto prefix = std::string(sprite.second.begin(), posIt.base() - 1);
@@ -83,19 +86,24 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
       if (numKeyframes == 0) continue;
       // Some Keyframes have been found => Create AnimatedSprite struct
       auto screenPos = m_tileRenderer->posToScreenCoord(pos->row, pos->col);
-      m_animSprites[ent][sprite.first] = AnimatedSprite{ {}, {}, sprite.second, screenPos.x, screenPos.y, false, 500.0, 0.0, numKeyframes };
+      m_animSprites[ent][sprite.first] = AnimatedSprite{ sprite.second, numKeyframes };
+    }
+    if (m_animSprites.find(ent) != m_animSprites.end()) {
+      auto screenPos = m_tileRenderer->posToScreenCoord(pos->row, pos->col);
+      m_animSprites[ent].screenX = screenPos.x;
+      m_animSprites[ent].screenY = screenPos.y;
     }
   }
 
   // Load the images and create textures for rendering
-  for (auto& spriteList : m_sprites) {
-    for (auto& sprite : spriteList.second) {
+  for (auto& spriteSet : m_sprites) {
+    for (auto& sprite : spriteSet.second) {
       sprite.second.texture = Texture2D(sprite.second.filePath);
     }
   }
 
-  for (auto& spriteList : m_animSprites) {
-    for (auto& sprite : spriteList.second) {
+  for (auto& spriteSet : m_animSprites) {
+    for (auto& sprite : spriteSet.second) {
       std::vector<std::string> filePaths;
       filePaths.reserve(sprite.second.numKeyFrames);
       for (size_t i = 0; i < sprite.second.numKeyFrames; ++i) {
@@ -216,29 +224,129 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
 
 }
 
-void SpriteRenderer::spriteUpdate(EntityID::UUID entID, std::string spriteKey, int nextRow, int nextCol) {
-  auto spriteIt = m_sprites.find(entID);
-  if (spriteIt != m_sprites.end()) {
-    auto spriteKeyIt = spriteIt->second.find(spriteKey);
-    if (spriteKeyIt != spriteIt->second.end()) {
-      spriteKeyIt->second.nextRow = nextRow;
-      spriteKeyIt->second.nextCol = nextCol;
+void SpriteRenderer::spriteMove(EntityID::UUID entID, const SpriteKey& spriteKey, int nextRow, int nextCol) {
+  auto spriteSetIt = m_sprites.find(entID);
+  if (spriteSetIt != m_sprites.end()) {
+    auto& spriteSet = spriteSetIt->second;
+
+    auto screenPos = m_tileRenderer->posToScreenCoord(nextRow, nextCol);
+    spriteSet.nextScreenX = screenPos.x;
+    spriteSet.nextScreenY = screenPos.y;
+    spriteSet.moveStepX = (screenPos.x - spriteSet.screenX) / 500.f; //TODO: round duration should be changeable later on. For now 500ms.
+    spriteSet.moveStepY = (screenPos.y - spriteSet.screenY) / 500.f;
+
+    auto spriteIt = spriteSet.find(spriteKey);
+    if (spriteIt != spriteSet.end()) {
+      spriteSet.setCurrentSprite(spriteKey);
     }
   }
 
-  auto animSpriteIt = m_animSprites.find(entID);
-  if (animSpriteIt != m_animSprites.end()) {
-    auto animSpriteKeyIt = animSpriteIt->second.find(spriteKey);
-    if (animSpriteKeyIt != animSpriteIt->second.end()) {
-      animSpriteKeyIt->second.nextRow = nextRow;
-      animSpriteKeyIt->second.nextCol = nextCol;
-      animSpriteKeyIt->second.playing = true;
-      animSpriteKeyIt->second.currTime = 0.0;
+  auto animSpriteSetIt = m_animSprites.find(entID);
+  if (animSpriteSetIt != m_animSprites.end()) {
+    auto& spriteSet = animSpriteSetIt->second;
+
+    auto screenPos = m_tileRenderer->posToScreenCoord(nextRow, nextCol);
+    spriteSet.nextScreenX = screenPos.x;
+    spriteSet.nextScreenY = screenPos.y;
+    spriteSet.moveStepX = (screenPos.x - spriteSet.screenX) / 500.f; //TODO: round duration should be changeable later on. For now 500ms.
+    spriteSet.moveStepY = (screenPos.y - spriteSet.screenY) / 500.f;
+
+    auto animSpriteIt = spriteSet.find(spriteKey);
+    if (animSpriteIt != spriteSet.end()) {
+      auto& sprite = animSpriteIt->second;
+      sprite.playing = true;
+      sprite.currTime = 0.0;
+      if (animSpriteIt != spriteSet.currentSpriteIt()) {
+        spriteSet.currentSprite()->currKeyFrame = 0;
+        spriteSet.currentSprite()->currTime = 0;
+        spriteSet.currentSprite()->playing = false;
+        spriteSet.setCurrentSprite(spriteKey);
+      }
     }
   }
 }
 
+void SpriteRenderer::playAnimation(EntityID::UUID entID, const SpriteKey& spriteKey) {
+  auto spriteSetIt = m_animSprites.find(entID);
+  if (spriteSetIt != m_animSprites.end()) {
+    auto& spriteSet = spriteSetIt->second;
+    auto spriteIt = spriteSet.find(spriteKey);
+    if (spriteIt != spriteSet.end()) {
+      spriteIt->second.playing = true;
+      if (spriteIt != spriteSet.currentSpriteIt()) {
+        auto animSprite = spriteSet.currentSprite();
+        animSprite->currTime = 0.0;
+        animSprite->currKeyFrame = 0;
+        animSprite->playing = false;
+      }
+      spriteSet.setCurrentSprite(spriteKey);
+    }
+  }
+}
+
+void SpriteRenderer::advanceAnimations(double dt) {
+  for (auto& spriteListIt : m_animSprites) {
+    auto sprite = spriteListIt.second.currentSprite();
+    if (!sprite || !sprite->playing) continue;
+    sprite->currTime += dt;
+    if (sprite->currTime >= sprite->duration) {
+      sprite->currKeyFrame = 0;
+      sprite->currTime = 0.0;
+      sprite->playing = false;
+    }
+    else {
+      sprite->currKeyFrame = static_cast<unsigned int>(std::floor(static_cast<double>(sprite->numKeyFrames) * sprite->currTime / sprite->duration));
+    }
+  }
+}
+
+void SpriteRenderer::moveSprites(double dt) {
+  auto moveCurrentSprite = [&](auto& spriteSet) {
+    if (spriteSet.nextScreenX.has_value()) {
+      if (spriteSet.moveStepX < 0) {
+        if (spriteSet.screenX <= spriteSet.nextScreenX.value()) {
+          spriteSet.nextScreenX = {};
+          spriteSet.moveStepX = 0.f;
+        }
+      }
+      else {
+        if (spriteSet.screenX >= spriteSet.nextScreenX.value()) {
+          spriteSet.nextScreenX = {};
+          spriteSet.moveStepX = 0.f;
+        }
+      }
+      spriteSet.screenX += static_cast<float>(static_cast<double>(spriteSet.moveStepX) * dt);
+    }
+    if (spriteSet.nextScreenY.has_value()) {
+      if (spriteSet.moveStepY < 0) {
+        if (spriteSet.screenY <= spriteSet.nextScreenY) {
+          spriteSet.nextScreenY = {};
+          spriteSet.moveStepY = 0.f;
+        }
+      }
+      else {
+        if (spriteSet.screenY >= spriteSet.nextScreenY) {
+          spriteSet.nextScreenY = {};
+          spriteSet.moveStepY = 0.f;
+        }
+      }
+      spriteSet.screenY += static_cast<float>(static_cast<double>(spriteSet.moveStepY) * dt);
+    }
+  };
+
+  for (auto& spriteSet : m_sprites) {
+    moveCurrentSprite(spriteSet.second);
+  }
+
+  for (auto& spriteSet : m_animSprites) {
+    moveCurrentSprite(spriteSet.second);
+  }
+}
+
 void SpriteRenderer::render(double dt) {
+
+  advanceAnimations(dt);
+  moveSprites(dt);
 
   glBindVertexArray(m_gl_vaoID);
   glBindFramebuffer(GL_FRAMEBUFFER, m_gl_fboID);
@@ -250,24 +358,28 @@ void SpriteRenderer::render(double dt) {
   m_shaderManager->useProgram(m_glsl_spriteProg);
   m_shaderManager->loadMatrix4(m_glsl_projMatLoc, m_camera->mvpPtr());
 
-  for (const auto& spriteList : m_sprites) {
-    for (const auto& sprite : spriteList.second) {
-      auto vpMat = glm::translate(glm::mat4(1.f), glm::vec3(sprite.second.screenX, sprite.second.screenY, 0.f));
+  for (const auto& spriteSet : m_sprites) {
+    const auto sprite = spriteSet.second.currentSprite();
+    if (sprite) {
+      auto vpMat = glm::translate(glm::mat4(1.f), glm::vec3(spriteSet.second.screenX, spriteSet.second.screenY, 0.f));
       m_shaderManager->loadMatrix4(m_glsl_vpMatLoc, glm::value_ptr(vpMat));
       glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, sprite.second.texture.texID());
+      glBindTexture(GL_TEXTURE_2D, sprite->texture.texID());
       glDrawArrays(GL_TRIANGLES, 0, 6);
     }
   }
-  
+
+
   m_shaderManager->useProgram(m_glsl_animSpriteProg);
   m_shaderManager->loadMatrix4(m_glsl_Anim_projMatLoc, m_camera->mvpPtr());
-  for (const auto& spriteList : m_animSprites) {
-    for (const auto& sprite : spriteList.second) {
-      m_shaderManager->loadMatrix4(m_glsl_Anim_vpMatLoc, glm::value_ptr(glm::translate(glm::mat4(1.f), glm::vec3(sprite.second.screenX, sprite.second.screenY, 0.f))));
-      m_shaderManager->loadUniform(m_glsl_Anim_keyFrameLoc, static_cast<unsigned int>(sprite.second.currKeyFrame));
+
+  for (const auto& spriteSet : m_animSprites) {
+    const auto sprite = spriteSet.second.currentSprite();
+    if (sprite) {
+      m_shaderManager->loadMatrix4(m_glsl_Anim_vpMatLoc, glm::value_ptr(glm::translate(glm::mat4(1.f), glm::vec3(spriteSet.second.screenX, spriteSet.second.screenY, 0.f))));
+      m_shaderManager->loadUniform(m_glsl_Anim_keyFrameLoc, sprite->currKeyFrame);
       glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D_ARRAY, sprite.second.textureArray.texID());
+      glBindTexture(GL_TEXTURE_2D_ARRAY, sprite->textureArray.texID());
       glDrawArrays(GL_TRIANGLES, 0, 6);
     }
   }
@@ -279,5 +391,4 @@ void SpriteRenderer::render(double dt) {
   glDisable(GL_BLEND);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glBindVertexArray(0);
-
 }

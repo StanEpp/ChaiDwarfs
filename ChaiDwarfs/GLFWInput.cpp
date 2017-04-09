@@ -98,6 +98,6 @@ void GLFWInput::setMousePos(double xpos, double ypos) {
   glfwSetCursorPos(m_window, xpos, ypos);
 }
 
-void GLFWInput::mouseWheelCallback(GLFWwindow* wnd, double xOff, double yOff) {
+void GLFWInput::mouseWheelCallback(GLFWwindow*, double, double yOff) {
   m_scrollLastDiff = yOff;
 }

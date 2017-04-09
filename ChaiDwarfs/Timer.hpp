@@ -31,22 +31,26 @@ struct Timer {
   int framesRendered{ 0 };
 
   TimerType start;
-  TimerType currTime;
-  TimerType dt;
-  TimerType nextGameTick;
   TimerType lastFpsUpdate;
   TimerType lastFrameRendered;
+  double dt;
 
   std::chrono::milliseconds skipTicks{ 0 };
 
   Timer() : 
-    start(currentTime()), currTime(currentTime()), dt(currentTime()),
-    nextGameTick(currentTime()), lastFpsUpdate(currentTime()), lastFrameRendered(currentTime())
+    start(currentTime()),
+    lastFpsUpdate(currentTime()),
+    lastFrameRendered(currentTime()),
+    dt(0.0)
   {
     skipTicks = std::chrono::milliseconds(1000 / ticksPerSecond);
   }
 
   TimerType currentTime() { return std::chrono::high_resolution_clock::now(); }
+
+  void setDt(const TimerType& t1, const TimerType& t2) {
+    dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t2 - t1).count();
+  }
 
   bool haveMilliSecondsPassed(unsigned int ms, const TimerType& timePoint) {
     return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime() - timePoint) >= std::chrono::milliseconds(ms);

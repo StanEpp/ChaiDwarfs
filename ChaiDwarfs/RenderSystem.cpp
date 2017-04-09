@@ -88,7 +88,7 @@ const std::shared_ptr<SpriteRenderer> RenderSystem::getSpriteRenderer() {
 }
 
 void RenderSystem::render(double dt) {
-  m_camera->update(1.0);
+  m_camera->update(dt);
 
   m_tileRend->render();
 

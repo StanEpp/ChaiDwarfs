@@ -15,61 +15,61 @@ namespace cdwarfs {
 
     class WindowGLFW {
     private:
-      int _width{ 1024 };
-      int _height{ 768 };
-      std::string _windowName{ "GLFW Window" };
-      bool _fullscreen{ false };
-      bool _vSync{ false };
-      bool _initialized{ false };
-      GLFWwindow* _window{ nullptr };
+      int m_width{ 1024 };
+      int m_height{ 768 };
+      std::string m_windowName{ "GLFW Window" };
+      bool m_fullscreen{ false };
+      bool m_vSync{ false };
+      bool m_initialized{ false };
+      GLFWwindow* m_window{ nullptr };
 
     public:
       WindowGLFW() {}
       WindowGLFW(int width, int height, const std::string& windowName, bool fullscreen, bool vSync = false) :
-        _width(width), _height(height), _windowName(windowName), _fullscreen(fullscreen), _vSync(vSync), _initialized(false), _window(nullptr) {}
+        m_width(width), m_height(height), m_windowName(windowName), m_fullscreen(fullscreen), m_vSync(vSync), m_initialized(false), m_window(nullptr) {}
       WindowGLFW(WindowGLFW&) = delete;
       WindowGLFW(WindowGLFW&&) = delete;
       WindowGLFW& operator=(WindowGLFW&) = delete;
       WindowGLFW& operator=(WindowGLFW&&) = delete;
 
       ~WindowGLFW() {
-        if (!_initialized) return;
+        if (!m_initialized) return;
         glfwMakeContextCurrent(nullptr);
-        if (_window) glfwDestroyWindow(_window);
+        if (m_window) glfwDestroyWindow(m_window);
         glfwTerminate();
       }
 
       inline int getWidth() const {
-        return _width;
+        return m_width;
       }
 
       inline int getHeight() const {
-        return _height;
+        return m_height;
       }
 
       GLFWwindow* getGLFWwindow() const {
-        return _window;
+        return m_window;
       }
 
       inline void swapBuffers() {
-        glfwSwapBuffers(_window);
+        glfwSwapBuffers(m_window);
       }
 
       inline void setWindowTitle(const std::string& title) {
-        glfwSetWindowTitle(_window, title.c_str());
+        glfwSetWindowTitle(m_window, title.c_str());
       }
 
       inline void setDefaultWindowTitle() {
-        glfwSetWindowTitle(_window, _windowName.c_str());
+        glfwSetWindowTitle(m_window, m_windowName.c_str());
       }
 
       void setVSync(bool enable) {
-        _vSync = enable;
-        glfwSwapInterval(_vSync ? 0 : 1);
+        m_vSync = enable;
+        glfwSwapInterval(m_vSync ? 1 : 0);
       }
 
       inline bool isVSyncOn() {
-        return _vSync;
+        return m_vSync;
       }
 
       void init() {
@@ -77,26 +77,26 @@ namespace cdwarfs {
           throw std::runtime_error("Could not initialize GLFW!");
         }
 
-        _initialized = true;
+        m_initialized = true;
 
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        _window = glfwCreateWindow(_width, _height, _windowName.c_str(), _fullscreen ? glfwGetPrimaryMonitor() : 0, 0);
+        m_window = glfwCreateWindow(m_width, m_height, m_windowName.c_str(), m_fullscreen ? glfwGetPrimaryMonitor() : 0, 0);
 
-        if (!_window) {
+        if (!m_window) {
           throw std::runtime_error("Could not open GLFW Window!");
         }
 
         setDefaultWindowTitle();
 
-        glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        glfwMakeContextCurrent(_window);
+        glfwMakeContextCurrent(m_window);
 
-        glfwSwapInterval(_vSync ? 0 : 1);
+        setVSync(m_vSync);
       }
     };
   }

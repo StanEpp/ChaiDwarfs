@@ -114,10 +114,8 @@ namespace cdwarfs {
 
     struct AnimatedSprites : public Component<AnimatedSprites> {
       std::vector<std::pair<std::string, std::string>> sprites;
-      double duration{ 500 };
       AnimatedSprites() = default;
       AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths);
-      AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths, double duration);
     };
 
   }

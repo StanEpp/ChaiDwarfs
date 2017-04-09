@@ -30,7 +30,7 @@
 #include "EntityManager.hpp"
 #include "CommandSystem.hpp"
 #include "GLFWInput.hpp"
-
+#include <thread>
 namespace cdwarfs {
 
   class ChaiDwarfs {
@@ -57,32 +57,48 @@ namespace cdwarfs {
       
       m_renderer->init(1280, 720, "ChaiDwarfs");
 
-      m_cmdSystem->init(m_terrain, m_terrainObjSys, m_renderer->getTileRenderer());
+      m_cmdSystem->init(m_terrain, m_terrainObjSys, m_renderer->getTileRenderer(), m_renderer->getSpriteRenderer());
 
       m_input->bindInputToWindow(*m_renderer->getWindow());
     }
 
     void run() {
       Timer timer;
-      auto lastTimePoint = timer.currentTime();
 
-      m_dwarfSys->add("Dwarf", m_terrain, m_terrainObjSys);
+      //m_dwarfSys->add("Dwarf", m_terrain, m_terrainObjSys);
+      m_dwarfSys->addDwarfs(m_terrain, m_terrainObjSys);
 
-      //int counter = 0;
+      auto lastRound = timer.currentTime();
+      int fpsCounter = 0;
+
       while (m_running) {
         m_input->updateInput();
 
-        if (timer.haveMilliSecondsPassed(500, lastTimePoint)) {
+        if (m_input->isKeyPressedOnce(GLFW_KEY_ESCAPE)) {
+          m_running = false;
+        }
+
+        if (timer.haveMilliSecondsPassed(500, lastRound)) {
           m_dwarfSys->updateDwarfs();
           m_terrainObjSys->objectCollisions(m_cmdSystem);
           m_cmdSystem->processQueue();
           killAllDestroyedEntities();
-          lastTimePoint = timer.currentTime();
-          //counter++;
+          lastRound = timer.currentTime();
         }
         
-        m_renderer->render(1.0);
-        //if (counter == 15) m_running = false;
+        timer.setDt(timer.lastFrameRendered, timer.currentTime());
+        timer.lastFrameRendered = timer.currentTime();
+        // std::cout << timer.dt << '\n';
+        m_renderer->render(timer.dt);
+
+        ++fpsCounter;
+
+        if (timer.haveMilliSecondsPassed(1000, timer.lastFpsUpdate)) {
+          // std::cout << fpsCounter << '\n';
+          fpsCounter = 0;
+          timer.lastFpsUpdate = timer.currentTime();
+        }
+
       }
     
     }

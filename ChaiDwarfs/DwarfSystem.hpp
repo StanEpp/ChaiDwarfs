@@ -44,10 +44,11 @@ namespace cdwarfs {
       const std::shared_ptr<TerrainObjectSystem> &terrainObjSys) 
     {
       auto ID = m_entityManager->createObject(dwarfType);
+
       m_DwarfIDs.push_back(ID);
-      
+
       auto ai = m_entityManager->getComponent<comp::AIComponent>(ID);
-      
+
       if (ai) {
         ai->ai->setTerrainInterface(terrainMap);
         ai->ai->setTerrainObjectInterface(terrainObjSys);
@@ -55,8 +56,36 @@ namespace cdwarfs {
         ai->ai->setDwarfID(ID);
         ai->ai->init();
       }
-
+      
       return ID;
+    }
+
+    void addDwarfs(
+      const std::shared_ptr<TerrainMap> &terrainMap,
+      const std::shared_ptr<TerrainObjectSystem> &terrainObjSys)
+    {
+      //TODO: Rework to load dwarfs appropriately. Maybe create a component "Dwarf" for indicating
+      // that object is a dwarf? Current implementation is only for showcase purposes.
+      std::vector<EntityID::UUID> newDwarfIDs;
+      auto IDs = m_entityManager->getAllEntitiesWithComponent<comp::Name>();
+      for (auto entID : IDs) {
+        const auto name = m_entityManager->getComponent<comp::Name>(entID);
+        if (name->name == "Dwarf") newDwarfIDs.push_back(entID);
+      }
+
+      for (auto ID : newDwarfIDs) {
+        m_DwarfIDs.push_back(ID);
+
+        auto ai = m_entityManager->getComponent<comp::AIComponent>(ID);
+
+        if (ai) {
+          ai->ai->setTerrainInterface(terrainMap);
+          ai->ai->setTerrainObjectInterface(terrainObjSys);
+          ai->ai->setEntityManager(m_entityManager);
+          ai->ai->setDwarfID(ID);
+          ai->ai->init();
+        }
+      }
     }
 
     void erase(EntityID::UUID ID) {
