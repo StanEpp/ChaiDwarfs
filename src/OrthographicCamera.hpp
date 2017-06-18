@@ -19,40 +19,37 @@
 *
 */
 
-#ifndef _ORTHOGRAPHICCAMERA_HPP_
-#define _ORTHOGRAPHICCAMERA_HPP_ 
+#pragma once
 
 #include <glm/glm.hpp>
 
 #include <memory>
 
-namespace cdwarfs {
-  namespace render {
+namespace cdwarfs::render
+{
 
-    class GLFWInput;
+class GLFWInput;
 
-    class OrthographicCamera {
-    public:
-      OrthographicCamera();
+class OrthographicCamera
+{
+public:
+  OrthographicCamera();
 
-      void init(int width, int height, const std::shared_ptr<GLFWInput>& input);
-      const float* mvpPtr();
-      void update(double dt);
+  void init(int width, int height, const std::shared_ptr<GLFWInput>& input);
+  const float* mvpPtr();
+  void update(double dt);
 
-    private:
-      int m_width{ -1 };
-      int m_height{ -1 };
-      float m_aspectratio{ -1.f };
+private:
+  int m_width{ -1 };
+  int m_height{ -1 };
+  float m_aspectratio{ -1.f };
 
-      glm::mat4 m_orthoProj{ 1.f };
-      glm::vec3 m_scale{ 1.f, 1.f, 0.f };
-      glm::vec3 m_translate{ 0.f, 0.f, 0.f };
-      glm::mat4 m_MVP{ 1.f };
+  glm::mat4 m_orthoProj{ 1.f };
+  glm::vec3 m_scale{ 1.f, 1.f, 0.f };
+  glm::vec3 m_translate{ 0.f, 0.f, 0.f };
+  glm::mat4 m_MVP{ 1.f };
 
-      std::shared_ptr<GLFWInput> m_input;
-    };
+  std::shared_ptr<GLFWInput> m_input;
+};
 
-  }
 }
-
-#endif // !_ORTHOGRAPHICCAMERA_HPP_

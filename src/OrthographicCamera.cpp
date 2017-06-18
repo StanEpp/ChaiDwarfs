@@ -36,7 +36,8 @@ using namespace cdwarfs::render;
 
 OrthographicCamera::OrthographicCamera() {}
 
-void OrthographicCamera::init(int width, int height, const std::shared_ptr<GLFWInput>& input) {
+void OrthographicCamera::init(int width, int height, const std::shared_ptr<GLFWInput>& input)
+{
   m_input = input;
 
   m_width = width;
@@ -47,15 +48,17 @@ void OrthographicCamera::init(int width, int height, const std::shared_ptr<GLFWI
   m_MVP = glm::translate(glm::scale(m_orthoProj, m_scale), m_translate);
 }
 
-const float* OrthographicCamera::mvpPtr() {
+const float* OrthographicCamera::mvpPtr()
+{
   return &m_MVP[0][0];
 }
 
-void OrthographicCamera::update(double dt) {
+void OrthographicCamera::update(double dt)
+{
   float dx, dy, dz;
   dx = dy = dz = 0.f;
   double speed = 0.0025; //TODO: Make this configurable
-  
+
   if (m_input->isKeyPressed(GLFW_KEY_W)) {
     dy = static_cast<float>(-1.0 * speed * dt);
   }

@@ -17,12 +17,14 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
-#ifndef _TIMER_
-#define _TIMER_
+#pragma once
 
 #include <chrono>
 
-struct Timer {
+namespace cdwarfs {
+
+struct Timer
+{
   using TimerType = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
   const int ticksPerSecond = 25;
@@ -37,7 +39,7 @@ struct Timer {
 
   std::chrono::milliseconds skipTicks{ 0 };
 
-  Timer() : 
+  Timer() :
     start(currentTime()),
     lastFpsUpdate(currentTime()),
     lastFrameRendered(currentTime()),
@@ -48,14 +50,15 @@ struct Timer {
 
   TimerType currentTime() { return std::chrono::high_resolution_clock::now(); }
 
-  void setDt(const TimerType& t1, const TimerType& t2) {
+  void setDt(const TimerType& t1, const TimerType& t2)
+  {
     dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t2 - t1).count();
   }
 
-  bool haveMilliSecondsPassed(unsigned int ms, const TimerType& timePoint) {
+  bool haveMilliSecondsPassed(unsigned int ms, const TimerType& timePoint)
+  {
     return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime() - timePoint) >= std::chrono::milliseconds(ms);
   }
-
 };
 
-#endif
+}

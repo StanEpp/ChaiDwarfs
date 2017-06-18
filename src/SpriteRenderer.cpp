@@ -36,13 +36,14 @@ SpriteRenderer::SpriteRenderer(
   const std::shared_ptr<EntityManager>& entManager,
   const std::shared_ptr<TileRenderer>& tileRenderer,
   const std::shared_ptr<ShaderManager>& shaderManager
-  ) : 
+  ) :
   m_entManager(entManager),
   m_tileRenderer(tileRenderer),
   m_shaderManager(shaderManager)
   {}
 
-void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera) {
+void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera)
+{
   m_camera = camera;
 
   auto entities = m_entManager->getAllEntitiesWithComponent<comp::Sprites>();
@@ -193,7 +194,7 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
   m_shaderManager->deleteShader("fragmentShaderSprite");
   m_shaderManager->deleteShader("fragmentShaderAnimatedSprite");
 
-  // Create Framebuffer Object 
+  // Create Framebuffer Object
   glGenFramebuffers(1, &m_gl_fboID);
   glBindFramebuffer(GL_FRAMEBUFFER, m_gl_fboID);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, targetTexture->texID(), 0);
@@ -224,7 +225,8 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
 
 }
 
-void SpriteRenderer::spriteMove(EntityID::UUID entID, const SpriteKey& spriteKey, int nextRow, int nextCol) {
+void SpriteRenderer::spriteMove(EntityID::UUID entID, const SpriteKey& spriteKey, int nextRow, int nextCol)
+{
   auto spriteSetIt = m_sprites.find(entID);
   if (spriteSetIt != m_sprites.end()) {
     auto& spriteSet = spriteSetIt->second;
@@ -266,7 +268,8 @@ void SpriteRenderer::spriteMove(EntityID::UUID entID, const SpriteKey& spriteKey
   }
 }
 
-void SpriteRenderer::playAnimation(EntityID::UUID entID, const SpriteKey& spriteKey) {
+void SpriteRenderer::playAnimation(EntityID::UUID entID, const SpriteKey& spriteKey)
+{
   auto spriteSetIt = m_animSprites.find(entID);
   if (spriteSetIt != m_animSprites.end()) {
     auto& spriteSet = spriteSetIt->second;
@@ -284,7 +287,8 @@ void SpriteRenderer::playAnimation(EntityID::UUID entID, const SpriteKey& sprite
   }
 }
 
-void SpriteRenderer::advanceAnimations(double dt) {
+void SpriteRenderer::advanceAnimations(double dt)
+{
   for (auto& spriteListIt : m_animSprites) {
     auto sprite = spriteListIt.second.currentSprite();
     if (!sprite || !sprite->playing) continue;
@@ -300,7 +304,8 @@ void SpriteRenderer::advanceAnimations(double dt) {
   }
 }
 
-void SpriteRenderer::moveSprites(double dt) {
+void SpriteRenderer::moveSprites(double dt)
+{
   auto moveCurrentSprite = [&](auto& spriteSet) {
     if (spriteSet.nextScreenX.has_value()) {
       if (spriteSet.moveStepX < 0) {
@@ -343,8 +348,8 @@ void SpriteRenderer::moveSprites(double dt) {
   }
 }
 
-void SpriteRenderer::render(double dt) {
-
+void SpriteRenderer::render(double dt)
+{
   advanceAnimations(dt);
   moveSprites(dt);
 

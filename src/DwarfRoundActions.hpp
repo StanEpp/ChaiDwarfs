@@ -17,32 +17,32 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
-#ifndef _DWARFROUNDACTIONS_HPP_
-#define _DWARFROUNDACTIONS_HPP_
+#pragma once
 
-namespace cdwarfs {
+namespace cdwarfs
+{
 
-  class DwarfRoundActions {
-  public:
-    enum class MoveDirection {
-      LEFT, RIGHT, UP, DOWN, NONE
-    };
-
-    DwarfRoundActions() {}
-
-    void moveUp()    { movement = MoveDirection::UP; }
-    void moveDown()  { movement = MoveDirection::DOWN; }
-    void moveRight() { movement = MoveDirection::RIGHT; }
-    void moveLeft()  { movement = MoveDirection::LEFT; }
-    void moveStop()  { movement = MoveDirection::NONE; }
-
-    void clear() {
-      movement = MoveDirection::NONE;
-    }
-
-    MoveDirection movement{ MoveDirection::NONE };
-
+class DwarfRoundActions {
+public:
+  enum class MoveDirection {
+    LEFT, RIGHT, UP, DOWN, NONE
   };
-}
 
-#endif // !_DWARFROUNDACTIONS_HPP_
+  DwarfRoundActions() {}
+
+  void moveUp()    { movement = MoveDirection::UP; }
+  void moveDown()  { movement = MoveDirection::DOWN; }
+  void moveRight() { movement = MoveDirection::RIGHT; }
+  void moveLeft()  { movement = MoveDirection::LEFT; }
+  void moveStop()  { movement = MoveDirection::NONE; }
+
+  void clear()
+  {
+    movement = MoveDirection::NONE;
+  }
+
+  MoveDirection movement{ MoveDirection::NONE };
+
+};
+
+}

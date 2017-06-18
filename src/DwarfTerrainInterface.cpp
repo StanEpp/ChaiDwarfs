@@ -27,7 +27,8 @@ using namespace cdwarfs;
 DwarfTerrainInterface::DwarfTerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap) :
   m_terrain(terrainMap) {}
 
-const TerrainType DwarfTerrainInterface::checkTerrain(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const{
+TerrainType DwarfTerrainInterface::checkTerrain(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const
+{
   if (m_terrain.expired()) return TerrainType::NO_MAP;
 
   auto map = m_terrain.lock();
@@ -40,5 +41,4 @@ const TerrainType DwarfTerrainInterface::checkTerrain(int currRow, int currCol, 
   }
 
   return map->at(currRow + diffRow, currCol + diffCol);
-  
 }

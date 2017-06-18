@@ -17,28 +17,26 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
-#ifndef _DWARFTERRAINOBJECTINTERFACE_HPP_
-#define _DWARFTERRAINOBJECTINTERFACE_HPP_
+#pragma once
 
 #include <memory>
 #include <string>
 
-namespace cdwarfs {
+namespace cdwarfs
+{
 
-  class TerrainObjectSystem;
+class TerrainObjectSystem;
 
-  class DwarfTerrainObjectInterface final{
-  public:
-    DwarfTerrainObjectInterface() = delete;
-    DwarfTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>&);
-    ~DwarfTerrainObjectInterface() {}
+class DwarfTerrainObjectInterface final
+{
+public:
+  DwarfTerrainObjectInterface() = delete;
+  DwarfTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>&);
+  ~DwarfTerrainObjectInterface() {}
 
-    const std::string checkForObject(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
-  private:
-    std::weak_ptr<TerrainObjectSystem> m_terrainObjSys;
-  };
-
+  const std::string checkForObject(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
+private:
+  std::weak_ptr<TerrainObjectSystem> m_terrainObjSys;
+};
 
 }
-
-#endif // !_DWARFTERRAINOBJECTINTERFACE_HPP_

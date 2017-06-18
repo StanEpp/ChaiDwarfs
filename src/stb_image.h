@@ -203,8 +203,7 @@ publish, and distribute this file as you see fit.
 
 */
 
-#ifndef STBI_INCLUDE_STB_IMAGE_H
-#define STBI_INCLUDE_STB_IMAGE_H
+#pragma once
 
 // DOCUMENTATION
 //
@@ -528,7 +527,6 @@ extern "C" {
 //
 //
 ////   end header file   /////////////////////////////////////////////////////
-#endif // STBI_INCLUDE_STB_IMAGE_H
 
 #ifdef STB_IMAGE_IMPLEMENTATION
 

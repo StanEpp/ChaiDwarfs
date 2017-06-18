@@ -25,25 +25,22 @@
 #include "ShaderManager.hpp"
 #include "OrthographicCamera.hpp"
 
-#pragma warning(disable : 4201)
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-#pragma warning(default : 4201)
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace cdwarfs;
 using namespace cdwarfs::render;
 
-TileRenderer::TileRenderer(
-  const std::shared_ptr<ShaderManager>& shaderManager,
-  const std::shared_ptr<TerrainMap>& terrainMap
-  ) : 
+TileRenderer::TileRenderer(const std::shared_ptr<ShaderManager>& shaderManager,
+                           const std::shared_ptr<TerrainMap>& terrainMap) :
   m_terrainMap(terrainMap),
   m_shaderManager(shaderManager)
   {}
 
 TileRenderer::~TileRenderer(){}
 
-void TileRenderer::initTiles() {
+void TileRenderer::initTiles()
+{
   m_tiles.resize(m_terrainMap->rows() * m_terrainMap->columns() * 6);
   for (int row = 0; row < m_terrainMap->rows(); ++row) {
     for (int col = 0; col < m_terrainMap->columns(); ++col) {
@@ -52,7 +49,8 @@ void TileRenderer::initTiles() {
   }
 }
 
-void TileRenderer::setTileType(int row, int col, TerrainType newType) {
+void TileRenderer::setTileType(int row, int col, TerrainType newType)
+{
   //TODO: Check which type of the tile needs to be inserted. Check surrounding tiles to do that.
   using TerrType = std::underlying_type_t<TerrainType>;
   auto cols = m_terrainMap->columns();
@@ -64,7 +62,8 @@ void TileRenderer::setTileType(int row, int col, TerrainType newType) {
   m_tiles[row * cols * 6 + col * 6 + 5] = static_cast<TerrType>(newType);
 }
 
-void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera) {
+void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera)
+{
   m_camera = camera;
 
   auto cols = m_terrainMap->columns();
@@ -72,18 +71,18 @@ void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const s
   auto quadsSizeCol = 2.f / static_cast<float>(cols);
   auto quadsSizeRow = 2.f / static_cast<float>(rows);
   m_quadSize = (quadsSizeCol < quadsSizeRow) ? quadsSizeCol : quadsSizeRow;
-  
+
   std::vector<float> vertices(cols * rows * 6 * 2, 0.f);
 
   /**********
-    
+
     v3/4(x,y)---v6(x,y)
       |          |
       |          |
       |          |
     v1(x,y)--- v2/5(x,y)
     (0,1 - quadsize)
-    
+
   **********/
   for (int row = 0; row < m_terrainMap->rows(); ++row) {
     for (int col = 0; col < m_terrainMap->columns(); ++col) {
@@ -113,9 +112,9 @@ void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const s
   m_numVertices = static_cast<GLsizei>(vertices.size()/2);
 
   initTiles();
-  
-  m_shaderManager->loadShader("shader\\tileRendering_vs.glsl", "tileVertexShader", GL_VERTEX_SHADER);
-  m_shaderManager->loadShader("shader\\tileRendering_fs.glsl", "tileFragmentShader", GL_FRAGMENT_SHADER);
+
+  m_shaderManager->loadShader("shader//tileRendering_vs.glsl", "tileVertexShader", GL_VERTEX_SHADER);
+  m_shaderManager->loadShader("shader//tileRendering_fs.glsl", "tileFragmentShader", GL_FRAGMENT_SHADER);
 
   m_tileRenderingProg = m_shaderManager->createProgram("TileRenderingProgram");
   m_shaderManager->attachShader("tileVertexShader", "TileRenderingProgram");
@@ -166,20 +165,23 @@ void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const s
   glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, 0, 0);
   glBindVertexArray(0);
 
-  m_textureAtlas = std::make_shared<Texture2DArray>(std::vector<std::string>{ "tiles\\soil.png", "tiles\\passable.png", "tiles\\stone.png" }, GL_RGB);
+  m_textureAtlas = std::make_shared<Texture2DArray>(std::vector<std::string>{ "tiles//soil.png", "tiles//passable.png", "tiles//stone.png" }, GL_RGB);
 
   m_glsl_projMatLoc = m_shaderManager->getUniformLocation(m_tileRenderingProg, "mvp");
 }
 
-glm::vec2 TileRenderer::posToScreenCoord(int row, int col) {
+glm::vec2 TileRenderer::posToScreenCoord(int row, int col)
+{
   return glm::vec2(static_cast<float>(col) * m_quadSize - 1.f, 1.f - static_cast<float>(row + 1) * m_quadSize);
 }
 
-float TileRenderer::quadSize() {
+float TileRenderer::quadSize()
+{
   return m_quadSize;
 }
 
-void TileRenderer::render() {
+void TileRenderer::render()
+{
   // TODO: Wrong! Frame is always one tile update behind!
   if (m_useVAO1) {
     glBindBuffer(GL_ARRAY_BUFFER, m_gl_vboTerrain2ID);
@@ -206,7 +208,7 @@ void TileRenderer::render() {
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D_ARRAY, m_textureAtlas->texID());
-  
+
   glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
 
   glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
@@ -215,5 +217,4 @@ void TileRenderer::render() {
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glBindVertexArray(0);
-
 }

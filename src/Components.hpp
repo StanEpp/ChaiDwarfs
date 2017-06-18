@@ -18,8 +18,7 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 *
 */
-#ifndef _COMPONENTS_HPP_
-#define _COMPONENTS_HPP_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -28,97 +27,94 @@
 #include "BaseComponent.hpp"
 #include "DwarfAI.hpp"
 
-namespace cdwarfs {
-  namespace comp {
+namespace cdwarfs::comp
+{
 
-    struct FlaggedDestroyed : public Component<FlaggedDestroyed> {
-      FlaggedDestroyed();
-    };
+struct FlaggedDestroyed : public Component<FlaggedDestroyed> {
+  FlaggedDestroyed();
+};
 
-    struct TouchDestroy : public Component<TouchDestroy> {
-      TouchDestroy();
-    };
+struct TouchDestroy : public Component<TouchDestroy> {
+  TouchDestroy();
+};
 
-    struct TouchValue : public Component<TouchValue> {
-      int value{ 0 };
-      TouchValue();
-      TouchValue(int l_value);
-    };
+struct TouchValue : public Component<TouchValue> {
+  int value{ 0 };
+  TouchValue();
+  TouchValue(int l_value);
+};
 
-    struct TouchHeal : public Component<TouchHeal> {
-      int heal{ 0 };
-      TouchHeal();
-      TouchHeal(int l_heal);
-    };
+struct TouchHeal : public Component<TouchHeal> {
+  int heal{ 0 };
+  TouchHeal();
+  TouchHeal(int l_heal);
+};
 
-    struct TouchDamage : public Component<TouchDamage> {
-      int damage{ 0 };
-      TouchDamage();
-      TouchDamage(int l_damage);
-    };
+struct TouchDamage : public Component<TouchDamage> {
+  int damage{ 0 };
+  TouchDamage();
+  TouchDamage(int l_damage);
+};
 
-    struct Name : public Component<Name> {
-      std::string name;
-      Name();
-      Name(const std::string& l_name);
-    };
+struct Name : public Component<Name> {
+  std::string name;
+  Name();
+  Name(const std::string& l_name);
+};
 
-    struct Position : public Component<Position> {
-      int row{ 0 }, col{ 0 };
-      Position();
-      Position(int l_row, int l_col);
-    };
+struct Position : public Component<Position> {
+  int row{ 0 }, col{ 0 };
+  Position();
+  Position(int l_row, int l_col);
+};
 
-    struct HP : public Component<HP> {
-      int hp{ 0 };
-      int maxHP{ 100 };
-      HP();
-      HP(int hp, int maxHP);
-    };
+struct HP : public Component<HP> {
+  int hp{ 0 };
+  int maxHP{ 100 };
+  HP();
+  HP(int hp, int maxHP);
+};
 
-    struct Speed : public Component<Speed> {
-      int speed{ 0 };
-      Speed();
-      Speed(int speed);
-    };
+struct Speed : public Component<Speed> {
+  int speed{ 0 };
+  Speed();
+  Speed(int speed);
+};
 
-    struct Points : public Component<Points> {
-      int points{ 0 };
-      Points();
-      Points(int points);
-    };
+struct Points : public Component<Points> {
+  int points{ 0 };
+  Points();
+  Points(int points);
+};
 
-    struct View : public Component<View> {
-      int dist{ 10 };
-      View();
-      View(int dist);
-    };
+struct View : public Component<View> {
+  int dist{ 10 };
+  View();
+  View(int dist);
+};
 
-    struct AIComponent : public Component<AIComponent>{
-      std::unique_ptr<DwarfAI> ai;
-      AIComponent() = delete;
-      AIComponent(std::unique_ptr<DwarfAI>&& ai);
-    };
+struct AIComponent : public Component<AIComponent>{
+  std::unique_ptr<DwarfAI> ai;
+  AIComponent() = delete;
+  AIComponent(std::unique_ptr<DwarfAI>&& ai);
+};
 
-    struct ScriptAI : public AIComponent {
-      std::string filePath;
-      ScriptAI();
-      ScriptAI(const std::string& filePath);
-    };
+struct ScriptAI : public AIComponent {
+  std::string filePath;
+  ScriptAI();
+  ScriptAI(const std::string& filePath);
+};
 
-    struct Sprites : public Component<Sprites> {
-      std::vector<std::pair<std::string, std::string>> sprites;
-      Sprites() = default;
-      Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths);
-    };
+struct Sprites : public Component<Sprites> {
+  std::vector<std::pair<std::string, std::string>> sprites;
+  Sprites() = default;
+  Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths);
+};
 
-    struct AnimatedSprites : public Component<AnimatedSprites> {
-      std::vector<std::pair<std::string, std::string>> sprites;
-      AnimatedSprites() = default;
-      AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths);
-    };
+struct AnimatedSprites : public Component<AnimatedSprites> {
+  std::vector<std::pair<std::string, std::string>> sprites;
+  AnimatedSprites() = default;
+  AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths);
+};
 
-  }
 }
-
-#endif // !_COMPONENTS_HPP_

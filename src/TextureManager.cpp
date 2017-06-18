@@ -20,7 +20,6 @@
 */
 
 #include "TextureManager.hpp"
-#include <iostream>
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -28,13 +27,13 @@
 using namespace cdwarfs::render;
 
 GLuint TextureManager::loadTexture2D(const std::string& filename,//where to load the file from
-  GLsizei& width,            //contains the width of the image after successful loading
-  GLsizei& height,           //contains the height of the image after successful loading
-  GLsizei& numChannels,      //contains the number of channels after successful loading
-  GLint internal_format,     //format to store the image in
-  GLenum image_format,       //format the image is in
-  GLint level,               //mipmapping level
-  GLint border) 
+                                     GLsizei& width,            //contains the width of the image after successful loading
+                                     GLsizei& height,           //contains the height of the image after successful loading
+                                     GLsizei& numChannels,      //contains the number of channels after successful loading
+                                     GLint internal_format,     //format to store the image in
+                                     GLenum image_format,       //format the image is in
+                                     GLint level,               //mipmapping level
+                                     GLint border)
 {
   auto it = m_loadedTextures.find(filename);
   if (it != m_loadedTextures.end()) {
@@ -50,9 +49,9 @@ GLuint TextureManager::loadTexture2D(const std::string& filename,//where to load
 
   stbi_set_flip_vertically_on_load(true);
   auto data = stbi_load(filename.c_str(), &width, &height, &numChannels, 0);
-  
+
   if (data == nullptr) return 0;
-  
+
   GLuint texID;
   glGenTextures(1, &texID);
   glBindTexture(GL_TEXTURE_2D, texID);
@@ -70,13 +69,12 @@ GLuint TextureManager::loadTexture2D(const std::string& filename,//where to load
   return texID;
 }
 
-GLuint TextureManager::createTexture2D(
-  GLsizei width,             //contains the width of the image after successful loading
-  GLsizei height,            //contains the height of the image after successful loading
-  GLint internal_format,     //format to store the image in
-  GLenum image_format,       //format the image is in
-  GLint level,               //mipmapping level
-  GLint border)              //border size
+GLuint TextureManager::createTexture2D(GLsizei width,             //contains the width of the image after successful loading
+                                       GLsizei height,            //contains the height of the image after successful loading
+                                       GLint internal_format,     //format to store the image in
+                                       GLenum image_format,       //format the image is in
+                                       GLint level,               //mipmapping level
+                                       GLint border)              //border size
 {
   GLuint texID;
   glGenTextures(1, &texID);
@@ -93,13 +91,12 @@ GLuint TextureManager::createTexture2D(
 }
 
 GLuint TextureManager::loadTexture2DArray(const std::vector<std::string>& filenames,
-  GLsizei& width,
-  GLsizei& height,
-  GLsizei& numChannels,
-  GLenum image_format       //format the image is in
-  )
+                                          GLsizei& width,
+                                          GLsizei& height,
+                                          GLsizei& numChannels,
+                                          GLenum image_format)       //format the image is in
 {
-  width = height = numChannels =  -1;
+  width = height = numChannels = -1;
   GLsizei tempWidth = width;
   GLsizei tempHeight = height;
   GLsizei tempNumChannels = numChannels;
@@ -117,7 +114,7 @@ GLuint TextureManager::loadTexture2DArray(const std::vector<std::string>& filena
       }
     } else {
       if (!data) throw std::runtime_error("ERROR: Could not load \"" + filename + "\" properly!");
-      tempWidth = width; 
+      tempWidth = width;
       tempHeight = height;
       tempNumChannels = numChannels;
     }
@@ -147,7 +144,7 @@ GLuint TextureManager::loadTexture2DArray(const std::vector<std::string>& filena
   return retValue;
 }
 
-void TextureManager::deleteTexture(GLuint ID) 
+void TextureManager::deleteTexture(GLuint ID)
 {
   auto it = m_textures.find(ID);
   if (it != m_textures.end()) {

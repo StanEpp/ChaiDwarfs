@@ -17,16 +17,17 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
-#ifndef _MAP_HPP_
-#define _MAP_HPP_
+#pragma once
 
 #include <vector>
 #include <string>
 #include <algorithm>
 
-namespace cdwarfs{
-  
-enum class TerrainType : unsigned int {
+namespace cdwarfs
+{
+
+enum class TerrainType : unsigned int
+{
   SOIL = 0,
   PASSABLE,
   STONE,
@@ -34,31 +35,31 @@ enum class TerrainType : unsigned int {
   NO_MAP,    // When there's no map at all and you try to access one.
 };
 
-class TerrainMap {
+class TerrainMap
+{
 public:
   TerrainMap() = default;
   TerrainMap(TerrainMap&) = delete; TerrainMap& operator=(const TerrainMap&) = delete;
   TerrainMap(TerrainMap&&) = delete; TerrainMap& operator=(TerrainMap&&) = delete;
-  
+
   void load(const std::string& chaiscriptPath);
 
   TerrainType at(int row, int col);
 
   void set(int row, int col, TerrainType newType);
 
-  inline int rows() {
+  inline int rows()
+  {
     return static_cast<int>(m_map.size());
   }
 
-  inline int columns() {
+  inline int columns()
+  {
     return static_cast<int>(m_map[0].size());
   }
 
 private:
   std::vector<std::vector<TerrainType>>  m_map;
-
 };
 
 }
-
-#endif

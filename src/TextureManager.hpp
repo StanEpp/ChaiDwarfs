@@ -18,13 +18,12 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#ifndef _TEXTUREMANAGER_HPP_
-#define _TEXTUREMANAGER_HPP_
+#pragma once
 
 #ifndef _GL3W_
 #define _GL3W_
-#include <GL\gl3w.h>
-#include <GLFW\glfw3.h>
+#include "GL/gl3w.h"
+#include <GLFW/glfw3.h>
 #endif
 
 #include <string>
@@ -32,64 +31,62 @@
 #include <vector>
 #include <unordered_map>
 
-namespace cdwarfs {
-  namespace render {
-    class TextureManager {
-    public:
-      TextureManager(TextureManager&) = delete;
-      TextureManager(TextureManager&&) = delete;
-      TextureManager& operator=(TextureManager const&) = delete;
+namespace cdwarfs::render
+{
 
-      GLuint loadTexture2D(const std::string& filename,//where to load the file from
-        GLsizei& width,                     //contains the width of the image after successful loading
-        GLsizei& height,                    //contains the height of the image after successful loading
-        GLsizei& numChannels,               //contains the number of channels after successful loading
-        GLint internal_format = GL_RGB,     //format to store the image in
-        GLenum image_format = GL_RGB,       //format the image is in
-        GLint level = 0,                    //mipmapping level
-        GLint border = 0);                  //border size
+class TextureManager
+{
+public:
+  TextureManager(TextureManager&) = delete;
+  TextureManager(TextureManager&&) = delete;
+  TextureManager& operator=(TextureManager const&) = delete;
 
-      GLuint loadTexture2DArray(const std::vector<std::string>& filenames,
-        GLsizei& width,
-        GLsizei& height,
-        GLsizei& numChannels,
-        GLenum image_format       //format the image is in
-        );
-        
+  GLuint loadTexture2D(const std::string& filename,     //where to load the file from
+                       GLsizei& width,                  //contains the width of the image after successful loading
+                       GLsizei& height,                 //contains the height of the image after successful loading
+                       GLsizei& numChannels,            //contains the number of channels after successful loading
+                       GLint internal_format = GL_RGB,  //format to store the image in
+                       GLenum image_format = GL_RGB,    //format the image is in
+                       GLint level = 0,                 //mipmapping level
+                       GLint border = 0);               //border size
 
-      GLuint createTexture2D(
-        GLsizei width,                     //contains the width of the image after successful loading
-        GLsizei height,                    //contains the height of the image after successful loading
-        GLint internal_format = GL_RGB,     //format to store the image in
-        GLenum image_format = GL_RGB,       //format the image is in
-        GLint level = 0,                    //mipmapping level
-        GLint border = 0);                  //border size
+  GLuint loadTexture2DArray(const std::vector<std::string>& filenames,
+                            GLsizei& width,
+                            GLsizei& height,
+                            GLsizei& numChannels,
+                            GLenum image_format);       //format the image is in
 
-      void deleteTexture(GLuint ID);
+  GLuint createTexture2D(GLsizei width,                   //contains the width of the image after successful loading
+                         GLsizei height,                  //contains the height of the image after successful loading
+                         GLint internal_format = GL_RGB,  //format to store the image in
+                         GLenum image_format = GL_RGB,    //format the image is in
+                         GLint level = 0,                 //mipmapping level
+                         GLint border = 0);               //border size
 
-      static TextureManager& getInstance() {
-        static TextureManager texManager;
-        return texManager;
-      }
+  void deleteTexture(GLuint ID);
 
-    private:
-      TextureManager() = default;
-      
-      struct TexRef {
-        GLuint texID{ 0 };
-        unsigned int refCount{ 0 };
-        std::string filename;
-        TexRef() {}
-        TexRef(GLuint texID) : texID(texID), refCount(1){}
-        TexRef(GLuint texID, const std::string& filename) : texID(texID), refCount(1), filename(filename){}
-      };
-
-      std::unordered_map<std::string, TexRef*>  m_loadedTextures;
-      std::unordered_map<GLuint, TexRef*> m_textures;
-
-    };
+  static TextureManager& getInstance()
+  {
+    static TextureManager texManager;
+    return texManager;
   }
+
+private:
+  TextureManager() = default;
+
+  struct TexRef
+  {
+    GLuint texID{ 0 };
+    unsigned int refCount{ 0 };
+    std::string filename;
+    TexRef() {}
+    TexRef(GLuint texID) : texID(texID), refCount(1){}
+    TexRef(GLuint texID, const std::string& filename) : texID(texID), refCount(1), filename(filename){}
+  };
+
+  std::unordered_map<std::string, TexRef*>  m_loadedTextures;
+  std::unordered_map<GLuint, TexRef*> m_textures;
+
+};
+
 }
-
-
-#endif // !_TEXTUREMANAGER_HPP_

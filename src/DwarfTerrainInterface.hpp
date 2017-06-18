@@ -18,29 +18,28 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#ifndef _DWARFTERRAININTERFACE_HPP_
-#define _DWARFTERRAININTERFACE_HPP_
+#pragma once
 
 #include <memory>
 
-namespace cdwarfs {
+namespace cdwarfs
+
+{
   class Dwarf;
   class Point;
   class TerrainMap;
   enum class TerrainType : unsigned int;
 
-  class DwarfTerrainInterface final{
+  class DwarfTerrainInterface final
+  {
   public:
     DwarfTerrainInterface() = delete;
     DwarfTerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap);
     ~DwarfTerrainInterface(){}
 
-    const TerrainType checkTerrain(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
+    TerrainType checkTerrain(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
   private:
     std::weak_ptr<TerrainMap> m_terrain;
   };
 
-
 }
-
-#endif // !_DWARFTERRAININTERFACE_HPP_

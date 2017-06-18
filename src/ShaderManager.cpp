@@ -24,41 +24,49 @@ using namespace cdwarfs::render;
 
 /////// Specialization of the uploadUniforms template method
 template<>
-void ShaderManager::uploadUniforms<GLfloat, GLfloat, GLfloat, GLfloat>(GLuint uniID, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+void ShaderManager::uploadUniforms<GLfloat, GLfloat, GLfloat, GLfloat>(GLuint uniID, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+{
   glUniform4f(uniID, x, y, z, w);
 }
 
 template<>
-void ShaderManager::uploadUniforms<GLfloat, GLfloat, GLfloat>(GLuint uniID, GLfloat x, GLfloat y, GLfloat z) {
+void ShaderManager::uploadUniforms<GLfloat, GLfloat, GLfloat>(GLuint uniID, GLfloat x, GLfloat y, GLfloat z)
+{
   glUniform3f(uniID, x, y, z);
 }
 
 template<>
-void ShaderManager::uploadUniforms<GLfloat, GLfloat>(GLuint uniID, GLfloat x, GLfloat y) {
+void ShaderManager::uploadUniforms<GLfloat, GLfloat>(GLuint uniID, GLfloat x, GLfloat y)
+{
   glUniform2f(uniID, x, y);
 }
 
 template<>
-void ShaderManager::uploadUniforms<GLfloat>(GLuint uniID, GLfloat x) {
+void ShaderManager::uploadUniforms<GLfloat>(GLuint uniID, GLfloat x)
+{
   glUniform1f(uniID, x);
 }
 
 template<>
-void ShaderManager::uploadUniforms<GLint>(GLuint uniID, GLint x) {
+void ShaderManager::uploadUniforms<GLint>(GLuint uniID, GLint x)
+{
   glUniform1i(uniID, x);
 }
 
 template<>
-void ShaderManager::uploadUniforms<GLuint>(GLuint uniID, GLuint x) {
+void ShaderManager::uploadUniforms<GLuint>(GLuint uniID, GLuint x)
+{
   glUniform1ui(uniID, x);
 }
 //////////////////////////////////////////////////////////////////////
 
-ShaderManager::ShaderManager() {
+ShaderManager::ShaderManager()
+{
   std::fill(_ubo_points.begin(), _ubo_points.end(), false);
 }
 
-std::string ShaderManager::getFileContents(const std::string& filename) const {
+std::string ShaderManager::getFileContents(const std::string& filename) const
+{
   std::ifstream in(filename, std::ios::in | std::ios::binary);
   if (in) {
     std::string contents;
@@ -76,7 +84,8 @@ std::string ShaderManager::getFileContents(const std::string& filename) const {
   throw std::runtime_error("Could not open file: " + filename + " !");
 }
 
-void  ShaderManager::compileShader(const std::string& shaderCode, const std::string& shaderKey, GLenum type) {
+void  ShaderManager::compileShader(const std::string& shaderCode, const std::string& shaderKey, GLenum type)
+{
   glGetError();
 
   GLuint shaderID = glCreateShader(type);
@@ -106,13 +115,15 @@ void  ShaderManager::compileShader(const std::string& shaderCode, const std::str
   }
 }
 
-void ShaderManager::loadShader(const std::string& filename, const std::string& shaderKey, GLenum type) {
+void ShaderManager::loadShader(const std::string& filename, const std::string& shaderKey, GLenum type)
+{
   auto shaderCode = getFileContents(filename);
 
   compileShader(shaderCode, shaderKey, type);
 }
 
-void ShaderManager::attachShader(const std::string& shaderKey, const std::string& shaderProgramKey) {
+void ShaderManager::attachShader(const std::string& shaderKey, const std::string& shaderProgramKey)
+{
   glGetError();
 
   GLuint shaderID = _shaderData.getShaderID(shaderKey);
@@ -130,7 +141,8 @@ void ShaderManager::attachShader(const std::string& shaderKey, const std::string
   }
 }
 
-void ShaderManager::detachShader(const std::string& shaderKey, const std::string& shaderProgramKey) {
+void ShaderManager::detachShader(const std::string& shaderKey, const std::string& shaderProgramKey)
+{
   glGetError();
 
   GLuint shaderID = _shaderData.getShaderID(shaderKey);
@@ -148,12 +160,14 @@ void ShaderManager::detachShader(const std::string& shaderKey, const std::string
   }
 }
 
-void ShaderManager::resetProgram() {
+void ShaderManager::resetProgram()
+{
   glUseProgram(0);
 }
 
 
-GLuint ShaderManager::createProgram(const std::string& shaderProgramKey) {
+GLuint ShaderManager::createProgram(const std::string& shaderProgramKey)
+{
   glGetError();
 
   GLuint shaderProgramID = glCreateProgram();
@@ -170,7 +184,8 @@ GLuint ShaderManager::createProgram(const std::string& shaderProgramKey) {
   return shaderProgramID;
 }
 
-GLuint ShaderManager::createProgram() {
+GLuint ShaderManager::createProgram()
+{
   glGetError();
 
   GLuint shaderProgramID = glCreateProgram();
@@ -181,12 +196,14 @@ GLuint ShaderManager::createProgram() {
 }
 
 
-void ShaderManager::useProgram(const std::string& shaderProgramKey) {
+void ShaderManager::useProgram(const std::string& shaderProgramKey)
+{
   GLuint shaderProgramID = _shaderData.getShaderProgramID(shaderProgramKey);
   useProgram(shaderProgramID);
 }
 
-void ShaderManager::useProgram(GLuint shaderProgramID) {
+void ShaderManager::useProgram(GLuint shaderProgramID)
+{
   glGetError();
 
   if (shaderProgramID != 0) {
@@ -200,12 +217,14 @@ void ShaderManager::useProgram(GLuint shaderProgramID) {
 }
 
 
-void ShaderManager::linkProgram(const std::string& shaderProgramKey) {
+void ShaderManager::linkProgram(const std::string& shaderProgramKey)
+{
   GLuint shaderProgramID = _shaderData.getShaderProgramID(shaderProgramKey);
   linkProgram(shaderProgramID);
 }
 
-void ShaderManager::linkProgram(GLuint shaderProgramID) {
+void ShaderManager::linkProgram(GLuint shaderProgramID)
+{
   glGetError();
 
   if (shaderProgramID != 0) {
@@ -231,15 +250,18 @@ void ShaderManager::linkProgram(GLuint shaderProgramID) {
 }
 
 
-GLuint ShaderManager::getShaderID(const std::string& shaderKey) {
+GLuint ShaderManager::getShaderID(const std::string& shaderKey)
+{
   return _shaderData.getShaderID(shaderKey);
 }
 
-GLuint ShaderManager::getShaderProgramID(const std::string& shaderProgramKey) {
+GLuint ShaderManager::getShaderProgramID(const std::string& shaderProgramKey)
+{
   return _shaderData.getShaderProgramID(shaderProgramKey);
 }
 
-GLuint ShaderManager::occupyUBOBindingPoint() {
+GLuint ShaderManager::occupyUBOBindingPoint()
+{
   for (unsigned int i = 0; i < GL_MAX_UNIFORM_BUFFER_BINDINGS; i++) {
     if (_ubo_points[i] == false) {
       _ubo_points[i] = true;
@@ -249,14 +271,16 @@ GLuint ShaderManager::occupyUBOBindingPoint() {
   return -1;
 }
 
-void ShaderManager::unoccupyUBOBindingPoint(GLuint slot) {
+void ShaderManager::unoccupyUBOBindingPoint(GLuint slot)
+{
   if (slot >= 0 || slot < GL_MAX_UNIFORM_BUFFER_BINDINGS) {
     _ubo_points[slot] = false;
   }
 }
 
 
-void ShaderManager::deleteProgram(const std::string& shaderProgramKey) {
+void ShaderManager::deleteProgram(const std::string& shaderProgramKey)
+{
   auto shaderProgramID = _shaderData.getShaderProgramID(shaderProgramKey);
   if (shaderProgramID == 0) return;
   try {
@@ -269,7 +293,8 @@ void ShaderManager::deleteProgram(const std::string& shaderProgramKey) {
   _shaderData.deleteShaderProgram(shaderProgramKey);
 }
 
-void ShaderManager::deleteProgram(GLuint shaderProgramID) {
+void ShaderManager::deleteProgram(GLuint shaderProgramID)
+{
   glGetError();
 
   if (shaderProgramID != 0) glDeleteProgram(shaderProgramID);
@@ -281,13 +306,15 @@ void ShaderManager::deleteProgram(GLuint shaderProgramID) {
 }
 
 
-void ShaderManager::deleteShader(const std::string& shaderKey) {
+void ShaderManager::deleteShader(const std::string& shaderKey)
+{
   auto shaderID = _shaderData.getShaderID(shaderKey);
   deleteShader(shaderID);
   _shaderData.deleteShader(shaderKey);
 }
 
-void ShaderManager::deleteShader(GLuint shaderID) {
+void ShaderManager::deleteShader(GLuint shaderID)
+{
   glGetError();
 
   if (shaderID != 0) glDeleteShader(shaderID);
@@ -297,11 +324,13 @@ void ShaderManager::deleteShader(GLuint shaderID) {
   }
 }
 
-void ShaderManager::loadMatrix4(const std::string& shaderProgram, const std::string& name, const GLfloat* value) {
+void ShaderManager::loadMatrix4(const std::string& shaderProgram, const std::string& name, const GLfloat* value)
+{
   loadMatrix4(getShaderProgramID(shaderProgram), name, value);
 }
 
-void ShaderManager::loadMatrix4(GLuint shaderProgramID, const std::string& name, const GLfloat* value) {
+void ShaderManager::loadMatrix4(GLuint shaderProgramID, const std::string& name, const GLfloat* value)
+{
   glGetError();
 
   auto _uniID = glGetUniformLocation(shaderProgramID, name.c_str());
@@ -313,7 +342,8 @@ void ShaderManager::loadMatrix4(GLuint shaderProgramID, const std::string& name,
   loadMatrix4(_uniID, value);
 }
 
-void ShaderManager::loadMatrix4(GLint location, const GLfloat* value) {
+void ShaderManager::loadMatrix4(GLint location, const GLfloat* value)
+{
   if (location == -1) {
     throw std::runtime_error("ERROR: -1 is not a valid uniform location!");
     return;
@@ -328,21 +358,25 @@ void ShaderManager::loadMatrix4(GLint location, const GLfloat* value) {
   }
 }
 
-void ShaderManager::getBufferVariableIndices(const std::string& shaderProgram, int length, const GLchar** names, GLint* indices) {
+void ShaderManager::getBufferVariableIndices(const std::string& shaderProgram, int length, const GLchar** names, GLint* indices)
+{
   for (int i = 0; i < length; ++i) {
     indices[i] = glGetProgramResourceIndex(getShaderProgramID(shaderProgram), GL_BUFFER_VARIABLE, names[i]);
   }
 }
 
-GLint ShaderManager::getUniformLocation(GLuint shaderProgramID, const std::string& name) {
+GLint ShaderManager::getUniformLocation(GLuint shaderProgramID, const std::string& name)
+{
   return glGetUniformLocation(shaderProgramID, name.c_str());
 }
 
-GLint ShaderManager::getUniformLocation(const std::string& shaderProgram, const std::string& name) {
+GLint ShaderManager::getUniformLocation(const std::string& shaderProgram, const std::string& name)
+{
   return getUniformLocation(getShaderProgramID(shaderProgram), name);
 }
 
-const std::string ShaderManager::errVal(GLenum error) {
+const std::string ShaderManager::errVal(GLenum error)
+{
   if (error == GL_NO_ERROR) {
     return "GL_NO_ERROR";
   }

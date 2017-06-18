@@ -18,13 +18,12 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#ifndef _TEXTURE2DARRAY_HPP_
-#define _TEXTURE2DARRAY_HPP_
+#pragma once
 
 #ifndef _GL3W_
 #define _GL3W_
-#include <GL\gl3w.h>
-#include <GLFW\glfw3.h>
+#include "GL/gl3w.h"
+#include <GLFW/glfw3.h>
 #endif
 
 #include <vector>
@@ -32,46 +31,44 @@
 #include <optional>
 #include "TextureManager.hpp"
 
-namespace cdwarfs {
-  namespace render {
-    class Texture2DArray {
-    public:
-      Texture2DArray();
+namespace cdwarfs::render
+{
 
-      Texture2DArray(const std::vector<std::string>& m_filepaths,
-        GLenum image_format = GL_RGBA       //format the imagea are in
-        );
+class Texture2DArray
+{
+public:
+  Texture2DArray();
 
-      Texture2DArray(const Texture2DArray&);
-      Texture2DArray(Texture2DArray&&);
-      Texture2DArray& operator=(const Texture2DArray&);
-      Texture2DArray& operator=(Texture2DArray&&);
+  Texture2DArray(const std::vector<std::string>& m_filepaths,
+                 GLenum image_format = GL_RGBA);       //format the imagea are in
 
-      ~Texture2DArray();
+  Texture2DArray(const Texture2DArray&);
+  Texture2DArray(Texture2DArray&&);
+  Texture2DArray& operator=(const Texture2DArray&);
+  Texture2DArray& operator=(Texture2DArray&&);
 
-      inline GLuint texID() const { return m_gl_texID; }
-      inline int width() const { return m_width; }
-      inline int height() const { return m_height; }
-      inline int channels() const { return m_numChannels; }
-      inline GLenum imageFormat() const { return m_image_format; }
+  ~Texture2DArray();
 
-    private:
-      void init();
+  inline GLuint texID() const { return m_gl_texID; }
+  inline int width() const { return m_width; }
+  inline int height() const { return m_height; }
+  inline int channels() const { return m_numChannels; }
+  inline GLenum imageFormat() const { return m_image_format; }
 
-      void makeDeepCopy(const Texture2DArray& tex);
-      void makeMove(Texture2DArray&& tex);
+private:
+  void init();
 
-      static TextureManager& m_texManager;
+  void makeDeepCopy(const Texture2DArray& tex);
+  void makeMove(Texture2DArray&& tex);
 
-      std::optional<std::vector<std::string>> m_filepaths{};
-      GLuint m_gl_texID{ 0 };
-      GLenum m_image_format{ GL_RGBA };
-      int m_width{ 0 };
-      int m_height{ 0 };
-      int m_numChannels{ 0 };
-    };
-  }
+  static TextureManager& m_texManager;
+
+  std::optional<std::vector<std::string>> m_filepaths{};
+  GLuint m_gl_texID{ 0 };
+  GLenum m_image_format{ GL_RGBA };
+  int m_width{ 0 };
+  int m_height{ 0 };
+  int m_numChannels{ 0 };
+};
+
 }
-
-#endif // !_TEXTURE2DARRAY_HPP_
-

@@ -33,7 +33,8 @@ TerrainObjectSystem::TerrainObjectSystem(const std::shared_ptr<EntityManager> en
 TerrainObjectSystem::~TerrainObjectSystem(){}
 
 // TODO: Optimize via quadtree or create an array like in the terrainmap?
-std::vector<std::pair<EntityID::UUID, std::string>> TerrainObjectSystem::at(int row, int col) const {
+std::vector<std::pair<EntityID::UUID, std::string>> TerrainObjectSystem::at(int row, int col) const
+{
   auto posEqual = [row, col](const comp::Position* pos) {
     if (pos->col == col && pos->row == row) return true;
     return false;
@@ -53,7 +54,8 @@ std::vector<std::pair<EntityID::UUID, std::string>> TerrainObjectSystem::at(int 
 }
 
 
-void TerrainObjectSystem::loadObjects(const std::string& filepath) {
+void TerrainObjectSystem::loadObjects(const std::string& filepath)
+{
   chaiscript::ChaiScript chai;
 
   chai.add(chaiscript::var(std::ref(*this)), "terrainMap");
@@ -67,7 +69,8 @@ void TerrainObjectSystem::loadObjects(const std::string& filepath) {
   chai.eval_file(filepath);
 }
 
-bool TerrainObjectSystem::erase(EntityID::UUID ID) {
+bool TerrainObjectSystem::erase(EntityID::UUID ID)
+{
   auto ent = std::find(m_objects.cbegin(), m_objects.cend(), ID);
   if (ent == m_objects.cend()) return false;
   m_objects.erase(ent);
@@ -75,7 +78,8 @@ bool TerrainObjectSystem::erase(EntityID::UUID ID) {
 }
 
 // TODO: Improve runtime. Currently quadratic!
-void TerrainObjectSystem::objectCollisions(std::shared_ptr<CommandSystem>& cmdSys) {
+void TerrainObjectSystem::objectCollisions(std::shared_ptr<CommandSystem>& cmdSys)
+{
   for (auto objID : m_objects) {
     auto pos = m_entManager->getComponent<comp::Position>(objID);
     if (!pos) continue;
@@ -92,7 +96,8 @@ void TerrainObjectSystem::objectCollisions(std::shared_ptr<CommandSystem>& cmdSy
   }
 }
 
-EntityID::UUID TerrainObjectSystem::add(const std::string& name, int row, int col) {
+EntityID::UUID TerrainObjectSystem::add(const std::string& name, int row, int col)
+{
   auto ID = m_entManager->createObject(name);
   auto pos = m_entManager->getComponent<comp::Position>(ID);
   if (!pos) throw std::runtime_error("Object " + name + " has no position component. Can't be placed on the terrain.");

@@ -21,47 +21,47 @@
 #include "Components.hpp"
 #include "ChaiScriptAI.hpp"
 
-namespace cdwarfs {
-  namespace comp {
+namespace cdwarfs::comp
+{
 
-    FlaggedDestroyed::FlaggedDestroyed() {}
+FlaggedDestroyed::FlaggedDestroyed() {}
 
-    TouchDestroy::TouchDestroy() {}
+TouchDestroy::TouchDestroy() {}
 
-    TouchValue::TouchValue() {}
-    TouchValue::TouchValue(int l_value) : value(l_value) {}
+TouchValue::TouchValue() {}
+TouchValue::TouchValue(int l_value) : value(l_value) {}
 
-    TouchHeal::TouchHeal() {}
-    TouchHeal::TouchHeal(int l_heal) : heal(l_heal) {}
+TouchHeal::TouchHeal() {}
+TouchHeal::TouchHeal(int l_heal) : heal(l_heal) {}
 
-    TouchDamage::TouchDamage() {}
-    TouchDamage::TouchDamage(int l_damage) : damage(l_damage) {}
+TouchDamage::TouchDamage() {}
+TouchDamage::TouchDamage(int l_damage) : damage(l_damage) {}
 
-    Name::Name() {}
-    Name::Name(const std::string& l_name) : name(l_name) {}
+Name::Name() {}
+Name::Name(const std::string& l_name) : name(l_name) {}
 
-    Position::Position() {}
-    Position::Position(int l_row, int l_col) : row(l_row), col(l_col) {}
+Position::Position() {}
+Position::Position(int l_row, int l_col) : row(l_row), col(l_col) {}
 
-    HP::HP() {}
-    HP::HP(int hp, int maxHP) : hp(hp), maxHP(maxHP) {}
+HP::HP() {}
+HP::HP(int hp, int maxHP) : hp(hp), maxHP(maxHP) {}
 
-    Speed::Speed() {}
-    Speed::Speed(int speed) : speed(speed) {}
+Speed::Speed() {}
+Speed::Speed(int speed) : speed(speed) {}
 
-    Points::Points() {}
-    Points::Points(int points) : points(points) {}
+Points::Points() {}
+Points::Points(int points) : points(points) {}
 
-    View::View() {}
-    View::View(int dist) : dist(dist) {}
+View::View() {}
+View::View(int dist) : dist(dist) {}
 
-    AIComponent::AIComponent(std::unique_ptr<DwarfAI>&& ai) : ai(std::move(ai)) {}
+AIComponent::AIComponent(std::unique_ptr<DwarfAI>&& ai) : ai(std::move(ai)) {}
 
-    ScriptAI::ScriptAI() : AIComponent(std::make_unique<ChaiscriptAI>("")), filePath("") {}
-    ScriptAI::ScriptAI(const std::string& filePath) : AIComponent(std::make_unique<ChaiscriptAI>(filePath)), filePath(filePath) {}
+ScriptAI::ScriptAI() : AIComponent(std::make_unique<ChaiscriptAI>("")), filePath("") {}
+ScriptAI::ScriptAI(const std::string& filePath) : AIComponent(std::make_unique<ChaiscriptAI>(filePath)), filePath(filePath) {}
 
-    Sprites::Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths) : sprites(filePaths) {}
+Sprites::Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths) : sprites(filePaths) {}
 
-    AnimatedSprites::AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths) : sprites(filePaths) {}
-  }
+AnimatedSprites::AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths) : sprites(filePaths) {}
+
 }

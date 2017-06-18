@@ -32,13 +32,11 @@
 using namespace cdwarfs;
 using namespace cdwarfs::render;
 
-RenderSystem::RenderSystem(
-  const std::shared_ptr<TerrainObjectSystem>& terrainObjSys,
-  const std::shared_ptr<TerrainMap>& terrainMap,
-  const std::shared_ptr<EntityManager>& entManager,
-  const std::shared_ptr<DwarfSystem>& dwarfSys,
-  const std::shared_ptr<GLFWInput>& input
-  ) :
+RenderSystem::RenderSystem(const std::shared_ptr<TerrainObjectSystem>& terrainObjSys,
+                           const std::shared_ptr<TerrainMap>& terrainMap,
+                           const std::shared_ptr<EntityManager>& entManager,
+                           const std::shared_ptr<DwarfSystem>& dwarfSys,
+                           const std::shared_ptr<GLFWInput>& input) :
   m_terrainObjSys(terrainObjSys),
   m_terrainMap(terrainMap),
   m_entManager(entManager),
@@ -54,8 +52,8 @@ RenderSystem::RenderSystem(
 
 RenderSystem::~RenderSystem() {}
 
-void RenderSystem::init(int wnd_Width, int wnd_Height, const std::string& windowName) {
-
+void RenderSystem::init(int wnd_Width, int wnd_Height, const std::string& windowName)
+{
   m_window = std::make_shared<WindowGLFW>(wnd_Width, wnd_Height, windowName, false);
   m_window->init();
 
@@ -75,19 +73,23 @@ void RenderSystem::init(int wnd_Width, int wnd_Height, const std::string& window
   m_spriteRend->init(m_outputTexture, m_camera);
 }
 
-std::shared_ptr<WindowGLFW> RenderSystem::getWindow() {
+std::shared_ptr<WindowGLFW> RenderSystem::getWindow()
+{
   return m_window;
 }
 
-const std::shared_ptr<TileRenderer> RenderSystem::getTileRenderer() {
+const std::shared_ptr<TileRenderer> RenderSystem::getTileRenderer()
+{
   return m_tileRend;
 }
 
-const std::shared_ptr<SpriteRenderer> RenderSystem::getSpriteRenderer() {
+const std::shared_ptr<SpriteRenderer> RenderSystem::getSpriteRenderer()
+{
   return m_spriteRend;
 }
 
-void RenderSystem::render(double dt) {
+void RenderSystem::render(double dt)
+{
   m_camera->update(dt);
 
   m_tileRend->render();

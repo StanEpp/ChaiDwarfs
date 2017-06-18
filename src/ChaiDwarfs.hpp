@@ -18,8 +18,9 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#ifndef _CHAIDWARFS_HPP_
-#define _CHAIDWARFS_HPP_
+#pragma once
+
+#include <memory>
 
 #include "RenderSystem.hpp"
 #include "DwarfSystem.hpp"
@@ -30,103 +31,99 @@
 #include "EntityManager.hpp"
 #include "CommandSystem.hpp"
 #include "GLFWInput.hpp"
-#include <thread>
-namespace cdwarfs {
 
-  class ChaiDwarfs {
-  public:
-    ChaiDwarfs() : 
-      m_entManager(std::make_shared<EntityManager>()),
-      m_cmdSystem(std::make_shared<CommandSystem>(m_entManager)),
-      m_dwarfSys(std::make_shared<DwarfSystem>(m_entManager, m_cmdSystem)),
-      m_running(true),
-      m_terrain(std::make_shared<TerrainMap>()),
-      m_terrainObjSys(std::make_shared<TerrainObjectSystem>(m_entManager)),
-      m_input(std::make_shared<render::GLFWInput>()),
-      m_renderer(std::make_shared<render::RenderSystem>(m_terrainObjSys, m_terrain, m_entManager, m_dwarfSys, m_input))
-      {}
+namespace cdwarfs
+{
 
+class ChaiDwarfs
+{
+public:
+  ChaiDwarfs() :
+    m_entManager(std::make_shared<EntityManager>()),
+    m_cmdSystem(std::make_shared<CommandSystem>(m_entManager)),
+    m_dwarfSys(std::make_shared<DwarfSystem>(m_entManager, m_cmdSystem)),
+    m_terrain(std::make_shared<TerrainMap>()),
+    m_terrainObjSys(std::make_shared<TerrainObjectSystem>(m_entManager)),
+    m_input(std::make_shared<render::GLFWInput>()),
+    m_renderer(std::make_shared<render::RenderSystem>(m_terrainObjSys, m_terrain, m_entManager, m_dwarfSys, m_input)),
+    m_running(true)
+    {}
 
-    void init() { 
+  void init()
+  {
       m_terrain->load("scripts/mapGeneration.chai");
 
       m_entManager->init();
       m_entManager->loadObjectDefinitions("scripts/objectDefinitions.chai");
-      
+
       m_terrainObjSys->loadObjects("scripts/objectCreation.chai");
-      
+
       m_renderer->init(1280, 720, "ChaiDwarfs");
 
       m_cmdSystem->init(m_terrain, m_terrainObjSys, m_renderer->getTileRenderer(), m_renderer->getSpriteRenderer());
 
       m_input->bindInputToWindow(*m_renderer->getWindow());
-    }
+  }
 
-    void run() {
-      Timer timer;
+  void run()
+  {
+    Timer timer;
 
-      //m_dwarfSys->add("Dwarf", m_terrain, m_terrainObjSys);
-      m_dwarfSys->addDwarfs(m_terrain, m_terrainObjSys);
+    //m_dwarfSys->add("Dwarf", m_terrain, m_terrainObjSys);
+    m_dwarfSys->addDwarfs(m_terrain, m_terrainObjSys);
 
-      auto lastRound = timer.currentTime();
-      int fpsCounter = 0;
+    auto lastRound = timer.currentTime();
+    int fpsCounter = 0;
 
-      while (m_running) {
-        m_input->updateInput();
+    while (m_running) {
+      m_input->updateInput();
 
-        if (m_input->isKeyPressedOnce(GLFW_KEY_ESCAPE)) {
-          m_running = false;
-        }
-
-        if (timer.haveMilliSecondsPassed(500, lastRound)) {
-          m_dwarfSys->updateDwarfs();
-          m_terrainObjSys->objectCollisions(m_cmdSystem);
-          m_cmdSystem->processQueue();
-          killAllDestroyedEntities();
-          lastRound = timer.currentTime();
-        }
-        
-        timer.setDt(timer.lastFrameRendered, timer.currentTime());
-        timer.lastFrameRendered = timer.currentTime();
-        // std::cout << timer.dt << '\n';
-        m_renderer->render(timer.dt);
-
-        ++fpsCounter;
-
-        if (timer.haveMilliSecondsPassed(1000, timer.lastFpsUpdate)) {
-          // std::cout << fpsCounter << '\n';
-          fpsCounter = 0;
-          timer.lastFpsUpdate = timer.currentTime();
-        }
-
+      if (m_input->isKeyPressedOnce(GLFW_KEY_ESCAPE)) {
+        m_running = false;
       }
-    
+
+      if (timer.haveMilliSecondsPassed(500, lastRound)) {
+        m_dwarfSys->updateDwarfs();
+        m_terrainObjSys->objectCollisions(m_cmdSystem);
+        m_cmdSystem->processQueue();
+        killAllDestroyedEntities();
+        lastRound = timer.currentTime();
+      }
+
+      timer.setDt(timer.lastFrameRendered, timer.currentTime());
+      timer.lastFrameRendered = timer.currentTime();
+      m_renderer->render(timer.dt);
+
+      ++fpsCounter;
+
+      if (timer.haveMilliSecondsPassed(1000, timer.lastFpsUpdate)) {
+        fpsCounter = 0;
+        timer.lastFpsUpdate = timer.currentTime();
+      }
+
     }
+  }
 
-  private:
-    std::shared_ptr<EntityManager>        m_entManager;
-    std::shared_ptr<CommandSystem>        m_cmdSystem;
-    std::shared_ptr<DwarfSystem>          m_dwarfSys;
-    std::shared_ptr<TerrainMap>           m_terrain;
-    std::shared_ptr<TerrainObjectSystem>  m_terrainObjSys;
+private:
+  std::shared_ptr<EntityManager>        m_entManager;
+  std::shared_ptr<CommandSystem>        m_cmdSystem;
+  std::shared_ptr<DwarfSystem>          m_dwarfSys;
+  std::shared_ptr<TerrainMap>           m_terrain;
+  std::shared_ptr<TerrainObjectSystem>  m_terrainObjSys;
 
-    std::shared_ptr<render::GLFWInput>    m_input;
-    std::shared_ptr<render::RenderSystem> m_renderer;
+  std::shared_ptr<render::GLFWInput>    m_input;
+  std::shared_ptr<render::RenderSystem> m_renderer;
 
-    bool  m_running;
+  bool  m_running;
 
-    void killAllDestroyedEntities() {
+  void killAllDestroyedEntities()
+  {
       auto vec = m_entManager->getAllEntitiesWithComponent<comp::FlaggedDestroyed>();
       for (auto ID : vec) {
         m_entManager->killEntity(ID);
       }
-    }
+  }
 
-  };
-
+};
 
 }
-
-
-
-#endif

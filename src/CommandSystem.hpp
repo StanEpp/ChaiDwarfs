@@ -17,8 +17,7 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
-#ifndef _COMMANDSYSTEM_HPP_
-#define _COMMANDSYSTEM_HPP_
+#pragma once
 
 #include <queue>
 #include <stack>
@@ -31,72 +30,73 @@ namespace cdwarfs::render {
 
 namespace cdwarfs {
 
-  class TerrainMap;
-  class TerrainObjectSystem;
+class TerrainMap;
+class TerrainObjectSystem;
 
-  class CommandSystem {
-  public:
-    CommandSystem() = delete;
-    CommandSystem(const std::shared_ptr<EntityManager>& entManager) : m_entManager(entManager) {}
+class CommandSystem {
+public:
+  CommandSystem() = delete;
+  CommandSystem(const std::shared_ptr<EntityManager>& entManager) : m_entManager(entManager) {}
 
-    ~CommandSystem() {}
+  ~CommandSystem() {}
 
-    void init(const std::shared_ptr<TerrainMap>& terrainMap,
-      const std::shared_ptr<TerrainObjectSystem>& terrainObjSys,
-      const std::shared_ptr<render::TileRenderer>& tileRenderer,
-      const std::shared_ptr<render::SpriteRenderer>& spriteRenderer) 
-    {
-      addNewComponentSystem<compSys::TouchValue_Sys>();
-      addNewComponentSystem<compSys::TouchDestroy_Sys>();
-      addNewComponentSystem<compSys::TouchHeal_Sys>();
-      addNewComponentSystem<compSys::TouchDamage_Sys>();
-      addNewComponentSystem<compSys::Damage_Sys>();
-      addNewComponentSystem<compSys::Points_Sys>();
-      addNewComponentSystem<compSys::Move_Sys>(terrainMap, terrainObjSys);
-      addNewComponentSystem<compSys::ChangeTerrainType_Sys>(terrainMap, terrainObjSys);
-      addNewComponentSystem<compSys::ChangeTileType_Rendering_Sys>(tileRenderer);
-      addNewComponentSystem<compSys::MoveSprite_Sys>(spriteRenderer);
-    }
+  void init(const std::shared_ptr<TerrainMap>& terrainMap,
+            const std::shared_ptr<TerrainObjectSystem>& terrainObjSys,
+            const std::shared_ptr<render::TileRenderer>& tileRenderer,
+            const std::shared_ptr<render::SpriteRenderer>& spriteRenderer)
+  {
+    addNewComponentSystem<compSys::TouchValue_Sys>();
+    addNewComponentSystem<compSys::TouchDestroy_Sys>();
+    addNewComponentSystem<compSys::TouchHeal_Sys>();
+    addNewComponentSystem<compSys::TouchDamage_Sys>();
+    addNewComponentSystem<compSys::Damage_Sys>();
+    addNewComponentSystem<compSys::Points_Sys>();
+    addNewComponentSystem<compSys::Move_Sys>(terrainMap, terrainObjSys);
+    addNewComponentSystem<compSys::ChangeTerrainType_Sys>(terrainMap, terrainObjSys);
+    addNewComponentSystem<compSys::ChangeTileType_Rendering_Sys>(tileRenderer);
+    addNewComponentSystem<compSys::MoveSprite_Sys>(spriteRenderer);
+  }
 
-    void pushCommand(cmd::Command cmd) {
-      m_cmdQueue.push(cmd);
-    }
+  void pushCommand(cmd::Command cmd)
+  {
+    m_cmdQueue.push(cmd);
+  }
 
-    void processQueue() {
-      std::stack<cmd::Command> cmdStack;
+  void processQueue()
+  {
+    std::stack<cmd::Command> cmdStack;
 
-      while (!m_cmdQueue.empty()) {
-        cmdStack.push(m_cmdQueue.front());
-        m_cmdQueue.pop();
+    while (!m_cmdQueue.empty()) {
+      cmdStack.push(m_cmdQueue.front());
+      m_cmdQueue.pop();
 
-        while (!cmdStack.empty()) {
-          auto currCmd = cmdStack.top();
-          cmdStack.pop();
+      while (!cmdStack.empty()) {
+        auto currCmd = cmdStack.top();
+        cmdStack.pop();
 
-          for (auto& visitor : m_visitors) {
-            auto retCmd = std::visit(*visitor, currCmd);
+        for (auto& visitor : m_visitors) {
+          auto retCmd = std::visit(*visitor, currCmd);
 
-            if (retCmd.size() >= 1) {
-              for (auto rIt = retCmd.rbegin(); rIt != retCmd.rend(); rIt++) {
-                cmdStack.push((*rIt));
-              }
+          if (retCmd.size() >= 1) {
+            for (auto rIt = retCmd.rbegin(); rIt != retCmd.rend(); rIt++) {
+              cmdStack.push((*rIt));
             }
           }
         }
       }
     }
+  }
 
-  private:
+private:
+  template<class TSys, class... Params>
+  inline void addNewComponentSystem(Params&&... args)
+  {
+    m_visitors.push_back(std::make_shared<TSys>(m_entManager, std::forward<Params>(args)...));
+  }
 
-    template<class TSys, class... Params>
-    inline void addNewComponentSystem(Params&&... args) {
-      m_visitors.push_back(std::make_shared<TSys>(m_entManager, std::forward<Params>(args)...));
-    }
+  std::queue<cmd::Command>  m_cmdQueue;
+  std::vector<std::shared_ptr<compSys::BaseVisitor>>  m_visitors;
+  std::shared_ptr<EntityManager> m_entManager;
+};
 
-    std::queue<cmd::Command>  m_cmdQueue;
-    std::vector<std::shared_ptr<compSys::BaseVisitor>>  m_visitors;
-    std::shared_ptr<EntityManager> m_entManager;
-  };
 }
-
-#endif // !_COMMANDSYSTEM_HPP_

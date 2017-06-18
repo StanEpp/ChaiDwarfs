@@ -34,21 +34,23 @@ using namespace cdwarfs::render;
 
 GLFWInput::GLFWInput() {}
 
-GLFWInput::~GLFWInput() {
+GLFWInput::~GLFWInput()
+{
   if(m_window) glfwSetWindowUserPointer(m_window, nullptr);
 }
 
-void GLFWInput::bindInputToWindow(const WindowGLFW& window) {
+void GLFWInput::bindInputToWindow(const WindowGLFW& window)
+{
   m_window = window.getGLFWwindow();
 
   glfwSetWindowUserPointer(m_window, this);
-  glfwSetScrollCallback(m_window, [](GLFWwindow* wnd, double xOff, double yOff) { 
-    static_cast<GLFWInput*>(glfwGetWindowUserPointer(wnd))->mouseWheelCallback(wnd, xOff, yOff); 
+  glfwSetScrollCallback(m_window, [](GLFWwindow* wnd, double xOff, double yOff) {
+    static_cast<GLFWInput*>(glfwGetWindowUserPointer(wnd))->mouseWheelCallback(wnd, xOff, yOff);
   });
-
 }
 
-void GLFWInput::updateInput() {
+void GLFWInput::updateInput()
+{
   double x, y;
   glfwPollEvents();
   glfwGetCursorPos(m_window, &x, &y);
@@ -60,15 +62,18 @@ void GLFWInput::updateInput() {
   m_scrollLastDiff = 0.0;
 }
 
-int GLFWInput::isKeyPressed(unsigned int GLFW_Key) const {
+int GLFWInput::isKeyPressed(unsigned int GLFW_Key) const
+{
   return (glfwGetKey(m_window, GLFW_Key) == GLFW_PRESS);
 }
 
-bool GLFWInput::isMouseButtonPressed(unsigned int GLFW_MouseButton) const {
+bool GLFWInput::isMouseButtonPressed(unsigned int GLFW_MouseButton) const
+{
   return (glfwGetMouseButton(m_window, GLFW_MouseButton) == GLFW_PRESS);
 }
 
-bool GLFWInput::isKeyPressedOnce(unsigned int GLFW_Key) {
+bool GLFWInput::isKeyPressedOnce(unsigned int GLFW_Key)
+{
   if (isKeyPressed(GLFW_Key)) {
     if (m_keyPressed.find(GLFW_Key) == m_keyPressed.end()) {
       m_keyPressed.insert(GLFW_Key);
@@ -81,7 +86,8 @@ bool GLFWInput::isKeyPressedOnce(unsigned int GLFW_Key) {
   return false;
 }
 
-bool GLFWInput::isMouseButtonPressedOnce(unsigned int GLFW_MouseButton) {
+bool GLFWInput::isMouseButtonPressedOnce(unsigned int GLFW_MouseButton)
+{
   if (isMouseButtonPressed(GLFW_MouseButton)) {
     if (!m_mouseButtonPressed[GLFW_MouseButton]) {
       m_mouseButtonPressed[GLFW_MouseButton] = true;
@@ -94,10 +100,12 @@ bool GLFWInput::isMouseButtonPressedOnce(unsigned int GLFW_MouseButton) {
   return false;
 }
 
-void GLFWInput::setMousePos(double xpos, double ypos) {
+void GLFWInput::setMousePos(double xpos, double ypos)
+{
   glfwSetCursorPos(m_window, xpos, ypos);
 }
 
-void GLFWInput::mouseWheelCallback(GLFWwindow*, double, double yOff) {
+void GLFWInput::mouseWheelCallback(GLFWwindow*, double, double yOff)
+{
   m_scrollLastDiff = yOff;
 }

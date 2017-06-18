@@ -19,13 +19,14 @@
 */
 #include "TerrainMap.hpp"
 
-#include <chaiscript\chaiscript.hpp>
-#include <chaiscript\utility\utility.hpp>
+#include <chaiscript/chaiscript.hpp>
+#include <chaiscript/utility/utility.hpp>
 
 using namespace cdwarfs;
 
-void TerrainMap::load(const std::string& chaiscriptPath) {
-  
+void TerrainMap::load(const std::string& chaiscriptPath)
+{
+
   chaiscript::ChaiScript chai;
 
   chai.add(chaiscript::fun([&](int rows, int cols) {
@@ -68,12 +69,14 @@ void TerrainMap::load(const std::string& chaiscriptPath) {
   std::cout << "Finished loading map!\n\n";
 }
 
-void TerrainMap::set(int row, int col, TerrainType newType) {
+void TerrainMap::set(int row, int col, TerrainType newType)
+{
   if (row >= rows() || row < 0 || col >= columns() || col < 0) return;
   m_map[row][col] = newType;
 }
 
-TerrainType TerrainMap::at(int row, int col) {
+TerrainType TerrainMap::at(int row, int col)
+{
   if (row >= rows() || row < 0 || col >= columns() || col < 0) return TerrainType::DARK;
   return m_map[row][col];
 }

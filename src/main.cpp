@@ -23,7 +23,8 @@
 #include "Components.hpp"
 #include "ChaiDwarfs.hpp"
 
-int main(){
+int main()
+{
 
   //std::cout << cdwarfs::TouchValue::componentTypeID << '\n';
   //std::cout << cdwarfs::TouchDamage::componentTypeID << '\n';

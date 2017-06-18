@@ -18,16 +18,17 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#ifndef _BASECOMPONENT_HPP_
-#define _BASECOMPONENT_HPP_
+#pragma once
 
 #include <cstdint>
 
-namespace cdwarfs {
+namespace cdwarfs
+{
 
 using  ComponentUUID = uint_fast64_t;
 
-class BaseComponent {
+class BaseComponent
+{
 public:
   //get unique Component Class ID
   static inline ComponentUUID getCID() {
@@ -39,7 +40,8 @@ public:
 };
 
 template<class T>
-class Component : public BaseComponent {
+class Component : public BaseComponent
+{
 public:
   static ComponentUUID componentTypeID;
 };
@@ -48,5 +50,3 @@ template<typename T>
 ComponentUUID Component<T>::componentTypeID = BaseComponent::getCID();
 
 }
-
-#endif // !_BASECOMPONENT_HPP_
