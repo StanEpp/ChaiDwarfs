@@ -1,0 +1,7 @@
+{
+  "cmake.configureSettings": {
+    "CHAISCRIPT_DIR": "/usr/local/include/chaiscript/",
+    "CMAKE_C_COMPILER": "/usr/bin/gcc-7",
+    "CMAKE_CXX_COMPILER": "/usr/bin/g++-7"
+  }
+}
