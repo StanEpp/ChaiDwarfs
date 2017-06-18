@@ -1,3 +1,0 @@
-/home/stan/Projects/ChaiDwarfs/build/CMakeFiles/rebuild_cache.dir
-/home/stan/Projects/ChaiDwarfs/build/CMakeFiles/Chaidwarfs.dir
-/home/stan/Projects/ChaiDwarfs/build/CMakeFiles/edit_cache.dir
