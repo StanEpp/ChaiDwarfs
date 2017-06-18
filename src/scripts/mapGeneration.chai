@@ -1,0 +1,25 @@
+/*
+Functions:
+
+setSize(int rows, int cols)
+setType(int row, int col, type)
+numRows()
+numCols()
+
+Terrain Enums:
+SOIL
+DARK
+PASSABLE
+STONE
+
+*/
+
+setSize(10, 15);
+
+for(var row = 0; row < 10; ++row){
+	for(var col = 0; col < 15; ++col){
+		setType(row, col, PASSABLE);
+	}
+}
+
+setType(5, 0, STONE)

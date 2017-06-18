@@ -1,0 +1,32 @@
+/**
+Variables:
+factory
+
+Functions for 'factory':
+defineObject(string name)
+
+Cascading functions after 'defineObject':
+addComp_Position
+addComp_TouchDamage
+addComp_TouchValue
+addComp_HP
+addComp_View
+addComp_Name
+addComp_Speed
+addComp_Points
+addComp_ScriptAI
+addComp_DestroyOnTouch
+addComp_Sprites
+addComp_AnimatedSprites
+
+**/
+
+auto sprites = [Pair("moveDown", "sprites/dwarf/walkDown00.png")];
+auto animSprites = [Pair("moveDown", "sprites/dwarf/walkDown.png"), Pair("moveUp", "sprites/dwarf/walkUp.png"), Pair("moveLeft", "sprites/dwarf/walkLeft.png"), Pair("moveRight", "sprites/dwarf/walkRight.png")]
+
+factory.defineObject("Dwarf").addComp_Name("Dwarf").addComp_HP(100, 100).addComp_Position(0, 0).addComp_Speed(1).addComp_Points(0).addComp_View(3).addComp_ScriptAI("scripts/dwarf.chai").addComp_AnimatedSprites(animSprites)
+factory.defineObject("Diamond").addComp_Name("Diamond").addComp_TouchValue(100).addComp_Position().addComp_DestroyOnTouch()
+factory.defineObject("Sapphire").addComp_Name("Sapphire").addComp_TouchValue(20).addComp_Position().addComp_DestroyOnTouch()
+factory.defineObject("Emerald").addComp_Name("Emerald").addComp_TouchValue(10).addComp_Position().addComp_DestroyOnTouch()
+
+print("Object Definitions: Everything went well!")

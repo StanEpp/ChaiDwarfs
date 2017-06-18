@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/stan/Projects/ChaiDwarfs/src/GL/gl3w.h
+glcorearb.h
+/home/stan/Projects/ChaiDwarfs/src/GL/glcorearb.h
+
+/home/stan/Projects/ChaiDwarfs/src/GL/glcorearb.h
+windows.h
+-
+stddef.h
+-
+inttypes.h
+-
+inttypes.h
+-
+inttypes.h
+-
+stdint.h
+-
+stdint.h
+-
+inttypes.h
+-
+
+/home/stan/Projects/ChaiDwarfs/src/gl3w.c
+GL/gl3w.h
+/home/stan/Projects/ChaiDwarfs/src/GL/gl3w.h
+windows.h
+-
+Carbon/Carbon.h
+-
+dlfcn.h
+-
+GL/glx.h
+-
+
