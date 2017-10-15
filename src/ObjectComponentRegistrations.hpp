@@ -119,21 +119,24 @@ void inline registerComponent<cdwarfs::comp::AnimatedSprites>(chaiscript::Module
 {
   module->add(chaiscript::user_type<cdwarfs::comp::AnimatedSprites>(), "AnimatedSprites");
   module->add(chaiscript::fun(&cdwarfs::comp::AnimatedSprites::sprites), "sprites");
- }
+}
 
 void inline registerConversions(chaiscript::ModulePtr& module)
 {
   module->add(chaiscript::type_conversion<std::vector<chaiscript::Boxed_Value>, std::vector<std::pair<std::string, std::string>>>(
     [](const std::vector<chaiscript::Boxed_Value>& vs) {
-    std::vector<std::pair<std::string, std::string>> retVec;
-    std::transform(vs.begin(), vs.end(), std::back_inserter(retVec), [](const chaiscript::Boxed_Value &bv) {
-      auto boxedPair = chaiscript::boxed_cast<std::pair<chaiscript::Boxed_Value, chaiscript::Boxed_Value>>(bv);
-      auto firstStr = chaiscript::boxed_cast<std::string>(boxedPair.first);
-      auto secondStr = chaiscript::boxed_cast<std::string>(boxedPair.second);
-      return std::make_pair(std::move(firstStr), std::move(secondStr));
-    });
-    return retVec;
-  }));
+      std::vector<std::pair<std::string, std::string>> retVec;
+      std::transform(vs.begin(), vs.end(), std::back_inserter(retVec), 
+        [](const chaiscript::Boxed_Value &bv) {
+          auto boxedPair = chaiscript::boxed_cast<std::pair<chaiscript::Boxed_Value, chaiscript::Boxed_Value>>(bv);
+          auto firstStr = chaiscript::boxed_cast<std::string>(boxedPair.first);
+          auto secondStr = chaiscript::boxed_cast<std::string>(boxedPair.second);
+          return std::make_pair(std::move(firstStr), std::move(secondStr));
+        }
+      );
+      return retVec;
+    }
+  ));
 }
 
 }

@@ -1,50 +1,76 @@
 cmake_minimum_required(VERSION 3.5)
 
-include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-
 project(Chaidwarfs)
 
-set(DEPENDENCY_DIR ${CMAKE_BINARY_DIR}/deps)
-set(DEPENDENCY_INSTALL_DIR ${CMAKE_BINARY_DIR}/deps/installed)
+add_subdirectory(deps)
 
-externalproject_add(glm
-  PREFIX ${DEPENDENCY_DIR}/glm
-  INSTALL_DIR ${DEPENDENCY_DIR}/glm
-  INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory
-                  <SOURCE_DIR>/glm ${DEPENDENCY_INSTALL_DIR}/glm
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND ""
-  GIT_REPOSITORY https://github.com/g-truc/glm.git
-)
-
-externalproject_add(glfw
-  PREFIX ${DEPENDENCY_DIR}/glfw
-  CMAKE_ARGS -DGLFW_BUILD_TESTS=OFF
-             -DGLFW_BUILD_EXAMPLES=OFF
-             -DGLFW_BUILD_DOCS=OFF
-             -DGLFW_INSTALL=OFF
-             -DGLFW_BUILD_SHARED_LIBS=ON
-  GIT_REPOSITORY https://github.com/glfw/glfw.git
-)
-
-set(GLFW_INCLUDE_DIR ${DEPENDENCY_INSTALL_DIR}/glfw/include)
-set(GLFW_LIB_DIR ${DEPENDENCY_INSTALL_DIR}/glfw/libglfw3.a)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(Threads REQUIRED)
-find_path(CHAISCRIPT_INCLUDE_DIR chaiscript/chaiscript.hpp)
 
+include_directories(${DEPENDENCY_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
-file(GLOB_RECURSE SOURCE_FILES "*.cpp" "*.c")
-file(GLOB_RECURSE HEADER_FILES "*.hpp" "*.p")
+set(SOURCE_FILES
+  src/gl3w.c
+  src/SpriteRenderer.cpp
+  src/DwarfTerrainObjectInterface.cpp
+  src/TerrainObjectSystem.cpp
+  src/OrthographicCamera.cpp
+  src/GLFWInput.cpp
+  src/TerrainMap.cpp
+  src/Components.cpp
+  src/RenderSystem.cpp
+  src/DwarfTerrainInterface.cpp
+  src/Texture2DArray.cpp
+  src/ScreenquadRenderer.cpp
+  src/TileRenderer.cpp
+  src/TextureManager.cpp
+  src/ShaderManager.cpp
+  src/Texture.cpp
+  src/main.cpp
+)
+
+set(HEADER_FILES
+  src/ShaderBaseModel.hpp
+  src/DwarfTerrainInterface.hpp
+  src/EntityManager.hpp
+  src/DwarfAI.hpp
+  src/SpriteRenderer.hpp
+  src/Components.hpp
+  src/CommandSystem.hpp
+  src/ChaiDwarfs.hpp
+  src/ShaderManager.hpp
+  src/ScreenquadRenderer.hpp
+  src/RenderSystem.hpp
+  src/TerrainObjectSystem.hpp
+  src/DwarfTerrainObjectInterface.hpp
+  src/DwarfSystem.hpp
+  src/TerrainMap.hpp
+  src/ECSFactory.hpp
+  src/Commands.hpp
+  src/stb_image.h
+  src/TextureManager.hpp
+  src/Entity.hpp
+  src/WindowGLFW.hpp
+  src/ChaiScriptAI.hpp
+  src/ObjectComponentRegistrations.hpp
+  src/OrthographicCamera.hpp
+  src/TileRenderer.hpp
+  src/Timer.hpp
+  src/Texture2DArray.hpp
+  src/Texture.hpp
+  src/GLFWInput.hpp
+  src/DwarfRoundActions.hpp
+  src/BaseComponent.hpp
+  src/ComponentSystem.hpp
+)
 
 add_executable(Chaidwarfs ${SOURCE_FILES} ${HEADER_FILES})
 
-target_link_libraries(Chaidwarfs PUBLIC ${GLFW_LIB_DIR} stdc++fs ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
+add_dependencies(Chaidwarfs glm_ext glfw_ext chaiscript_ext)
 
-add_dependencies(Chaidwarfs glfw)
-
-target_compile_features(Chaidwarfs PUBLIC cxx_std_17)
+target_link_libraries(Chaidwarfs PUBLIC glfw stdc++fs ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
 
 file(COPY scripts DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY sprites DESTINATION ${CMAKE_BINARY_DIR})

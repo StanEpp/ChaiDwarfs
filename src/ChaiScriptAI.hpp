@@ -159,7 +159,7 @@ private:
       catch (const chaiscript::exception::eval_error &ee) {
         std::cout << ee.what() << '\n';
         if (ee.call_stack.size() > 0) {
-          std::cout << "during evaluation at (" << ee.call_stack[0]->start().line << ", " << ee.call_stack[0]->start().column << ")\n";
+          std::cout << "during evaluation at (" << ee.call_stack[0].start().line << ", " << ee.call_stack[0].start().column << ")\n";
         }
         std::cout << "Falling back on last valid script!" << "\n\n";
         m_chai.set_state(m_lastValidScriptState);
