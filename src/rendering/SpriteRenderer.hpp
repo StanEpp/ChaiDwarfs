@@ -20,21 +20,21 @@
 */
 #pragma once
 
+#include <memory>
+#include <unordered_map>
+#include <string>
+#include <optional>
+
 #ifndef _GL3W_
 #define _GL3W_
 #include "GL/gl3w.h"
 #include <GLFW/glfw3.h>
 #endif
 
-#include <memory>
-#include <unordered_map>
-#include <string>
-#include <optional>
-
-#include "Entity.hpp"
-#include "Components.hpp"
-#include "Texture.hpp"
-#include "Texture2DArray.hpp"
+#include "src/ecs/Entity.hpp"
+#include "src/ecs/Components.hpp"
+#include "src/rendering/Texture.hpp"
+#include "src/rendering/Texture2DArray.hpp"
 
 namespace cdwarfs
 {

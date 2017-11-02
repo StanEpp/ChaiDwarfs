@@ -20,7 +20,6 @@
 
 #include <iostream>
 
-#include "Components.hpp"
 #include "ChaiDwarfs.hpp"
 
 int main()

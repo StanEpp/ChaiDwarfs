@@ -20,17 +20,18 @@
 
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #ifndef _GL3W_
 #define _GL3W_
 #include "GL/gl3w.h"
 #include <GLFW/glfw3.h>
 #endif
 
-#include <memory>
-#include <vector>
-#include "TerrainMap.hpp"
-
 #include <glm/glm.hpp>
+
+#include "src/TerrainMap.hpp"
 
 namespace cdwarfs
 {

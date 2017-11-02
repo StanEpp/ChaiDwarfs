@@ -20,7 +20,8 @@
 #pragma once
 
 #include <variant>
-#include "Entity.hpp"
+
+#include "ecs/Entity.hpp"
 #include "TerrainMap.hpp"
 
 namespace cdwarfs::cmd

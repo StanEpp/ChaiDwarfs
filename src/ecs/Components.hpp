@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "BaseComponent.hpp"
-#include "DwarfAI.hpp"
+#include "src/interfaces/DwarfAI.hpp"
 
 namespace cdwarfs::comp
 {

@@ -21,7 +21,8 @@
 
 #include <queue>
 #include <stack>
-#include "ComponentSystem.hpp"
+
+#include "cmpSystems/ComponentSystem.hpp"
 
 namespace cdwarfs::render {
   class TileRenderer;

@@ -20,7 +20,6 @@
 *
 */
 
-#include "OrthographicCamera.hpp"
 
 #ifndef _GL3W_
 #define _GL3W_
@@ -28,9 +27,10 @@
 #include <GLFW/glfw3.h>
 #endif
 
-#include "GLFWInput.hpp"
-
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "src/GLFWInput.hpp"
+#include "src/rendering/OrthographicCamera.hpp"
 
 using namespace cdwarfs::render;
 

@@ -18,15 +18,15 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#include "TileRenderer.hpp"
-#include "TerrainMap.hpp"
-#include "Texture.hpp"
-#include "Texture2DArray.hpp"
-#include "ShaderManager.hpp"
-#include "OrthographicCamera.hpp"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "src/rendering/TileRenderer.hpp"
+#include "src/rendering/Texture.hpp"
+#include "src/rendering/Texture2DArray.hpp"
+#include "src/rendering/ShaderManager.hpp"
+#include "src/rendering/OrthographicCamera.hpp"
+#include "src/TerrainMap.hpp"
 
 using namespace cdwarfs;
 using namespace cdwarfs::render;

@@ -19,7 +19,7 @@
 *
 */
 
-#include "Texture.hpp"
+#include "src/rendering/Texture.hpp"
 
 using namespace cdwarfs::render;
 

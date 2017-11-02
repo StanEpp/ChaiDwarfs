@@ -19,7 +19,7 @@
 *
 */
 
-#include "GLFWInput.hpp"
+#include <functional>
 
 #ifndef _GL3W_
 #define _GL3W_
@@ -27,8 +27,8 @@
 #include <GLFW/glfw3.h>
 #endif
 
+#include "GLFWInput.hpp"
 #include "WindowGLFW.hpp"
-#include <functional>
 
 using namespace cdwarfs::render;
 

@@ -22,13 +22,13 @@
 
 #include <memory>
 
-#include "RenderSystem.hpp"
+#include "rendering/RenderSystem.hpp"
+#include "cmpSystems/TerrainObjectSystem.hpp"
+#include "ecs/EntityManager.hpp"
 #include "DwarfSystem.hpp"
 #include "TerrainMap.hpp"
 #include "Timer.hpp"
 #include "ChaiScriptAI.hpp"
-#include "TerrainObjectSystem.hpp"
-#include "EntityManager.hpp"
 #include "CommandSystem.hpp"
 #include "GLFWInput.hpp"
 

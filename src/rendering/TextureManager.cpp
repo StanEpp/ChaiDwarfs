@@ -19,7 +19,7 @@
 *
 */
 
-#include "TextureManager.hpp"
+#include "src/rendering/TextureManager.hpp"
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

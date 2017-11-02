@@ -18,7 +18,7 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#include "ShaderManager.hpp"
+#include "src/rendering/ShaderManager.hpp"
 
 using namespace cdwarfs::render;
 

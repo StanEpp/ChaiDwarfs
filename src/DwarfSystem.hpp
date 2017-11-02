@@ -21,9 +21,9 @@
 
 #include <vector>
 
-#include "EntityManager.hpp"
+#include "ecs/EntityManager.hpp"
+#include "ecs/Components.hpp"
 #include "CommandSystem.hpp"
-#include "Components.hpp"
 #include "DwarfRoundActions.hpp"
 
 namespace cdwarfs

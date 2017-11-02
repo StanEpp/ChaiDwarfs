@@ -19,8 +19,9 @@
 */
 
 #include <iostream>
-#include "DwarfTerrainInterface.hpp"
-#include "TerrainMap.hpp"
+
+#include "src/interfaces/DwarfTerrainInterface.hpp"
+#include "src/TerrainMap.hpp"
 
 using namespace cdwarfs;
 

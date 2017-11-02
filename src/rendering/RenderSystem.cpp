@@ -18,16 +18,17 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#include "RenderSystem.hpp"
 #include <iostream>
-#include "ShaderManager.hpp"
-#include "TileRenderer.hpp"
-#include "ScreenquadRenderer.hpp"
-#include "SpriteRenderer.hpp"
-#include "Texture.hpp"
-#include "WindowGLFW.hpp"
-#include "GLFWInput.hpp"
-#include "OrthographicCamera.hpp"
+
+#include "src/rendering/RenderSystem.hpp"
+#include "src/rendering/ShaderManager.hpp"
+#include "src/rendering/TileRenderer.hpp"
+#include "src/rendering/ScreenquadRenderer.hpp"
+#include "src/rendering/SpriteRenderer.hpp"
+#include "src/rendering/Texture.hpp"
+#include "src/rendering/OrthographicCamera.hpp"
+#include "src/WindowGLFW.hpp"
+#include "src/GLFWInput.hpp"
 
 using namespace cdwarfs;
 using namespace cdwarfs::render;

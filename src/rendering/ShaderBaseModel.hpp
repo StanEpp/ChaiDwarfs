@@ -20,14 +20,14 @@
 
 #pragma once
 
+#include <map>
+#include <string>
+
 #ifndef _GL3W_
 #define _GL3W_
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #endif
-
-#include <map>
-#include <string>
 
 namespace cdwarfs::render
 {

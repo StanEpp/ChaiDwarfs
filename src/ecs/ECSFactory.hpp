@@ -29,11 +29,11 @@
 #include <typeinfo>
 #include <bitset>
 
-#include "ObjectComponentRegistrations.hpp"
-#include "Entity.hpp"
-
 #include <chaiscript/chaiscript.hpp>
 #include <chaiscript/utility/utility.hpp>
+
+#include "src/ObjectComponentRegistrations.hpp"
+#include "Entity.hpp"
 
 namespace cdwarfs
 {
@@ -151,7 +151,7 @@ public:
 
     m_chaiDefModule->add(chaiscript::fun(&ComponentCascading::addComponent<TComp>), "addComp_" + name);
 
-    if (sizeof...(TArgs) != 0) {
+    if constexpr (sizeof...(TArgs) != 0) {
       m_chaiDefModule->add(chaiscript::fun(&ComponentCascading::addComponent<TComp, TArgs...>), "addComp_" + name);
     }
 

@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "Entity.hpp"
+#include "src/ecs/Entity.hpp"
 
 namespace cdwarfs
 {

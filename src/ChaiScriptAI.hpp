@@ -30,10 +30,10 @@
 #include <chaiscript/utility/utility.hpp>
 
 #include "DwarfRoundActions.hpp"
-#include "DwarfAI.hpp"
-#include "Components.hpp"
 #include "TerrainMap.hpp"
-#include "EntityManager.hpp"
+#include "interfaces/DwarfAI.hpp"
+#include "ecs/Components.hpp"
+#include "ecs/EntityManager.hpp"
 
 
 namespace cdwarfs

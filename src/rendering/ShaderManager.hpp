@@ -20,18 +20,18 @@
 
 #pragma once
 
+#include <iostream>
+#include <array>
+#include <string>
+#include <fstream>
+
 #ifndef _GL3W_
 #define _GL3W_
 #include "GL/gl3w.h"
 #include <GLFW/glfw3.h>
 #endif
 
-#include <iostream>
-#include <array>
-#include <string>
-#include <fstream>
-
-#include "ShaderBaseModel.hpp"
+#include "src/rendering/ShaderBaseModel.hpp"
 
 namespace cdwarfs::render
 {

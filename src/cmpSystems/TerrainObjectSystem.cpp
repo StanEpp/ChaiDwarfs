@@ -19,12 +19,11 @@
 *
 */
 
-#include "TerrainObjectSystem.hpp"
-
 #include <iostream>
 
-#include "EntityManager.hpp"
-#include "CommandSystem.hpp"
+#include "src/cmpSystems/TerrainObjectSystem.hpp"
+#include "src/ecs/EntityManager.hpp"
+#include "src/CommandSystem.hpp"
 
 using namespace cdwarfs;
 

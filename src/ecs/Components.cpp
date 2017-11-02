@@ -19,7 +19,7 @@
 */
 
 #include "Components.hpp"
-#include "ChaiScriptAI.hpp"
+#include "src/ChaiScriptAI.hpp"
 
 namespace cdwarfs::comp
 {

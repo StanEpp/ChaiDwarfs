@@ -19,7 +19,7 @@
 *
 */
 
-#include "Texture2DArray.hpp"
+#include "src/rendering/Texture2DArray.hpp"
 
 using namespace cdwarfs::render;
 

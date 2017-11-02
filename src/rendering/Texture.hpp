@@ -19,15 +19,16 @@
 */
 #pragma once
 
+#include <optional>
+#include <string>
+
 #ifndef _GL3W_
 #define _GL3W_
 #include "GL/gl3w.h"
 #include <GLFW/glfw3.h>
 #endif
 
-#include <optional>
-#include <string>
-#include "TextureManager.hpp"
+#include "src/rendering/TextureManager.hpp"
 
 namespace cdwarfs::render
 {

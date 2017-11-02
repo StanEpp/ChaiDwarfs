@@ -26,7 +26,7 @@
 #include <string>
 #include <chaiscript/chaiscript.hpp>
 
-#include "Components.hpp"
+#include "ecs/Components.hpp"
 
 namespace cdwarfs::objDef
 {

@@ -20,16 +20,16 @@
 
 #pragma once
 
+#include <string>
+#include <memory>
+#include <vector>
+#include <unordered_map>
+
 #ifndef _GL3W_
 #define _GL3W_
 #include "GL/gl3w.h"
 #include <GLFW/glfw3.h>
 #endif
-
-#include <string>
-#include <memory>
-#include <vector>
-#include <unordered_map>
 
 namespace cdwarfs::render
 {

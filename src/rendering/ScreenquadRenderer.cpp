@@ -19,9 +19,9 @@
 *
 */
 
-#include "ScreenquadRenderer.hpp"
-#include "ShaderManager.hpp"
-#include "Texture.hpp"
+#include "src/rendering/ScreenquadRenderer.hpp"
+#include "src/rendering/ShaderManager.hpp"
+#include "src/rendering/Texture.hpp"
 
 using namespace cdwarfs::render;
 

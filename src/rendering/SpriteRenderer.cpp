@@ -19,14 +19,16 @@
 *
 */
 
-#include "SpriteRenderer.hpp"
-#include "EntityManager.hpp"
-#include "TileRenderer.hpp"
-#include "ShaderManager.hpp"
-#include "OrthographicCamera.hpp"
+#include <experimental/filesystem>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <experimental/filesystem>
+
+#include "src/ecs/EntityManager.hpp"
+#include "src/rendering/SpriteRenderer.hpp"
+#include "src/rendering/TileRenderer.hpp"
+#include "src/rendering/ShaderManager.hpp"
+#include "src/rendering/OrthographicCamera.hpp"
 
 
 using namespace cdwarfs;

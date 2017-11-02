@@ -19,11 +19,11 @@
 */
 #pragma once
 
-#include "TerrainMap.hpp"
-#include "TerrainObjectSystem.hpp"
-#include "DwarfTerrainInterface.hpp"
-#include "DwarfTerrainObjectInterface.hpp"
-#include "Entity.hpp"
+#include "src/ecs/Entity.hpp"
+#include "src/TerrainMap.hpp"
+#include "src/cmpSystems/TerrainObjectSystem.hpp"
+#include "src/interfaces/DwarfTerrainInterface.hpp"
+#include "src/interfaces/DwarfTerrainObjectInterface.hpp"
 
 namespace cdwarfs
 {

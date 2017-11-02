@@ -12,58 +12,58 @@ include_directories(${DEPENDENCY_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
 set(SOURCE_FILES
-  src/gl3w.c
-  src/SpriteRenderer.cpp
-  src/DwarfTerrainObjectInterface.cpp
-  src/TerrainObjectSystem.cpp
-  src/OrthographicCamera.cpp
+  src/rendering/SpriteRenderer.cpp
+  src/rendering/OrthographicCamera.cpp
+  src/rendering/Texture2DArray.cpp
+  src/rendering/ScreenquadRenderer.cpp
+  src/rendering/TileRenderer.cpp
+  src/rendering/TextureManager.cpp
+  src/rendering/ShaderManager.cpp
+  src/rendering/Texture.cpp
+  src/rendering/RenderSystem.cpp
+  src/interfaces/DwarfTerrainObjectInterface.cpp
+  src/interfaces/DwarfTerrainInterface.cpp
+  src/cmpSystems/TerrainObjectSystem.cpp
+  src/ecs/Components.cpp
   src/GLFWInput.cpp
+  src/gl3w.c
   src/TerrainMap.cpp
-  src/Components.cpp
-  src/RenderSystem.cpp
-  src/DwarfTerrainInterface.cpp
-  src/Texture2DArray.cpp
-  src/ScreenquadRenderer.cpp
-  src/TileRenderer.cpp
-  src/TextureManager.cpp
-  src/ShaderManager.cpp
-  src/Texture.cpp
   src/main.cpp
 )
 
 set(HEADER_FILES
-  src/ShaderBaseModel.hpp
-  src/DwarfTerrainInterface.hpp
-  src/EntityManager.hpp
-  src/DwarfAI.hpp
-  src/SpriteRenderer.hpp
-  src/Components.hpp
+  src/rendering/ShaderBaseModel.hpp
+  src/rendering/SpriteRenderer.hpp
+  src/rendering/ShaderManager.hpp
+  src/rendering/stb_image.h
+  src/rendering/TextureManager.hpp
+  src/rendering/ScreenquadRenderer.hpp
+  src/rendering/RenderSystem.hpp
+  src/rendering/OrthographicCamera.hpp
+  src/rendering/TileRenderer.hpp
+  src/rendering/Texture2DArray.hpp
+  src/rendering/Texture.hpp
+  src/interfaces/DwarfTerrainInterface.hpp
+  src/interfaces/DwarfTerrainObjectInterface.hpp
+  src/interfaces/DwarfAI.hpp
+  src/ecs/EntityManager.hpp
+  src/ecs/Components.hpp
+  src/ecs/ECSFactory.hpp
+  src/ecs/Entity.hpp
+  src/ecs/BaseComponent.hpp
+  src/cmpSystems/TerrainObjectSystem.hpp
+  src/cmpSystems/ComponentSystem.hpp
+  src/DwarfSystem.hpp
   src/CommandSystem.hpp
   src/ChaiDwarfs.hpp
-  src/ShaderManager.hpp
-  src/ScreenquadRenderer.hpp
-  src/RenderSystem.hpp
-  src/TerrainObjectSystem.hpp
-  src/DwarfTerrainObjectInterface.hpp
-  src/DwarfSystem.hpp
   src/TerrainMap.hpp
-  src/ECSFactory.hpp
   src/Commands.hpp
-  src/stb_image.h
-  src/TextureManager.hpp
-  src/Entity.hpp
-  src/WindowGLFW.hpp
   src/ChaiScriptAI.hpp
   src/ObjectComponentRegistrations.hpp
-  src/OrthographicCamera.hpp
-  src/TileRenderer.hpp
+  src/WindowGLFW.hpp
   src/Timer.hpp
-  src/Texture2DArray.hpp
-  src/Texture.hpp
   src/GLFWInput.hpp
   src/DwarfRoundActions.hpp
-  src/BaseComponent.hpp
-  src/ComponentSystem.hpp
 )
 
 add_executable(Chaidwarfs ${SOURCE_FILES} ${HEADER_FILES})

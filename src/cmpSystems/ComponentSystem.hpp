@@ -21,13 +21,13 @@
 
 #include <iostream>
 #include <vector>
-#include "Commands.hpp"
-#include "EntityManager.hpp"
-#include "Components.hpp"
-#include "TerrainMap.hpp"
-#include "TerrainObjectSystem.hpp"
-#include "TileRenderer.hpp"
-#include "SpriteRenderer.hpp"
+#include "src/Commands.hpp"
+#include "src/ecs/EntityManager.hpp"
+#include "src/ecs/Components.hpp"
+#include "src/TerrainMap.hpp"
+#include "src/cmpSystems/TerrainObjectSystem.hpp"
+#include "src/rendering/TileRenderer.hpp"
+#include "src/rendering/SpriteRenderer.hpp"
 
 namespace cdwarfs::compSys
 {

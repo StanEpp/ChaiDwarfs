@@ -18,8 +18,8 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#include "DwarfTerrainObjectInterface.hpp"
-#include "TerrainObjectSystem.hpp"
+#include "src/interfaces/DwarfTerrainObjectInterface.hpp"
+#include "src/cmpSystems/TerrainObjectSystem.hpp"
 
 using namespace cdwarfs;
 
