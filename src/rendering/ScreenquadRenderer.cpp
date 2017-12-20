@@ -54,7 +54,7 @@ void ScreenquadRenderer::init(int windowWidth, int windowHeight, const std::shar
   layout(location=0) in vec2 pos;
   layout(location=1) in vec2 uv;
 
-  out vec2 ex_uv;
+  smooth out vec2 ex_uv;
 
   void main(void){
     gl_Position = vec4(pos, 0, 1);

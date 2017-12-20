@@ -149,7 +149,7 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
 
     uniform mat4 proj;
     uniform mat4 vp;
-    out vec2 ex_uv;
+    smooth out vec2 ex_uv;
 
     void main(void){
       gl_Position = proj * vp * vec4(pos, 0, 1);

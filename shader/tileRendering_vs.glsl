@@ -12,7 +12,7 @@ const vec2 uv[6] = {
   vec2(1.f, 1.f)
 };
 
-out vec2 ex_uv;
+smooth out vec2 ex_uv;
 flat out uint ex_tileType;
 
 uniform mat4 mvp;
