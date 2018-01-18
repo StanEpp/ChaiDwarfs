@@ -22,6 +22,7 @@
 #include "src/rendering/ScreenquadRenderer.hpp"
 #include "src/rendering/ShaderManager.hpp"
 #include "src/rendering/Texture.hpp"
+#include "PathResolver.hpp"
 
 using namespace cdwarfs::render;
 
@@ -84,7 +85,7 @@ void ScreenquadRenderer::init(int windowWidth, int windowHeight, const std::shar
 
   m_glsl_scaleLoc = m_shaderManager->getUniformLocation(m_screenquadProg, "scale");
 
-  m_backgroundTexture = std::make_shared<Texture2D>("tiles/background.png");
+  m_backgroundTexture = std::make_shared<Texture2D>(pathRes.tile("background.png"));
   auto width = static_cast<float>(windowWidth);
   auto height = static_cast<float>(windowHeight);
   m_scaleX = width / static_cast<float>(m_backgroundTexture->width());

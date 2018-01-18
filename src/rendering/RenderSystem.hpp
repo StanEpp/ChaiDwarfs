@@ -62,6 +62,9 @@ public:
   const std::shared_ptr<SpriteRenderer> getSpriteRenderer();
 
 private:
+  // Order is important! Window needs to be destroyed last to keep the
+  // openGL context alive until everything else is destroyed.
+  std::shared_ptr<WindowGLFW>          m_window;
   std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
   std::shared_ptr<TerrainMap>          m_terrainMap;
   std::shared_ptr<EntityManager>       m_entManager;
@@ -76,7 +79,6 @@ private:
 
   std::shared_ptr<OrthographicCamera>  m_camera;
 
-  std::shared_ptr<WindowGLFW>          m_window;
   std::shared_ptr<GLFWInput>           m_input;
 };
 

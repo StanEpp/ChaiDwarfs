@@ -63,16 +63,46 @@ set(HEADER_FILES
   src/WindowGLFW.hpp
   src/Timer.hpp
   src/GLFWInput.hpp
+  src/PathResolver.hpp.in
   src/DwarfRoundActions.hpp
 )
 
-add_executable(Chaidwarfs ${SOURCE_FILES} ${HEADER_FILES})
+set(SCRIPT_FILES
+  scripts/dwarf.chai
+  scripts/mapGeneration.chai
+  scripts/objectCreation.chai
+  scripts/objectDefinitions.chai
+)
+
+set(SHADER_FILES
+  shader/tileRendering_fs.glsl
+  shader/tileRendering_vs.glsl
+)
+
+### Configure the PathResolver header
+set(RESOURCE_ROOT_PATH ${CMAKE_SOURCE_DIR})
+set(SCRIPT_PATH "scripts")
+set(SHADER_PATH "shader")
+set(TILE_PATH "tiles")
+set(SPRITE_PATH "sprites")
+configure_file(src/PathResolver.hpp.in PathResolver.hpp @ONLY)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+###
+
+add_executable(Chaidwarfs
+    ${SOURCE_FILES}
+    ${HEADER_FILES}
+    ${SCRIPT_FILES}
+    ${SHADER_FILES}
+)
+
+set_source_files_properties(
+    ${SCRIPT_FILES}
+    ${SHADER_FILES}
+    PROPERTIES
+      WRAP_EXCLUDE TRUE
+)
 
 add_dependencies(Chaidwarfs glm_ext glfw_ext chaiscript_ext)
 
 target_link_libraries(Chaidwarfs PUBLIC glfw stdc++fs ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
-
-file(COPY scripts DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY sprites DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY tiles DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY shader DESTINATION ${CMAKE_BINARY_DIR})

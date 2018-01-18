@@ -70,8 +70,16 @@ public:
     if (pos && view && speed && hp && points) {
       auto terrainPtr = m_terrain.get();
       auto terrainObjPtr = m_terrainObj.get();
-      m_chai.add(chaiscript::fun([terrainPtr, pos, view](int x, int y) { return terrainPtr->checkTerrain(pos->row, pos->col, view->dist, y, x); }), "checkTerrain");
-      m_chai.add(chaiscript::fun([terrainObjPtr, pos, view](int x, int y) { return terrainObjPtr->checkForObject(pos->row, pos->col, view->dist, y, x); }), "checkForObject");
+
+      m_chai.add(chaiscript::fun([terrainPtr, pos, view](int x, int y) {
+          return terrainPtr->checkTerrain(pos->row, pos->col, view->dist, y, x);
+      }),
+      "checkTerrain");
+
+      m_chai.add(chaiscript::fun([terrainObjPtr, pos, view](int x, int y) {
+          return terrainObjPtr->checkForObject(pos->row, pos->col, view->dist, y, x);
+      }),
+      "checkForObject");
 
       m_chai.add(chaiscript::fun([hp]() { return hp->hp; }), "getHP");
       m_chai.add(chaiscript::fun([speed]() { return speed->speed; }), "getSpeed");
@@ -152,7 +160,7 @@ private:
         std::cout << "Evaluating new script " << m_scriptPath << "...\n";
         m_chai.set_state(m_cleanScriptState);
         m_chai.eval(m_script);
-        m_scriptEntryPoint = m_chai.eval<std::function<void()> >("main");
+        m_scriptEntryPoint = m_chai.eval<std::function<void()>>("main");
         m_lastValidScriptState = m_chai.get_state();
         std::cout << "Successfully evaluated script!" << "\n\n";
       }

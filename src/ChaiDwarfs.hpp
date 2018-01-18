@@ -31,6 +31,7 @@
 #include "ChaiScriptAI.hpp"
 #include "CommandSystem.hpp"
 #include "GLFWInput.hpp"
+#include "PathResolver.hpp"
 
 namespace cdwarfs
 {
@@ -51,12 +52,12 @@ public:
 
   void init()
   {
-      m_terrain->load("scripts/mapGeneration.chai");
+      m_terrain->load(pathRes.script("mapGeneration.chai"));
 
       m_entManager->init();
-      m_entManager->loadObjectDefinitions("scripts/objectDefinitions.chai");
+      m_entManager->loadObjectDefinitions(pathRes.script("objectDefinitions.chai"));
 
-      m_terrainObjSys->loadObjects("scripts/objectCreation.chai");
+      m_terrainObjSys->loadObjects(pathRes.script("objectCreation.chai"));
 
       m_renderer->init(1280, 720, "ChaiDwarfs");
 

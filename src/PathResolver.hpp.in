@@ -1,0 +1,63 @@
+/*
+*  Copyright(c) 2016 - 2018 Stanislaw Eppinger
+*  Scripting based game called ChaiDwarfs
+*
+*  This file is part of ChaiDwarfs.
+*
+*  ChaiDwarfs is free software : you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.If not, see <http://www.gnu.org/licenses/>
+*/
+#pragma once
+
+#include <experimental/filesystem>
+
+namespace cdwarfs
+{
+
+namespace fs = std::experimental::filesystem;
+
+class PathResolver
+{
+public:
+    PathResolver(const PathResolver&) = delete;
+    PathResolver(const PathResolver&&) = delete;
+    PathResolver& operator=(const PathResolver&) = delete;
+    PathResolver& operator=(PathResolver&&) = delete;
+
+    static PathResolver& Instance()
+    {
+        static PathResolver instance;
+        return instance;
+    }
+
+    const fs::path script(const std::string& scriptName) { return scriptPath() / scriptName; }
+    const fs::path shader(const std::string& shaderFile) { return shaderPath() / shaderFile; }
+    const fs::path tile(const std::string& tileName) { return tilePath() / tileName; }
+    const fs::path sprite(const std::string& spriteName) { return spritePath() / spriteName; }
+
+private:
+    ~PathResolver(){}
+    PathResolver() {}
+
+    fs::path scriptPath() { return m_rootPath / "@SCRIPT_PATH@"; }
+    fs::path tilePath() { return m_rootPath / "@TILE_PATH@"; }
+    fs::path shaderPath() { return m_rootPath / "@SHADER_PATH@"; }
+    fs::path spritePath() { return m_rootPath / "@SPRITE_PATH@"; }
+
+    static PathResolver* m_instance;
+    const std::experimental::filesystem::path m_rootPath{ "@RESOURCE_ROOT_PATH@" };
+};
+
+}
+
+#define pathRes cdwarfs::PathResolver::Instance()

@@ -27,6 +27,7 @@
 #include "src/rendering/ShaderManager.hpp"
 #include "src/rendering/OrthographicCamera.hpp"
 #include "src/TerrainMap.hpp"
+#include "PathResolver.hpp"
 
 using namespace cdwarfs;
 using namespace cdwarfs::render;
@@ -113,8 +114,8 @@ void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const s
 
   initTiles();
 
-  m_shaderManager->loadShader("shader//tileRendering_vs.glsl", "tileVertexShader", GL_VERTEX_SHADER);
-  m_shaderManager->loadShader("shader//tileRendering_fs.glsl", "tileFragmentShader", GL_FRAGMENT_SHADER);
+  m_shaderManager->loadShader(pathRes.shader("tileRendering_vs.glsl"), "tileVertexShader", GL_VERTEX_SHADER);
+  m_shaderManager->loadShader(pathRes.shader("tileRendering_fs.glsl"), "tileFragmentShader", GL_FRAGMENT_SHADER);
 
   m_tileRenderingProg = m_shaderManager->createProgram("TileRenderingProgram");
   m_shaderManager->attachShader("tileVertexShader", "TileRenderingProgram");
@@ -165,7 +166,10 @@ void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const s
   glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, 0, 0);
   glBindVertexArray(0);
 
-  m_textureAtlas = std::make_shared<Texture2DArray>(std::vector<std::string>{ "tiles//soil.png", "tiles//passable.png", "tiles//stone.png" }, GL_RGB);
+  m_textureAtlas = std::make_shared<Texture2DArray>(std::vector<std::string>{ pathRes.tile("soil.png"),
+                                                                              pathRes.tile("passable.png"),
+                                                                              pathRes.tile("stone.png") },
+                                                    GL_RGB);
 
   m_glsl_projMatLoc = m_shaderManager->getUniformLocation(m_tileRenderingProg, "mvp");
 }
