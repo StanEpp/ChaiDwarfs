@@ -42,6 +42,7 @@ class Texture2D;
 class OrthographicCamera;
 class GLFWInput;
 class SpriteRenderer;
+class TextureFactory;
 
 class RenderSystem
 {
@@ -65,6 +66,7 @@ private:
   // Order is important! Window needs to be destroyed last to keep the
   // openGL context alive until everything else is destroyed.
   std::shared_ptr<WindowGLFW>          m_window;
+  std::shared_ptr<TextureFactory>      m_textureFactory;
   std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
   std::shared_ptr<TerrainMap>          m_terrainMap;
   std::shared_ptr<EntityManager>       m_entManager;

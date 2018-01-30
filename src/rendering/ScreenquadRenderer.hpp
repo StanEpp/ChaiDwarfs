@@ -13,13 +13,16 @@ namespace cdwarfs::render
 
 class ShaderManager;
 class Texture2D;
+class TextureFactory;
 
 class ScreenquadRenderer
 {
 public:
   ScreenquadRenderer(const std::shared_ptr<ShaderManager>& shaderManager);
 
-  void init(int windowWdth, int windowHeight, const std::shared_ptr<Texture2D>& displayTexture);
+  void init(int windowWdth, int windowHeight,
+            const std::shared_ptr<Texture2D>& displayTexture,
+            const std::shared_ptr<TextureFactory>& textureFactory);
   void render();
 
 private:

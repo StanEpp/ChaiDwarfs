@@ -26,10 +26,12 @@
 
 #include "src/ecs/EntityManager.hpp"
 #include "src/rendering/SpriteRenderer.hpp"
+#include "src/rendering/Texture2D.hpp"
+#include "src/rendering/Texture2DArray.hpp"
+#include "src/rendering/TextureFactory.hpp"
 #include "src/rendering/TileRenderer.hpp"
 #include "src/rendering/ShaderManager.hpp"
 #include "src/rendering/OrthographicCamera.hpp"
-
 
 using namespace cdwarfs;
 using namespace cdwarfs::render;
@@ -44,7 +46,9 @@ SpriteRenderer::SpriteRenderer(
   m_shaderManager(shaderManager)
   {}
 
-void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera)
+void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture,
+                          const std::shared_ptr<OrthographicCamera>& camera,
+                          const std::shared_ptr<TextureFactory>& textureFactory)
 {
   m_camera = camera;
 
@@ -101,7 +105,7 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
   // Load the images and create textures for rendering
   for (auto& spriteSet : m_sprites) {
     for (auto& sprite : spriteSet.second) {
-      sprite.second.texture = Texture2D(sprite.second.filePath);
+      sprite.second.texture = textureFactory->loadTexture2D(sprite.second.filePath);
     }
   }
 
@@ -118,7 +122,7 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const
         filePath += std::to_string(i) + suffix;
         filePaths.push_back(std::move(filePath));
       }
-      sprite.second.textureArray = Texture2DArray(filePaths);
+      sprite.second.textureArray = textureFactory->loadTexture2DArray(filePaths, GL_RGBA);
     }
   }
 
@@ -371,7 +375,7 @@ void SpriteRenderer::render(double dt)
       auto vpMat = glm::translate(glm::mat4(1.f), glm::vec3(spriteSet.second.screenX, spriteSet.second.screenY, 0.f));
       m_shaderManager->loadMatrix4(m_glsl_vpMatLoc, glm::value_ptr(vpMat));
       glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D, sprite->texture.texID());
+      glBindTexture(GL_TEXTURE_2D, sprite->texture->texID());
       glDrawArrays(GL_TRIANGLES, 0, 6);
     }
   }
@@ -386,7 +390,7 @@ void SpriteRenderer::render(double dt)
       m_shaderManager->loadMatrix4(m_glsl_Anim_vpMatLoc, glm::value_ptr(glm::translate(glm::mat4(1.f), glm::vec3(spriteSet.second.screenX, spriteSet.second.screenY, 0.f))));
       m_shaderManager->loadUniform(m_glsl_Anim_keyFrameLoc, sprite->currKeyFrame);
       glActiveTexture(GL_TEXTURE0);
-      glBindTexture(GL_TEXTURE_2D_ARRAY, sprite->textureArray.texID());
+      glBindTexture(GL_TEXTURE_2D_ARRAY, sprite->textureArray->texID());
       glDrawArrays(GL_TRIANGLES, 0, 6);
     }
   }

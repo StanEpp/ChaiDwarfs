@@ -20,13 +20,14 @@
 
 #include <iostream>
 
-#include "src/rendering/RenderSystem.hpp"
-#include "src/rendering/ShaderManager.hpp"
-#include "src/rendering/TileRenderer.hpp"
-#include "src/rendering/ScreenquadRenderer.hpp"
-#include "src/rendering/SpriteRenderer.hpp"
-#include "src/rendering/Texture.hpp"
-#include "src/rendering/OrthographicCamera.hpp"
+#include "RenderSystem.hpp"
+#include "ShaderManager.hpp"
+#include "TileRenderer.hpp"
+#include "ScreenquadRenderer.hpp"
+#include "SpriteRenderer.hpp"
+#include "Texture2D.hpp"
+#include "OrthographicCamera.hpp"
+#include "TextureFactory.hpp"
 #include "src/WindowGLFW.hpp"
 #include "src/GLFWInput.hpp"
 
@@ -38,6 +39,8 @@ RenderSystem::RenderSystem(const std::shared_ptr<TerrainObjectSystem>& terrainOb
                            const std::shared_ptr<EntityManager>& entManager,
                            const std::shared_ptr<DwarfSystem>& dwarfSys,
                            const std::shared_ptr<GLFWInput>& input) :
+  m_window(nullptr),
+  m_textureFactory(std::make_shared<TextureFactory>()),
   m_terrainObjSys(terrainObjSys),
   m_terrainMap(terrainMap),
   m_entManager(entManager),
@@ -47,7 +50,6 @@ RenderSystem::RenderSystem(const std::shared_ptr<TerrainObjectSystem>& terrainOb
   m_screenquad(std::make_shared<ScreenquadRenderer>(m_shaderManager)),
   m_spriteRend(std::make_shared<SpriteRenderer>(entManager, m_tileRend, m_shaderManager)),
   m_camera(std::make_shared<OrthographicCamera>()),
-  m_window(nullptr),
   m_input(input)
   {}
 
@@ -66,12 +68,12 @@ void RenderSystem::init(int wnd_Width, int wnd_Height, const std::string& window
 
   m_camera->init(wnd_Width, wnd_Height, m_input);
 
-  m_outputTexture = std::make_shared<Texture2D>(wnd_Width, wnd_Height);
+  m_outputTexture = m_textureFactory->createTexture2D(wnd_Width, wnd_Height, 3);
 
-  m_screenquad->init(wnd_Width, wnd_Height, m_outputTexture);
-  m_tileRend->init(m_outputTexture, m_camera);
+  m_screenquad->init(wnd_Width, wnd_Height, m_outputTexture, m_textureFactory);
+  m_tileRend->init(m_outputTexture, m_camera, m_textureFactory);
 
-  m_spriteRend->init(m_outputTexture, m_camera);
+  m_spriteRend->init(m_outputTexture, m_camera, m_textureFactory);
 }
 
 std::shared_ptr<WindowGLFW> RenderSystem::getWindow()

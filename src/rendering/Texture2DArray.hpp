@@ -30,8 +30,6 @@
 #include <GLFW/glfw3.h>
 #endif
 
-#include "src/rendering/TextureManager.hpp"
-
 namespace cdwarfs::render
 {
 
@@ -40,13 +38,15 @@ class Texture2DArray
 public:
   Texture2DArray();
 
-  Texture2DArray(const std::vector<std::string>& m_filepaths,
-                 GLenum image_format = GL_RGBA);       //format the imagea are in
+  Texture2DArray(GLuint texID,
+                 const std::vector<std::string>& m_filepaths,
+                 GLsizei width, GLsizei height, GLsizei numChannels,
+                 GLenum image_format = GL_RGBA);      //format the imagea are in
 
-  Texture2DArray(const Texture2DArray&);
-  Texture2DArray(Texture2DArray&&);
-  Texture2DArray& operator=(const Texture2DArray&);
-  Texture2DArray& operator=(Texture2DArray&&);
+  Texture2DArray(const Texture2DArray&) = delete;
+  Texture2DArray(Texture2DArray&&) = delete;
+  Texture2DArray& operator=(const Texture2DArray&) = delete;
+  Texture2DArray& operator=(Texture2DArray&&) = delete;
 
   ~Texture2DArray();
 
@@ -58,11 +58,6 @@ public:
 
 private:
   void init();
-
-  void makeDeepCopy(const Texture2DArray& tex);
-  void makeMove(Texture2DArray&& tex);
-
-  static TextureManager& m_texManager;
 
   std::optional<std::vector<std::string>> m_filepaths{};
   GLuint m_gl_texID{ 0 };

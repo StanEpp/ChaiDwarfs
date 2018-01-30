@@ -17,9 +17,9 @@ set(SOURCE_FILES
   src/rendering/Texture2DArray.cpp
   src/rendering/ScreenquadRenderer.cpp
   src/rendering/TileRenderer.cpp
-  src/rendering/TextureManager.cpp
+  src/rendering/TextureFactory.cpp
   src/rendering/ShaderManager.cpp
-  src/rendering/Texture.cpp
+  src/rendering/Texture2D.cpp
   src/rendering/RenderSystem.cpp
   src/interfaces/DwarfTerrainObjectInterface.cpp
   src/interfaces/DwarfTerrainInterface.cpp
@@ -36,13 +36,13 @@ set(HEADER_FILES
   src/rendering/SpriteRenderer.hpp
   src/rendering/ShaderManager.hpp
   src/rendering/stb_image.h
-  src/rendering/TextureManager.hpp
+  src/rendering/TextureFactory.hpp
   src/rendering/ScreenquadRenderer.hpp
   src/rendering/RenderSystem.hpp
   src/rendering/OrthographicCamera.hpp
   src/rendering/TileRenderer.hpp
   src/rendering/Texture2DArray.hpp
-  src/rendering/Texture.hpp
+  src/rendering/Texture2D.hpp
   src/interfaces/DwarfTerrainInterface.hpp
   src/interfaces/DwarfTerrainObjectInterface.hpp
   src/interfaces/DwarfAI.hpp

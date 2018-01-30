@@ -21,11 +21,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "src/rendering/TileRenderer.hpp"
-#include "src/rendering/Texture.hpp"
-#include "src/rendering/Texture2DArray.hpp"
-#include "src/rendering/ShaderManager.hpp"
-#include "src/rendering/OrthographicCamera.hpp"
+#include "TileRenderer.hpp"
+#include "Texture2D.hpp"
+#include "Texture2DArray.hpp"
+#include "ShaderManager.hpp"
+#include "OrthographicCamera.hpp"
+#include "TextureFactory.hpp"
 #include "src/TerrainMap.hpp"
 #include "PathResolver.hpp"
 
@@ -63,7 +64,9 @@ void TileRenderer::setTileType(int row, int col, TerrainType newType)
   m_tiles[row * cols * 6 + col * 6 + 5] = static_cast<TerrType>(newType);
 }
 
-void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera)
+void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture,
+                        const std::shared_ptr<OrthographicCamera>& camera,
+                        const std::shared_ptr<TextureFactory>& textureFactory)
 {
   m_camera = camera;
 
@@ -166,10 +169,10 @@ void TileRenderer::init(const std::shared_ptr<Texture2D>& targetTexture, const s
   glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, 0, 0);
   glBindVertexArray(0);
 
-  m_textureAtlas = std::make_shared<Texture2DArray>(std::vector<std::string>{ pathRes.tile("soil.png"),
-                                                                              pathRes.tile("passable.png"),
-                                                                              pathRes.tile("stone.png") },
-                                                    GL_RGB);
+  m_textureAtlas = textureFactory->loadTexture2DArray(std::vector<std::string>{ pathRes.tile("soil.png"),
+                                                                                pathRes.tile("passable.png"),
+                                                                                pathRes.tile("stone.png") },
+                                                      GL_RGB);
 
   m_glsl_projMatLoc = m_shaderManager->getUniformLocation(m_tileRenderingProg, "mvp");
 }

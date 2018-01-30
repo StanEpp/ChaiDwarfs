@@ -45,6 +45,7 @@ class Texture2D;
 class Texture2DArray;
 class ShaderManager;
 class OrthographicCamera;
+class TextureFactory;
 
 class TileRenderer
 {
@@ -53,7 +54,9 @@ public:
   TileRenderer(const std::shared_ptr<ShaderManager>& shaderManager, const std::shared_ptr<TerrainMap>& terrainMap);
   ~TileRenderer();
 
-  void init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera);
+  void init(const std::shared_ptr<Texture2D>& targetTexture,
+            const std::shared_ptr<OrthographicCamera>& camera,
+            const std::shared_ptr<TextureFactory>& textureFactory);
   void render();
 
   void setTileType(int row, int col, TerrainType newType);

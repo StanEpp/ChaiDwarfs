@@ -33,8 +33,6 @@
 
 #include "src/ecs/Entity.hpp"
 #include "src/ecs/Components.hpp"
-#include "src/rendering/Texture.hpp"
-#include "src/rendering/Texture2DArray.hpp"
 
 namespace cdwarfs
 {
@@ -44,9 +42,12 @@ namespace cdwarfs
 namespace cdwarfs::render
 {
 
+class Texture2D;
+class Texture2DArray;
 class TileRenderer;
 class OrthographicCamera;
 class ShaderManager;
+class TextureFactory;
 
 class SpriteRenderer
 {
@@ -60,7 +61,9 @@ public:
   SpriteRenderer(SpriteRenderer&) = delete;
   SpriteRenderer(SpriteRenderer&&) = delete;
 
-  void init(const std::shared_ptr<Texture2D>& targetTexture, const std::shared_ptr<OrthographicCamera>& camera);
+  void init(const std::shared_ptr<Texture2D>& targetTexture,
+            const std::shared_ptr<OrthographicCamera>& camera,
+            const std::shared_ptr<TextureFactory>& textureFactory);
 
   void render(double dt);
 
@@ -74,7 +77,7 @@ private:
   struct Sprite
   {
     std::string filePath;
-    Texture2D texture;
+    std::shared_ptr<Texture2D> texture;
   };
 
   struct AnimatedSprite
@@ -84,7 +87,7 @@ private:
     unsigned int currKeyFrame{ 0 };
     double duration{ 500 }, currTime{ 0 }; //TODO: round duration should be changeable later on. For now 500ms.
     bool playing{ false };
-    Texture2DArray textureArray;
+    std::shared_ptr<Texture2DArray> textureArray;
   };
 
   template<typename T>

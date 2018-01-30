@@ -28,32 +28,35 @@
 #include <GLFW/glfw3.h>
 #endif
 
-#include "src/rendering/TextureManager.hpp"
-
 namespace cdwarfs::render
 {
 
 class Texture2D
 {
-public:
+  friend class TextureFactory;
+
   Texture2D();
 
-  Texture2D(const std::string& filepath,
+  Texture2D(GLuint texID,
+            const std::string& filepath,
+            GLsizei width, GLsizei height, GLsizei numChannels,
             GLint internal_format = GL_RGBA,  //format to store the image in
             GLenum image_format = GL_RGBA,    //format the image is in
             GLint level = 0,                  //mipmapping level
             GLint border = 0);
 
-  Texture2D(GLsizei width, GLsizei height,
+  Texture2D(GLuint texID,
+            GLsizei width, GLsizei height, GLsizei numChannels,
             GLint internal_format = GL_RGBA,  //format to store the image in
             GLenum image_format = GL_RGBA,    //format the image is in
             GLint level = 0,                  //mipmapping level
             GLint border = 0);
 
-  Texture2D(const Texture2D&);
-  Texture2D(Texture2D&&);
-  Texture2D& operator=(const Texture2D&);
-  Texture2D& operator=(Texture2D&&);
+public:
+  Texture2D(const Texture2D&) = delete;
+  Texture2D(Texture2D&&) = delete;
+  Texture2D& operator=(const Texture2D&) = delete;
+  Texture2D& operator=(Texture2D&&) = delete;
 
   ~Texture2D();
 
@@ -69,11 +72,6 @@ public:
 
 private:
   void init();
-
-  void makeDeepCopy(const Texture2D& tex);
-  void makeMove(Texture2D&& tex);
-
-  static TextureManager& m_texManager;
 
   std::optional<std::string> m_filepath{};
   int m_width{ 0 };
