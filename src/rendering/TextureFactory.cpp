@@ -28,6 +28,10 @@
 
 using namespace cdwarfs::render;
 
+TextureFactory::TextureFactory(const std::shared_ptr<WindowGLFW> &window) :
+    m_window(window)
+{}
+
 std::shared_ptr<Texture2D>
   TextureFactory::loadTexture2D(const std::string& filename,//where to load the file from
                                 GLint internal_format,     //format to store the image in
@@ -76,6 +80,7 @@ std::shared_ptr<Texture2D>
             const auto texID = tex->texID();
             glDeleteTextures(1, &texID);
             factory->m_loadedTextures2D.erase(it);
+            delete tex;
           }
     });
     m_loadedTextures2D[filename] = tex;
@@ -113,6 +118,7 @@ std::shared_ptr<Texture2D>
                               const auto texID = tex->texID();
                               glDeleteTextures(1, &texID);
                               factory->m_textures2D.erase(it);
+                              delete tex;
                             }
                     });
       m_textures2D[texID] = tex;
@@ -177,6 +183,7 @@ std::shared_ptr<Texture2DArray>
             const auto texID = tex->texID();
             glDeleteTextures(1, &texID);
             factory->m_textureArrays2D.erase(it);
+            delete tex;
           }
         }
     );

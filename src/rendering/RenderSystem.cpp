@@ -40,7 +40,7 @@ RenderSystem::RenderSystem(const std::shared_ptr<TerrainObjectSystem>& terrainOb
                            const std::shared_ptr<DwarfSystem>& dwarfSys,
                            const std::shared_ptr<GLFWInput>& input) :
   m_window(nullptr),
-  m_textureFactory(std::make_shared<TextureFactory>()),
+  m_textureFactory(nullptr),
   m_terrainObjSys(terrainObjSys),
   m_terrainMap(terrainMap),
   m_entManager(entManager),
@@ -65,6 +65,8 @@ void RenderSystem::init(int wnd_Width, int wnd_Height, const std::string& window
 
   std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << '\n';
   std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << '\n';
+
+  m_textureFactory = std::make_shared<TextureFactory>(m_window);
 
   m_camera->init(wnd_Width, wnd_Height, m_input);
 

@@ -35,11 +35,13 @@ namespace cdwarfs::render
 {
 class Texture2D;
 class Texture2DArray;
+class WindowGLFW;
 
 class TextureFactory : public std::enable_shared_from_this<TextureFactory>
 {
 public:
-  TextureFactory() = default;
+  TextureFactory() = delete;
+  TextureFactory(const std::shared_ptr<WindowGLFW> &window);
   TextureFactory(TextureFactory&) = delete;
   TextureFactory(TextureFactory&&) = delete;
   TextureFactory& operator=(TextureFactory const&) = delete;
@@ -65,6 +67,7 @@ public:
                        GLenum image_format = GL_RGB); //format the image is in
 
 private:
+  std::shared_ptr<WindowGLFW> m_window;
   std::unordered_map<std::string, std::weak_ptr<Texture2D>>  m_loadedTextures2D;
   std::unordered_map<GLuint, std::weak_ptr<Texture2D>> m_textures2D;
   std::unordered_map<GLuint, std::weak_ptr<Texture2DArray>>  m_textureArrays2D;
