@@ -16,7 +16,7 @@ externalproject_add(glm_ext
   BUILD_COMMAND ""
   UPDATE_COMMAND ""
   UPDATE_DISCONNECTED 1
-  URL https://github.com/g-truc/glm/releases/download/0.9.8.5/glm-0.9.8.5.zip
+  URL https://github.com/g-truc/glm/archive/0.9.9-a2.zip
 )
 
 externalproject_add(chaiscript_ext

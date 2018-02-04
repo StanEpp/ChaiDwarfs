@@ -70,7 +70,7 @@ void RenderSystem::init(int wnd_Width, int wnd_Height, const std::string& window
 
   m_camera->init(wnd_Width, wnd_Height, m_input);
 
-  m_outputTexture = m_textureFactory->createTexture2D(wnd_Width, wnd_Height, 3);
+  m_outputTexture = m_textureFactory->createTexture2D(wnd_Width, wnd_Height);
 
   m_screenquad->init(wnd_Width, wnd_Height, m_outputTexture, m_textureFactory);
   m_tileRend->init(m_outputTexture, m_camera, m_textureFactory);
