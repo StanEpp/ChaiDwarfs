@@ -26,18 +26,21 @@ using namespace cdwarfs;
 DwarfTerrainObjectInterface::DwarfTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) :
   m_terrainObjSys(terrainObjSys){}
 
-const std::string DwarfTerrainObjectInterface::checkForObject(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const
+const std::string DwarfTerrainObjectInterface::checkForObject(int currRow, int currCol,
+                                                              int viewDist,
+                                                              int diffRow, int diffCol) const
 {
-  if (m_terrainObjSys.expired()) return "Unknown";
-  auto sys = m_terrainObjSys.lock();
+    if (m_terrainObjSys.expired()) return "Unknown";
+    auto sys = m_terrainObjSys.lock();
 
-  if (std::abs(diffRow) > viewDist || std::abs(diffCol) > viewDist ||
+    if (std::abs(diffRow) > viewDist || std::abs(diffCol) > viewDist ||
       currRow + diffRow < 0 || currCol + diffCol < 0)
-  {
-    return "OutOfReach";
-  }
+    {
+        return "OutOfReach";
+    }
 
-  auto objects = sys->at(currRow + diffRow, currCol + diffCol);
-  if (objects.empty()) return "Nothing";
-  return objects[0].second;
+    auto objects = sys->at(currRow + diffRow, currCol + diffCol);
+    if (objects.empty())
+        return "Nothing";
+    return objects[0].second;
 }

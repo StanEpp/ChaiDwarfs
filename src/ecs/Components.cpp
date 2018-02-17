@@ -62,17 +62,17 @@ ScriptAI::ScriptAI() : AIComponent(std::make_unique<ChaiscriptAI>("")), filePath
 ScriptAI::ScriptAI(const std::string& filePath) : AIComponent(std::make_unique<ChaiscriptAI>(pathRes.script(filePath))), filePath(pathRes.script(filePath)) {}
 
 Sprites::Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths) {
-  sprites.reserve(filePaths.size());
-  for (const auto &p : filePaths) {
-    sprites.emplace_back(p.first, pathRes.sprite(p.second));
-  }
+    sprites.reserve(filePaths.size());
+    for (const auto &p : filePaths) {
+        sprites.emplace_back(p.first, pathRes.sprite(p.second));
+    }
 }
 
 AnimatedSprites::AnimatedSprites(const std::vector<std::pair<std::string, std::string>>& filePaths) {
-  sprites.reserve(filePaths.size());
-  for (const auto &p : filePaths) {
-    sprites.emplace_back(p.first, pathRes.sprite(p.second));
-  }
+    sprites.reserve(filePaths.size());
+    for (const auto &p : filePaths) {
+        sprites.emplace_back(p.first, pathRes.sprite(p.second));
+    }
 }
 
 }

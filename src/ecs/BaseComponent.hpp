@@ -30,20 +30,20 @@ using  ComponentUUID = uint_fast64_t;
 class BaseComponent
 {
 public:
-  //get unique Component Class ID
-  static inline ComponentUUID getCID() {
-    static ComponentUUID ID = 0;
-    return ID++;
-  }
+    //get unique Component Class ID
+    static inline ComponentUUID getCID() {
+      static ComponentUUID ID = 0;
+      return ID++;
+    }
 
-  virtual ~BaseComponent() {}
+    virtual ~BaseComponent() {}
 };
 
 template<class T>
 class Component : public BaseComponent
 {
 public:
-  static ComponentUUID componentTypeID;
+    static ComponentUUID componentTypeID;
 };
 
 template<typename T>

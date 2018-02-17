@@ -28,21 +28,21 @@ namespace cdwarfs
 class EntityID
 {
 public:
-  using UUID = uint_fast64_t;
+    using UUID = uint_fast64_t;
 
-  EntityID() = delete;
+    EntityID() = delete;
 
-  //get Class ID
-  static inline EntityID::UUID getID()
-  {
-    static EntityID::UUID ID = 0;
-    return ++ID; // ++ID only return ID's > 0. 0 is an invalid ID
-  }
+    //get Class ID
+    static inline EntityID::UUID getID()
+    {
+        static EntityID::UUID ID = 0;
+        return ++ID; // ++ID only return ID's > 0. 0 is an invalid ID
+    }
 
-  static void releaseID(EntityID::UUID)
-  {
-    // TODO: Implement releasing entity ID's
-  }
+    static void releaseID(EntityID::UUID)
+    {
+        // TODO: Implement releasing entity ID's
+    }
 };
 
 }

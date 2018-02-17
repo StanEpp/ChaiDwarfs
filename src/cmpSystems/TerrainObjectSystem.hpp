@@ -34,29 +34,29 @@ class EntityManager;
 class TerrainObjectSystem
 {
 public:
-  TerrainObjectSystem() = delete;
-  TerrainObjectSystem(const std::shared_ptr<EntityManager> entManager);
-  TerrainObjectSystem(TerrainObjectSystem&) = delete;
-  TerrainObjectSystem(TerrainObjectSystem&&) = delete;
-  TerrainObjectSystem& operator=(TerrainObjectSystem&) = delete;
-  TerrainObjectSystem& operator=(TerrainObjectSystem&&) = delete;
+    TerrainObjectSystem() = delete;
+    TerrainObjectSystem(const std::shared_ptr<EntityManager> entManager);
+    TerrainObjectSystem(TerrainObjectSystem&) = delete;
+    TerrainObjectSystem(TerrainObjectSystem&&) = delete;
+    TerrainObjectSystem& operator=(TerrainObjectSystem&) = delete;
+    TerrainObjectSystem& operator=(TerrainObjectSystem&&) = delete;
 
-  ~TerrainObjectSystem();
+    ~TerrainObjectSystem();
 
-  std::vector<std::pair<EntityID::UUID, std::string>> at(int row, int col) const;
+    std::vector<std::pair<EntityID::UUID, std::string>> at(int row, int col) const;
 
-  void loadObjects(const std::string& filepath);
+    void loadObjects(const std::string& filepath);
 
-  bool erase(EntityID::UUID ID);
+    bool erase(EntityID::UUID ID);
 
-  void objectCollisions(std::shared_ptr<CommandSystem>& cmdSys);
+    void objectCollisions(std::shared_ptr<CommandSystem>& cmdSys);
 
 private:
 
-  EntityID::UUID add(const std::string& name, int row, int col);
+    EntityID::UUID add(const std::string& name, int row, int col);
 
-  std::vector<EntityID::UUID>    m_objects;
-  std::shared_ptr<EntityManager> m_entManager;
+    std::vector<EntityID::UUID>    m_objects;
+    std::shared_ptr<EntityManager> m_entManager;
 };
 
 }

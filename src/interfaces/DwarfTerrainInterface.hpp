@@ -23,23 +23,22 @@
 #include <memory>
 
 namespace cdwarfs
-
 {
-  class Dwarf;
-  class Point;
-  class TerrainMap;
-  enum class TerrainType : unsigned int;
+class Dwarf;
+class Point;
+class TerrainMap;
+enum class TerrainType : unsigned int;
 
-  class DwarfTerrainInterface final
-  {
-  public:
+class DwarfTerrainInterface final
+{
+public:
     DwarfTerrainInterface() = delete;
     DwarfTerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap);
     ~DwarfTerrainInterface(){}
 
     TerrainType checkTerrain(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
-  private:
+private:
     std::weak_ptr<TerrainMap> m_terrain;
-  };
+};
 
 }
