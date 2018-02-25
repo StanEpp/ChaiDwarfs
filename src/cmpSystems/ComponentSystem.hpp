@@ -46,23 +46,23 @@ public:
 
     virtual ~BaseVisitor() {}
 
-    virtual ReturnedCommands operator()(const cmd::Cmd_Touch&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_Heal&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_Damage&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_Points&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveUp&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveDown&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveLeft&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveRight&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveNone&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_ChangeTerrainType&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_ChangeTileType&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveSpriteLeft&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveSpriteRight&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveSpriteUp&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_MoveSpriteDown&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_ExecuteAI&) { return ReturnedCommands(); }
-    virtual ReturnedCommands operator()(const cmd::Cmd_ExecuteEveryAI&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::Touch&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::Heal&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::Damage&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::Points&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveUp&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveDown&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveLeft&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveRight&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveNone&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::ChangeTerrainType&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::ChangeTileType&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveSpriteLeft&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveSpriteRight&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveSpriteUp&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::MoveSpriteDown&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::ExecuteAI&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::ExecuteEveryAI&) { return ReturnedCommands(); }
 
 protected:
     std::shared_ptr<EntityManager> m_entManager;
@@ -73,14 +73,14 @@ class TouchValue_Sys : public BaseVisitor
 public:
     TouchValue_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-     ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) override
+     ReturnedCommands operator()(const cmd::Touch& cmd) override
      {
         ReturnedCommands ret;
         auto touchValue = m_entManager->getComponent<comp::TouchValue>(cmd.touched);
         if (touchValue) {
             auto points = m_entManager->getComponent<comp::Points>(cmd.touching);
             if (points) {
-               cmd::Cmd_Points cmdPoints;
+               cmd::Points cmdPoints;
                cmdPoints.dest = cmd.touching;
                cmdPoints.points = touchValue->value;
                ret.push_back(cmdPoints);
@@ -95,14 +95,14 @@ class TouchHeal_Sys : public BaseVisitor
 public:
   TouchHeal_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-   ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) override
+   ReturnedCommands operator()(const cmd::Touch& cmd) override
    {
       ReturnedCommands ret;
       auto touchHeal = m_entManager->getComponent<comp::TouchHeal>(cmd.touched);
       if (touchHeal) {
           auto hp = m_entManager->getComponent<comp::HP>(cmd.touching);
           if (hp) {
-              cmd::Cmd_Heal cmdHeal;
+              cmd::Heal cmdHeal;
               cmdHeal.dest = cmd.touching;
               cmdHeal.heal = touchHeal->heal;
               ret.push_back(cmdHeal);
@@ -117,14 +117,14 @@ class TouchDamage_Sys : public BaseVisitor
 public:
   TouchDamage_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-   ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) override
+   ReturnedCommands operator()(const cmd::Touch& cmd) override
    {
      ReturnedCommands ret;
      auto touchDamage = m_entManager->getComponent<comp::TouchDamage>(cmd.touched);
      if (touchDamage) {
          auto hp = m_entManager->getComponent<comp::HP>(cmd.touching);
          if (hp) {
-             cmd::Cmd_Damage cmdDmg;
+             cmd::Damage cmdDmg;
              cmdDmg.dest = cmd.touching;
              cmdDmg.damage = touchDamage->damage;
              ret.push_back(cmdDmg);
@@ -139,7 +139,7 @@ class TouchDestroy_Sys : public BaseVisitor
 public:
     TouchDestroy_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-     ReturnedCommands operator()(const cmd::Cmd_Touch& cmd) override
+     ReturnedCommands operator()(const cmd::Touch& cmd) override
      {
         if (m_entManager->getComponent<comp::TouchDestroy>(cmd.touched)) {
             m_entManager->addComponent<comp::FlaggedDestroyed>(cmd.touched);
@@ -153,7 +153,7 @@ class Damage_Sys : public BaseVisitor
 public:
     Damage_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-     ReturnedCommands operator()(const cmd::Cmd_Damage& cmd) override
+     ReturnedCommands operator()(const cmd::Damage& cmd) override
      {
          auto hp = m_entManager->getComponent<comp::HP>(cmd.dest);
          if (hp) {
@@ -168,7 +168,7 @@ class Points_Sys : public BaseVisitor
 public:
     Points_Sys(const std::shared_ptr<EntityManager>& entManager) : BaseVisitor(entManager) {}
 
-     ReturnedCommands operator()(const cmd::Cmd_Points& cmd) override
+     ReturnedCommands operator()(const cmd::Points& cmd) override
      {
         auto points = m_entManager->getComponent<comp::Points>(cmd.dest);
         if (points) {
@@ -191,39 +191,39 @@ public:
       m_terrainObjSys(terrainObjSys)
     {}
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveUp& cmd) override
+     ReturnedCommands operator()(const cmd::MoveUp& cmd) override
      {
         ReturnedCommands ret;
         auto newPos = executeMove(ret, -1, 0, cmd.dest);
-        executeSpriteMove<cmd::Cmd_MoveSpriteUp>(ret, cmd.dest, newPos);
+        executeSpriteMove<cmd::MoveSpriteUp>(ret, cmd.dest, newPos);
         return ret;
     }
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveDown& cmd) override
+     ReturnedCommands operator()(const cmd::MoveDown& cmd) override
      {
         ReturnedCommands ret;
         auto newPos = executeMove(ret, 1, 0, cmd.dest);
-        executeSpriteMove<cmd::Cmd_MoveSpriteDown>(ret, cmd.dest, newPos);
+        executeSpriteMove<cmd::MoveSpriteDown>(ret, cmd.dest, newPos);
         return ret;
     }
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveLeft& cmd) override
+     ReturnedCommands operator()(const cmd::MoveLeft& cmd) override
      {
         ReturnedCommands ret;
         auto newPos = executeMove(ret, 0, -1, cmd.dest);
-        executeSpriteMove<cmd::Cmd_MoveSpriteLeft>(ret, cmd.dest, newPos);
+        executeSpriteMove<cmd::MoveSpriteLeft>(ret, cmd.dest, newPos);
         return ret;
     }
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveRight& cmd) override
+     ReturnedCommands operator()(const cmd::MoveRight& cmd) override
      {
         ReturnedCommands ret;
         auto newPos = executeMove(ret, 0, 1, cmd.dest);
-        executeSpriteMove<cmd::Cmd_MoveSpriteRight>(ret, cmd.dest, newPos);
+        executeSpriteMove<cmd::MoveSpriteRight>(ret, cmd.dest, newPos);
         return ret;
     }
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveNone& cmd) override
+     ReturnedCommands operator()(const cmd::MoveNone& cmd) override
      {
         ReturnedCommands ret;
         executeMove(ret, 0, 0, cmd.dest);
@@ -254,7 +254,7 @@ private:
             if (m_terrainMap->at(pos->row + rowDiff, pos->col + colDiff) == TerrainType::PASSABLE) {
                 auto objects = m_terrainObjSys->at(pos->row + rowDiff, pos->col + colDiff);
                 for (auto& ent : objects) {
-                    cmd::Cmd_Touch touchCmd;
+                    cmd::Touch touchCmd;
                     touchCmd.touched = ent.first;
                     touchCmd.touching = entID;
                     ret.push_back(touchCmd);
@@ -263,7 +263,7 @@ private:
                 pos->col += colDiff;
                 return pos;
             } else {
-                cmd::Cmd_MoveNone standCmd;
+                cmd::MoveNone standCmd;
                 standCmd.dest = entID;
                 ret.push_back(standCmd);
             }
@@ -286,25 +286,25 @@ public:
       m_spriteRenderer(spriteRenderer)
     {}
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveSpriteLeft& cmd) override
+     ReturnedCommands operator()(const cmd::MoveSpriteLeft& cmd) override
      {
         m_spriteRenderer->spriteMove(cmd.dest, "moveLeft", cmd.row, cmd.col);
         return ReturnedCommands();
     }
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveSpriteRight& cmd) override
+     ReturnedCommands operator()(const cmd::MoveSpriteRight& cmd) override
      {
         m_spriteRenderer->spriteMove(cmd.dest, "moveRight", cmd.row, cmd.col);
         return ReturnedCommands();
     }
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveSpriteUp& cmd) override
+     ReturnedCommands operator()(const cmd::MoveSpriteUp& cmd) override
      {
         m_spriteRenderer->spriteMove(cmd.dest, "moveUp", cmd.row, cmd.col);
         return ReturnedCommands();
     }
 
-     ReturnedCommands operator()(const cmd::Cmd_MoveSpriteDown& cmd) override
+     ReturnedCommands operator()(const cmd::MoveSpriteDown& cmd) override
      {
         m_spriteRenderer->spriteMove(cmd.dest, "moveDown", cmd.row, cmd.col);
         return ReturnedCommands();
@@ -327,12 +327,12 @@ public:
       m_terrainObjSys(terrainObjSys)
     {}
 
-    ReturnedCommands operator()(const cmd::Cmd_ChangeTerrainType& cmd) override
+    ReturnedCommands operator()(const cmd::ChangeTerrainType& cmd) override
     {
         ReturnedCommands ret;
         //TODO: Implement further checking if change is valid!
         m_terrainMap->set(cmd.row, cmd.col, cmd.newType);
-        cmd::Cmd_ChangeTileType newCmd;
+        cmd::ChangeTileType newCmd;
         newCmd.row = cmd.row;
         newCmd.col = cmd.col;
         newCmd.newType = cmd.newType;
@@ -356,7 +356,7 @@ public:
       m_tileRenderer(tileRenderer)
     {}
 
-    ReturnedCommands operator()(const cmd::Cmd_ChangeTileType& cmd) override
+    ReturnedCommands operator()(const cmd::ChangeTileType& cmd) override
     {
         m_tileRenderer->setTileType(cmd.row, cmd.col, cmd.newType);
         return ReturnedCommands();
@@ -384,7 +384,7 @@ public:
       m_terrainObjSys(terrainObjSys)
     {}
 
-    ReturnedCommands operator()(const cmd::Cmd_ExecuteAI &cmd) override
+    ReturnedCommands operator()(const cmd::ExecuteAI &cmd) override
     {
         auto ai = m_entManager->getComponent<comp::DwarfAI>(cmd.dest);
         if(ai) {
@@ -393,7 +393,7 @@ public:
         }
     }
 
-    ReturnedCommands operator()(const cmd::Cmd_ExecuteEveryAI &) override
+    ReturnedCommands operator()(const cmd::ExecuteEveryAI &) override
     {
         ReturnedCommands ret;
         auto entities = m_entManager->getAllEntitiesWithComponent<comp::DwarfAI>();
@@ -512,27 +512,27 @@ private:
         ret.reserve(1);
         switch (m_moveAction) {
         case MoveAction::LEFT: {
-            cmd::Cmd_MoveLeft cmdLeft;
+            cmd::MoveLeft cmdLeft;
             cmdLeft.dest = id;
             ret.push_back(cmdLeft);
         } break;
         case MoveAction::RIGHT: {
-            cmd::Cmd_MoveRight cmdRight;
+            cmd::MoveRight cmdRight;
             cmdRight.dest = id;
             ret.push_back(cmdRight);
         } break;
         case MoveAction::UP: {
-            cmd::Cmd_MoveUp cmdUp;
+            cmd::MoveUp cmdUp;
             cmdUp.dest = id;
             ret.push_back(cmdUp);
         } break;
         case MoveAction::DOWN: {
-            cmd::Cmd_MoveDown cmdDown;
+            cmd::MoveDown cmdDown;
             cmdDown.dest = id;
             ret.push_back(cmdDown);
         } break;
         case MoveAction::NONE: {
-            cmd::Cmd_MoveNone cmdNone;
+            cmd::MoveNone cmdNone;
             cmdNone.dest = id;
             ret.push_back(cmdNone);
         } break;

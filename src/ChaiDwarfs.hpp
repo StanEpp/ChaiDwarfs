@@ -78,7 +78,7 @@ public:
           }
 
           if (timer.haveMilliSecondsPassed(500, lastRound)) {
-              m_cmdSystem->pushCommand(cmd::Cmd_ExecuteEveryAI{});
+              m_cmdSystem->pushCommand(cmd::ExecuteEveryAI{});
               m_terrainObjSys->objectCollisions(m_cmdSystem);
               m_cmdSystem->processQueue();
               killAllDestroyedEntities();

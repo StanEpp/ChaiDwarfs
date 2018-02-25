@@ -27,102 +27,101 @@
 namespace cdwarfs::cmd
 {
 
-struct Cmd_Touch {
+struct Touch {
     EntityID::UUID  touched{ 0 };
     EntityID::UUID  touching{ 0 };
 };
 
-struct Cmd_Heal {
+struct Heal {
     EntityID::UUID dest{ 0 };
     int heal{ 0 };
 };
 
-struct Cmd_Damage {
+struct Damage {
     EntityID::UUID dest{ 0 };
     int damage{ 0 };
 };
 
-struct Cmd_Points {
+struct Points {
     EntityID::UUID dest{ 0 };
     int points{ 0 };
 };
 
-struct Cmd_MoveUp {
+struct MoveUp {
     EntityID::UUID dest{ 0 };
 };
 
-struct Cmd_MoveDown {
+struct MoveDown {
     EntityID::UUID dest{ 0 };
 };
 
-struct Cmd_MoveLeft {
+struct MoveLeft {
     EntityID::UUID dest{ 0 };
 };
 
-struct Cmd_MoveRight {
+struct MoveRight {
     EntityID::UUID dest{ 0 };
 };
 
-struct Cmd_MoveNone {
+struct MoveNone {
     EntityID::UUID dest{ 0 };
 };
 
-struct Cmd_MoveSpriteRight {
-    EntityID::UUID dest{ 0 };
-    int row{ 0 }, col{ 0 };
-};
-
-struct Cmd_MoveSpriteLeft {
+struct MoveSpriteRight {
     EntityID::UUID dest{ 0 };
     int row{ 0 }, col{ 0 };
 };
 
-struct Cmd_MoveSpriteUp {
+struct MoveSpriteLeft {
     EntityID::UUID dest{ 0 };
     int row{ 0 }, col{ 0 };
 };
 
-struct Cmd_MoveSpriteDown {
+struct MoveSpriteUp {
     EntityID::UUID dest{ 0 };
     int row{ 0 }, col{ 0 };
 };
 
-struct Cmd_ChangeTerrainType {
+struct MoveSpriteDown {
+    EntityID::UUID dest{ 0 };
     int row{ 0 }, col{ 0 };
-    TerrainType newType{ TerrainType::SOIL };
 };
 
-struct Cmd_ChangeTileType {
+struct ChangeTerrainType {
     int row{ 0 }, col{ 0 };
     TerrainType newType{ TerrainType::SOIL };
 };
 
-struct Cmd_ExecuteAI {
+struct ChangeTileType {
+    int row{ 0 }, col{ 0 };
+    TerrainType newType{ TerrainType::SOIL };
+};
+
+struct ExecuteAI {
     EntityID::UUID dest{ 0 };
 };
 
-struct Cmd_ExecuteEveryAI {
-};
+struct ExecuteEveryAI { };
 
 using Command =
 std::variant<
-    Cmd_Touch,
-    Cmd_Heal,
-    Cmd_Damage,
-    Cmd_Points,
-    Cmd_ChangeTerrainType,
-    Cmd_ChangeTileType,
-    Cmd_MoveUp,
-    Cmd_MoveDown,
-    Cmd_MoveLeft,
-    Cmd_MoveRight,
-    Cmd_MoveNone,
-    Cmd_MoveSpriteRight,
-    Cmd_MoveSpriteLeft,
-    Cmd_MoveSpriteUp,
-    Cmd_MoveSpriteDown,
-    Cmd_ExecuteAI,
-    Cmd_ExecuteEveryAI
+    Touch,
+    Heal,
+    Damage,
+    Points,
+    ChangeTerrainType,
+    ChangeTileType,
+    MoveUp,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+    MoveNone,
+    MoveSpriteRight,
+    MoveSpriteLeft,
+    MoveSpriteUp,
+    MoveSpriteDown,
+    ExecuteAI,
+    ExecuteEveryAI
 >;
 
 }

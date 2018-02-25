@@ -25,40 +25,40 @@ namespace cdwarfs {
 
 struct Timer
 {
-  using TimerType = std::chrono::time_point<std::chrono::high_resolution_clock>;
+    using TimerType = std::chrono::time_point<std::chrono::high_resolution_clock>;
 
-  const int ticksPerSecond = 25;
-  const int maxFrameskip = 5;
-  int skippedFrames{ 0 };
-  int framesRendered{ 0 };
+    const int ticksPerSecond = 25;
+    const int maxFrameskip = 5;
+    int skippedFrames{ 0 };
+    int framesRendered{ 0 };
 
-  TimerType start;
-  TimerType lastFpsUpdate;
-  TimerType lastFrameRendered;
-  double dt;
+    TimerType start;
+    TimerType lastFpsUpdate;
+    TimerType lastFrameRendered;
+    double dt;
 
-  std::chrono::milliseconds skipTicks{ 0 };
+    std::chrono::milliseconds skipTicks{ 0 };
 
-  Timer() :
-    start(currentTime()),
-    lastFpsUpdate(currentTime()),
-    lastFrameRendered(currentTime()),
-    dt(0.0)
-  {
-    skipTicks = std::chrono::milliseconds(1000 / ticksPerSecond);
-  }
+    Timer() :
+        start(currentTime()),
+        lastFpsUpdate(currentTime()),
+        lastFrameRendered(currentTime()),
+        dt(0.0)
+    {
+        skipTicks = std::chrono::milliseconds(1000 / ticksPerSecond);
+    }
 
-  TimerType currentTime() { return std::chrono::high_resolution_clock::now(); }
+    TimerType currentTime() { return std::chrono::high_resolution_clock::now(); }
 
-  void setDt(const TimerType& t1, const TimerType& t2)
-  {
-    dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t2 - t1).count();
-  }
+    void setDt(const TimerType& t1, const TimerType& t2)
+    {
+        dt = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(t2 - t1).count();
+    }
 
-  bool haveMilliSecondsPassed(unsigned int ms, const TimerType& timePoint)
-  {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime() - timePoint) >= std::chrono::milliseconds(ms);
-  }
+    bool haveMilliSecondsPassed(unsigned int ms, const TimerType& timePoint)
+    {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(currentTime() - timePoint) >= std::chrono::milliseconds(ms);
+    }
 };
 
 }

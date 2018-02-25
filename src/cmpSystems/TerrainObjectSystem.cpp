@@ -87,7 +87,7 @@ void TerrainObjectSystem::objectCollisions(std::shared_ptr<CommandSystem>& cmdSy
 
         for (auto otherID : otherObj) {
             if (objID == otherID.first) continue;
-            cmd::Cmd_Touch cmd;
+            cmd::Touch cmd;
             cmd.touched = otherID.first;
             cmd.touching = objID;
             cmdSys->pushCommand(cmd);

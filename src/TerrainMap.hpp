@@ -28,38 +28,38 @@ namespace cdwarfs
 
 enum class TerrainType : unsigned int
 {
-  SOIL = 0,
-  PASSABLE,
-  STONE,
-  DARK,      // Everything outside the terrain bounds.
-  NO_MAP,    // When there's no map at all and you try to access one.
+    SOIL = 0,
+    PASSABLE,
+    STONE,
+    DARK,      // Everything outside the terrain bounds.
+    NO_MAP,    // When there's no map at all and you try to access one.
 };
 
 class TerrainMap
 {
 public:
-  TerrainMap() = default;
-  TerrainMap(TerrainMap&) = delete; TerrainMap& operator=(const TerrainMap&) = delete;
-  TerrainMap(TerrainMap&&) = delete; TerrainMap& operator=(TerrainMap&&) = delete;
+    TerrainMap() = default;
+    TerrainMap(TerrainMap&) = delete; TerrainMap& operator=(const TerrainMap&) = delete;
+    TerrainMap(TerrainMap&&) = delete; TerrainMap& operator=(TerrainMap&&) = delete;
 
-  void load(const std::string& chaiscriptPath);
+    void load(const std::string& chaiscriptPath);
 
-  TerrainType at(int row, int col);
+    TerrainType at(int row, int col);
 
-  void set(int row, int col, TerrainType newType);
+    void set(int row, int col, TerrainType newType);
 
-  inline int rows()
-  {
-    return static_cast<int>(m_map.size());
-  }
+    inline int rows()
+    {
+        return static_cast<int>(m_map.size());
+    }
 
-  inline int columns()
-  {
-    return static_cast<int>(m_map[0].size());
-  }
+    inline int columns()
+    {
+        return static_cast<int>(m_map[0].size());
+    }
 
 private:
-  std::vector<std::vector<TerrainType>>  m_map;
+    std::vector<std::vector<TerrainType>>  m_map;
 };
 
 }
