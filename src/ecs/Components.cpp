@@ -19,7 +19,6 @@
 */
 
 #include "Components.hpp"
-#include "src/ChaiScriptAI.hpp"
 #include "PathResolver.hpp"
 
 namespace cdwarfs::comp
@@ -55,11 +54,6 @@ Points::Points(int points) : points(points) {}
 
 View::View() {}
 View::View(int dist) : dist(dist) {}
-
-AIComponent::AIComponent(std::unique_ptr<DwarfAI>&& ai) : ai(std::move(ai)) {}
-
-ScriptAI::ScriptAI() : AIComponent(std::make_unique<ChaiscriptAI>("")), filePath("") {}
-ScriptAI::ScriptAI(const std::string& filePath) : AIComponent(std::make_unique<ChaiscriptAI>(pathRes.script(filePath))), filePath(pathRes.script(filePath)) {}
 
 Sprites::Sprites(const std::vector<std::pair<std::string, std::string>>& filePaths) {
     sprites.reserve(filePaths.size());

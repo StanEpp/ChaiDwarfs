@@ -1,5 +1,5 @@
 /*
-*  Copyright(c) 2016 - 2017 Stanislaw Eppinger
+*  Copyright(c) 2016 - 2018 Stanislaw Eppinger
 *  Scripting based game called ChaiDwarfs
 *
 *  This file is part of ChaiDwarfs.
@@ -16,29 +16,36 @@
 *
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
+*
 */
-
 #pragma once
 
 #include <memory>
+#include <string>
+
+#include "BaseComponent.hpp"
+#include <chaiscript/chaiscript.hpp>
 
 namespace cdwarfs
 {
-class Dwarf;
-class Point;
-class TerrainMap;
-enum class TerrainType : unsigned int;
+    class TerrainInterface;
+    class TerrainObjectInterface;
+}
 
-class DwarfTerrainInterface final
+namespace cdwarfs::comp
 {
-public:
-    DwarfTerrainInterface() = delete;
-    DwarfTerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap);
-    ~DwarfTerrainInterface(){}
 
-    TerrainType checkTerrain(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
-private:
-    std::weak_ptr<TerrainMap> m_terrain;
+struct DwarfAI : public Component<DwarfAI>
+{
+    std::string filePath;
+    ::chaiscript::ChaiScript chai;
+    std::function<void()> entryPoint;
+    std::unique_ptr<::cdwarfs::TerrainInterface> terrain;
+    std::unique_ptr<::cdwarfs::TerrainObjectInterface> terrainObj;
+    bool initialized{ false };
+
+    DwarfAI();
+    DwarfAI(const std::string& filePath);
 };
 
 }

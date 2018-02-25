@@ -35,7 +35,7 @@ class TerrainObjectSystem
 {
 public:
     TerrainObjectSystem() = delete;
-    TerrainObjectSystem(const std::shared_ptr<EntityManager> entManager);
+    TerrainObjectSystem(const std::shared_ptr<EntityManager>& entManager);
     TerrainObjectSystem(TerrainObjectSystem&) = delete;
     TerrainObjectSystem(TerrainObjectSystem&&) = delete;
     TerrainObjectSystem& operator=(TerrainObjectSystem&) = delete;

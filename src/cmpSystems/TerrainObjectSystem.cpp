@@ -27,7 +27,9 @@
 
 using namespace cdwarfs;
 
-TerrainObjectSystem::TerrainObjectSystem(const std::shared_ptr<EntityManager> entManager) : m_entManager(entManager) {}
+TerrainObjectSystem::TerrainObjectSystem(const std::shared_ptr<EntityManager>& entManager) :
+    m_entManager(entManager)
+{}
 
 TerrainObjectSystem::~TerrainObjectSystem(){}
 
@@ -51,7 +53,6 @@ std::vector<std::pair<EntityID::UUID, std::string>> TerrainObjectSystem::at(int 
 
     return ret;
 }
-
 
 void TerrainObjectSystem::loadObjects(const std::string& filepath)
 {

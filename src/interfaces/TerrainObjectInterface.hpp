@@ -27,12 +27,12 @@ namespace cdwarfs
 
 class TerrainObjectSystem;
 
-class DwarfTerrainObjectInterface final
+class TerrainObjectInterface final
 {
 public:
-    DwarfTerrainObjectInterface() = delete;
-    DwarfTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>&);
-    ~DwarfTerrainObjectInterface() {}
+    TerrainObjectInterface() = delete;
+    TerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>&);
+    ~TerrainObjectInterface() {}
 
     const std::string checkForObject(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
 private:

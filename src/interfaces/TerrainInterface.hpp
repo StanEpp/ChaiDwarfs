@@ -18,29 +18,27 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#include <iostream>
+#pragma once
 
-#include "ChaiDwarfs.hpp"
+#include <memory>
 
-int main()
+namespace cdwarfs
 {
-    //std::cout << cdwarfs::TouchValue::componentTypeID << '\n';
-    //std::cout << cdwarfs::TouchDamage::componentTypeID << '\n';
-    //std::cout << cdwarfs::Name::componentTypeID << '\n';
-    //std::cout << cdwarfs::Position::componentTypeID << '\n';
-    //std::cout << cdwarfs::DwarfHP::componentTypeID << '\n';
-    //std::cout << cdwarfs::DwarfPosition::componentTypeID << '\n';
+class Dwarf;
+class Point;
+class TerrainMap;
+enum class TerrainType : unsigned int;
 
-    //std::cin.get();
+class TerrainInterface final
+{
+public:
+    TerrainInterface() = delete;
+    TerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap);
+    ~TerrainInterface(){}
 
-    try {
-        cdwarfs::ChaiDwarfs app;
-        app.init();
-        app.run();
-    }
-    catch (const std::exception &e) {
-        std::cerr << e.what() << '\n';
-    }
+    TerrainType checkTerrain(int currRow, int currCol, int viewDist, int diffRow, int diffCol) const;
+private:
+    std::weak_ptr<TerrainMap> m_terrain;
+};
 
-    return 0;
 }

@@ -47,41 +47,39 @@ class TextureFactory;
 class RenderSystem
 {
 public:
-  RenderSystem() = delete;
-  RenderSystem(const std::shared_ptr<TerrainObjectSystem>&,
-               const std::shared_ptr<TerrainMap>&,
-               const std::shared_ptr<EntityManager>&,
-               const std::shared_ptr<DwarfSystem>&,
-               const std::shared_ptr<GLFWInput>&);
-  ~RenderSystem();
+    RenderSystem() = delete;
+    RenderSystem(const std::shared_ptr<TerrainObjectSystem>&,
+                 const std::shared_ptr<TerrainMap>&,
+                 const std::shared_ptr<EntityManager>&,
+                 const std::shared_ptr<GLFWInput>&);
+    ~RenderSystem();
 
-  void init(int wnd_Width, int wnd_Height, const std::string& windowName);
-  void render(double dt);
+    void init(int wnd_Width, int wnd_Height, const std::string& windowName);
+    void render(double dt);
 
-  std::shared_ptr<WindowGLFW> getWindow();
-  const std::shared_ptr<TileRenderer> getTileRenderer();
-  const std::shared_ptr<SpriteRenderer> getSpriteRenderer();
+    std::shared_ptr<WindowGLFW> getWindow();
+    const std::shared_ptr<TileRenderer> getTileRenderer();
+    const std::shared_ptr<SpriteRenderer> getSpriteRenderer();
 
 private:
-  // Order is important! Window needs to be destroyed last to keep the
-  // openGL context alive until everything else is destroyed.
-  std::shared_ptr<WindowGLFW>          m_window;
-  std::shared_ptr<TextureFactory>      m_textureFactory;
-  std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
-  std::shared_ptr<TerrainMap>          m_terrainMap;
-  std::shared_ptr<EntityManager>       m_entManager;
-  std::shared_ptr<DwarfSystem>         m_dwarfSys;
+    // Order is important! Window needs to be destroyed last to keep the
+    // openGL context alive until everything else is destroyed.
+    std::shared_ptr<WindowGLFW>          m_window;
+    std::shared_ptr<TextureFactory>      m_textureFactory;
+    std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
+    std::shared_ptr<TerrainMap>          m_terrainMap;
+    std::shared_ptr<EntityManager>       m_entManager;
 
-  std::shared_ptr<ShaderManager>       m_shaderManager;
-  std::shared_ptr<TileRenderer>        m_tileRend;
-  std::shared_ptr<ScreenquadRenderer>  m_screenquad;
-  std::shared_ptr<SpriteRenderer>      m_spriteRend;
+    std::shared_ptr<ShaderManager>       m_shaderManager;
+    std::shared_ptr<TileRenderer>        m_tileRend;
+    std::shared_ptr<ScreenquadRenderer>  m_screenquad;
+    std::shared_ptr<SpriteRenderer>      m_spriteRend;
 
-  std::shared_ptr<Texture2D>           m_outputTexture;
+    std::shared_ptr<Texture2D>           m_outputTexture;
 
-  std::shared_ptr<OrthographicCamera>  m_camera;
+    std::shared_ptr<OrthographicCamera>  m_camera;
 
-  std::shared_ptr<GLFWInput>           m_input;
+    std::shared_ptr<GLFWInput>           m_input;
 };
 
 }

@@ -97,23 +97,32 @@ struct Cmd_ChangeTileType {
   TerrainType newType{ TerrainType::SOIL };
 };
 
+struct Cmd_ExecuteAI {
+    EntityID::UUID dest{ 0 };
+};
+
+struct Cmd_ExecuteEveryAI {
+};
+
 using Command =
 std::variant<
-  Cmd_Touch,
-  Cmd_Heal,
-  Cmd_Damage,
-  Cmd_Points,
-  Cmd_ChangeTerrainType,
-  Cmd_ChangeTileType,
-  Cmd_MoveUp,
-  Cmd_MoveDown,
-  Cmd_MoveLeft,
-  Cmd_MoveRight,
-  Cmd_MoveNone,
-  Cmd_MoveSpriteRight,
-  Cmd_MoveSpriteLeft,
-  Cmd_MoveSpriteUp,
-  Cmd_MoveSpriteDown
+    Cmd_Touch,
+    Cmd_Heal,
+    Cmd_Damage,
+    Cmd_Points,
+    Cmd_ChangeTerrainType,
+    Cmd_ChangeTileType,
+    Cmd_MoveUp,
+    Cmd_MoveDown,
+    Cmd_MoveLeft,
+    Cmd_MoveRight,
+    Cmd_MoveNone,
+    Cmd_MoveSpriteRight,
+    Cmd_MoveSpriteLeft,
+    Cmd_MoveSpriteUp,
+    Cmd_MoveSpriteDown,
+    Cmd_ExecuteAI,
+    Cmd_ExecuteEveryAI
 >;
 
 }

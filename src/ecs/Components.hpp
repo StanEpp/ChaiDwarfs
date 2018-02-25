@@ -25,10 +25,16 @@
 #include <vector>
 
 #include "BaseComponent.hpp"
-#include "src/interfaces/DwarfAI.hpp"
+#include <chaiscript/chaiscript.hpp>
 
 namespace cdwarfs::comp
 {
+
+namespace cdwarfs
+{
+    class DwarfTerrainInterface;
+    class DwarfTerrainObjectInterface;
+}
 
 struct FlaggedDestroyed : public Component<FlaggedDestroyed>
 {
@@ -102,20 +108,6 @@ struct View : public Component<View>
     int dist{ 10 };
     View();
     View(int dist);
-};
-
-struct AIComponent : public Component<AIComponent>
-{
-    std::unique_ptr<DwarfAI> ai;
-    AIComponent() = delete;
-    AIComponent(std::unique_ptr<DwarfAI>&& ai);
-};
-
-struct ScriptAI : public AIComponent
-{
-    std::string filePath;
-    ScriptAI();
-    ScriptAI(const std::string& filePath);
 };
 
 struct Sprites : public Component<Sprites>

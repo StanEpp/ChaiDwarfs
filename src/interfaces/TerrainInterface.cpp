@@ -18,29 +18,30 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#include "src/interfaces/DwarfTerrainObjectInterface.hpp"
-#include "src/cmpSystems/TerrainObjectSystem.hpp"
+#include <iostream>
+
+#include "src/interfaces/TerrainInterface.hpp"
+#include "src/TerrainMap.hpp"
 
 using namespace cdwarfs;
 
-DwarfTerrainObjectInterface::DwarfTerrainObjectInterface(const std::shared_ptr<TerrainObjectSystem>& terrainObjSys) :
-  m_terrainObjSys(terrainObjSys){}
+TerrainInterface::TerrainInterface(const std::shared_ptr<TerrainMap>& terrainMap) :
+  m_terrain(terrainMap) {}
 
-const std::string DwarfTerrainObjectInterface::checkForObject(int currRow, int currCol,
-                                                              int viewDist,
-                                                              int diffRow, int diffCol) const
+TerrainType TerrainInterface::checkTerrain(int currRow, int currCol,
+                                                int viewDist,
+                                                int diffRow, int diffCol) const
 {
-    if (m_terrainObjSys.expired()) return "Unknown";
-    auto sys = m_terrainObjSys.lock();
+    if (m_terrain.expired()) return TerrainType::NO_MAP;
+
+    auto map = m_terrain.lock();
 
     if (std::abs(diffRow) > viewDist || std::abs(diffCol) > viewDist ||
-      currRow + diffRow < 0 || currCol + diffCol < 0)
+        currRow + diffRow < 0 || currRow + diffRow >= static_cast<int>(map->columns()) ||
+        currCol + diffCol < 0 || currCol + diffCol >= static_cast<int>(map->rows()) )
     {
-        return "OutOfReach";
+        return TerrainType::DARK;
     }
 
-    auto objects = sys->at(currRow + diffRow, currCol + diffCol);
-    if (objects.empty())
-        return "Nothing";
-    return objects[0].second;
+    return map->at(currRow + diffRow, currCol + diffCol);
 }

@@ -12,71 +12,70 @@ include_directories(${DEPENDENCY_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
 set(SOURCE_FILES
-  src/rendering/SpriteRenderer.cpp
-  src/rendering/OrthographicCamera.cpp
-  src/rendering/Texture2DArray.cpp
-  src/rendering/ScreenquadRenderer.cpp
-  src/rendering/TileRenderer.cpp
-  src/rendering/TextureFactory.cpp
-  src/rendering/ShaderManager.cpp
-  src/rendering/Texture2D.cpp
-  src/rendering/RenderSystem.cpp
-  src/interfaces/DwarfTerrainObjectInterface.cpp
-  src/interfaces/DwarfTerrainInterface.cpp
-  src/cmpSystems/TerrainObjectSystem.cpp
-  src/ecs/Components.cpp
-  src/GLFWInput.cpp
-  src/gl3w.c
-  src/TerrainMap.cpp
-  src/main.cpp
+    src/rendering/SpriteRenderer.cpp
+    src/rendering/OrthographicCamera.cpp
+    src/rendering/Texture2DArray.cpp
+    src/rendering/ScreenquadRenderer.cpp
+    src/rendering/TileRenderer.cpp
+    src/rendering/TextureFactory.cpp
+    src/rendering/ShaderManager.cpp
+    src/rendering/Texture2D.cpp
+    src/rendering/RenderSystem.cpp
+    src/interfaces/TerrainObjectInterface.cpp
+    src/interfaces/TerrainInterface.cpp
+    src/cmpSystems/TerrainObjectSystem.cpp
+    src/ecs/Components.cpp
+    src/ecs/ComponentsAI.cpp
+    src/GLFWInput.cpp
+    src/gl3w.c
+    src/TerrainMap.cpp
+    src/main.cpp
 )
 
 set(HEADER_FILES
-  src/rendering/ShaderBaseModel.hpp
-  src/rendering/SpriteRenderer.hpp
-  src/rendering/ShaderManager.hpp
-  src/rendering/stb_image.h
-  src/rendering/TextureFactory.hpp
-  src/rendering/ScreenquadRenderer.hpp
-  src/rendering/RenderSystem.hpp
-  src/rendering/OrthographicCamera.hpp
-  src/rendering/TileRenderer.hpp
-  src/rendering/Texture2DArray.hpp
-  src/rendering/Texture2D.hpp
-  src/interfaces/DwarfTerrainInterface.hpp
-  src/interfaces/DwarfTerrainObjectInterface.hpp
-  src/interfaces/DwarfAI.hpp
-  src/ecs/EntityManager.hpp
-  src/ecs/Components.hpp
-  src/ecs/ECSFactory.hpp
-  src/ecs/Entity.hpp
-  src/ecs/BaseComponent.hpp
-  src/cmpSystems/TerrainObjectSystem.hpp
-  src/cmpSystems/ComponentSystem.hpp
-  src/DwarfSystem.hpp
-  src/CommandSystem.hpp
-  src/ChaiDwarfs.hpp
-  src/TerrainMap.hpp
-  src/Commands.hpp
-  src/ChaiScriptAI.hpp
-  src/ObjectComponentRegistrations.hpp
-  src/WindowGLFW.hpp
-  src/Timer.hpp
-  src/GLFWInput.hpp
-  src/PathResolver.hpp.in
-  src/DwarfRoundActions.hpp
+    src/rendering/ShaderBaseModel.hpp
+    src/rendering/SpriteRenderer.hpp
+    src/rendering/ShaderManager.hpp
+    src/rendering/stb_image.h
+    src/rendering/TextureFactory.hpp
+    src/rendering/ScreenquadRenderer.hpp
+    src/rendering/RenderSystem.hpp
+    src/rendering/OrthographicCamera.hpp
+    src/rendering/TileRenderer.hpp
+    src/rendering/Texture2DArray.hpp
+    src/rendering/Texture2D.hpp
+    src/interfaces/TerrainInterface.hpp
+    src/interfaces/TerrainObjectInterface.hpp
+    src/ecs/EntityManager.hpp
+    src/ecs/Components.hpp
+    src/ecs/ComponentsAI.hpp
+    src/ecs/ECSFactory.hpp
+    src/ecs/Entity.hpp
+    src/ecs/BaseComponent.hpp
+    src/cmpSystems/TerrainObjectSystem.hpp
+    src/cmpSystems/ComponentSystem.hpp
+    src/CommandSystem.hpp
+    src/ChaiDwarfs.hpp
+    src/TerrainMap.hpp
+    src/Commands.hpp
+    src/ObjectComponentRegistrations.hpp
+    src/WindowGLFW.hpp
+    src/Timer.hpp
+    src/GLFWInput.hpp
+    src/PathResolver.hpp.in
+    src/DwarfRoundActions.hpp
 )
 
 set(SCRIPT_FILES
-  scripts/dwarf.chai
-  scripts/mapGeneration.chai
-  scripts/objectCreation.chai
-  scripts/objectDefinitions.chai
+    scripts/dwarf.chai
+    scripts/mapGeneration.chai
+    scripts/objectCreation.chai
+    scripts/objectDefinitions.chai
 )
 
 set(SHADER_FILES
-  shader/tileRendering_fs.glsl
-  shader/tileRendering_vs.glsl
+    shader/tileRendering_fs.glsl
+    shader/tileRendering_vs.glsl
 )
 
 ### Configure the PathResolver header
@@ -100,7 +99,7 @@ set_source_files_properties(
     ${SCRIPT_FILES}
     ${SHADER_FILES}
     PROPERTIES
-      WRAP_EXCLUDE TRUE
+        WRAP_EXCLUDE TRUE
 )
 
 add_dependencies(Chaidwarfs glm_ext glfw_ext chaiscript_ext)

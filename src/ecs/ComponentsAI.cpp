@@ -18,29 +18,28 @@
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
 
-#include <iostream>
+#include "ComponentsAI.hpp"
+#include "PathResolver.hpp"
+#include "src/TerrainMap.hpp"
+#include "src/interfaces/TerrainObjectInterface.hpp"
+#include "src/interfaces/TerrainInterface.hpp"
 
-#include "ChaiDwarfs.hpp"
+using namespace cdwarfs::comp;
 
-int main()
+DwarfAI::DwarfAI() {}
+
+DwarfAI::DwarfAI(const std::string& filePath) :
+    filePath(pathRes.script(filePath))
 {
-    //std::cout << cdwarfs::TouchValue::componentTypeID << '\n';
-    //std::cout << cdwarfs::TouchDamage::componentTypeID << '\n';
-    //std::cout << cdwarfs::Name::componentTypeID << '\n';
-    //std::cout << cdwarfs::Position::componentTypeID << '\n';
-    //std::cout << cdwarfs::DwarfHP::componentTypeID << '\n';
-    //std::cout << cdwarfs::DwarfPosition::componentTypeID << '\n';
-
-    //std::cin.get();
-
-    try {
-        cdwarfs::ChaiDwarfs app;
-        app.init();
-        app.run();
-    }
-    catch (const std::exception &e) {
-        std::cerr << e.what() << '\n';
-    }
-
-    return 0;
+    chaiscript::ModulePtr m = chaiscript::ModulePtr(new chaiscript::Module());
+    chaiscript::utility::add_class<TerrainType>(*m,
+      "TerrainType",
+      { { TerrainType::SOIL, "SOIL" },
+        { TerrainType::DARK, "DARK" },
+        { TerrainType::PASSABLE, "PASSABLE"},
+        { TerrainType::NO_MAP, "NOMAP" },
+        { TerrainType::STONE, "STONE" }
+      }
+    );
+    chai.add(m);
 }

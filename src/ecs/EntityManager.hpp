@@ -20,6 +20,8 @@
 #pragma once
 
 #include "ECSFactory.hpp"
+#include "ComponentsAI.hpp"
+#include "Components.hpp"
 
 namespace cdwarfs
 {
@@ -53,7 +55,7 @@ public:
         registerComponent<comp::Speed, int>("Speed");
         registerComponent<comp::Points, int>("Points");
         registerComponent<comp::View, int>("View");
-        registerComponent<comp::ScriptAI, const std::string&>("ScriptAI");
+        registerComponent<comp::DwarfAI, const std::string&>("DwarfAI");
         registerComponent<comp::TouchDestroy>("DestroyOnTouch");
         registerComponent<comp::Sprites, const std::vector<std::pair<std::string, std::string>>&>("Sprites");
         registerComponent<comp::AnimatedSprites, const std::vector<std::pair<std::string, std::string>>&>("AnimatedSprites");
@@ -104,7 +106,8 @@ public:
     {
         std::vector<EntityID::UUID> retVec;
         for (auto& ent : m_objects) {
-            if (ent.second.find(TComp::componentTypeID) != ent.second.end()) retVec.push_back(ent.first);
+            if (ent.second.find(TComp::componentTypeID) != ent.second.end())
+                retVec.push_back(ent.first);
         }
         return retVec;
     }
