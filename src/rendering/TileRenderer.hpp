@@ -35,7 +35,7 @@
 
 namespace cdwarfs
 {
-  class TerrainMap;
+class TerrainMap;
 }
 
 namespace cdwarfs::render
@@ -50,43 +50,43 @@ class TextureFactory;
 class TileRenderer
 {
 public:
-  TileRenderer() = delete;
-  TileRenderer(const std::shared_ptr<ShaderManager>& shaderManager, const std::shared_ptr<TerrainMap>& terrainMap);
-  ~TileRenderer();
+    TileRenderer() = delete;
+    TileRenderer(const std::shared_ptr<ShaderManager>& shaderManager, const std::shared_ptr<TerrainMap>& terrainMap);
+    ~TileRenderer();
 
-  void init(const std::shared_ptr<Texture2D>& targetTexture,
-            const std::shared_ptr<OrthographicCamera>& camera,
-            const std::shared_ptr<TextureFactory>& textureFactory);
-  void render();
+    void init(const std::shared_ptr<Texture2D>& targetTexture,
+              const std::shared_ptr<OrthographicCamera>& camera,
+              const std::shared_ptr<TextureFactory>& textureFactory);
+    void render();
 
-  void setTileType(int row, int col, TerrainType newType);
+    void setTileType(int row, int col, TerrainType newType);
 
-  glm::vec2 posToScreenCoord(int row, int col);
-  float quadSize();
+    glm::vec2 posToScreenCoord(int row, int col);
+    float quadSize();
 
 private:
-  void initTiles();
+    void initTiles();
 
-  std::shared_ptr<TerrainMap>         m_terrainMap;
-  std::shared_ptr<Texture2DArray>     m_textureAtlas;
-  std::shared_ptr<ShaderManager>      m_shaderManager;
-  std::shared_ptr<OrthographicCamera> m_camera;
+    std::shared_ptr<TerrainMap>         m_terrainMap;
+    std::shared_ptr<Texture2DArray>     m_textureAtlas;
+    std::shared_ptr<ShaderManager>      m_shaderManager;
+    std::shared_ptr<OrthographicCamera> m_camera;
 
-  std::vector<std::underlying_type_t<TerrainType>>  m_tiles;
+    std::vector<std::underlying_type_t<TerrainType>>  m_tiles;
 
-  GLuint  m_gl_fboID{ 0 };
-  GLuint  m_gl_vboVertexID{ 0 };
-  GLuint  m_gl_vboTerrain1ID{ 0 };
-  GLuint  m_gl_vboTerrain2ID{ 0 };
-  GLuint  m_gl_vao1ID{ 0 };
-  GLuint  m_gl_vao2ID{ 0 };
-  GLuint  m_tileRenderingProg{ 0 };
-  GLsizei m_numVertices{ 0 };
+    GLuint  m_gl_fboID{ 0 };
+    GLuint  m_gl_vboVertexID{ 0 };
+    GLuint  m_gl_vboTerrain1ID{ 0 };
+    GLuint  m_gl_vboTerrain2ID{ 0 };
+    GLuint  m_gl_vao1ID{ 0 };
+    GLuint  m_gl_vao2ID{ 0 };
+    GLuint  m_tileRenderingProg{ 0 };
+    GLsizei m_numVertices{ 0 };
 
-  GLint m_glsl_projMatLoc{ -1 };
+    GLint m_glsl_projMatLoc{ -1 };
 
-  float m_quadSize{ 0.1f };
-  bool  m_useVAO1{ true };
+    float m_quadSize{ 0.1f };
+    bool  m_useVAO1{ true };
 };
 
 }

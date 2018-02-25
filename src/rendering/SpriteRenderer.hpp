@@ -51,119 +51,119 @@ class TextureFactory;
 
 class SpriteRenderer
 {
-  using SpriteKey = std::string;
+    using SpriteKey = std::string;
 
 public:
-  SpriteRenderer() = delete;
-  SpriteRenderer(const std::shared_ptr<EntityManager>& entManager,
-                 const std::shared_ptr<TileRenderer>& tileRenderer,
-                 const std::shared_ptr<ShaderManager>& shaderManager);
-  SpriteRenderer(SpriteRenderer&) = delete;
-  SpriteRenderer(SpriteRenderer&&) = delete;
+    SpriteRenderer() = delete;
+    SpriteRenderer(const std::shared_ptr<EntityManager>& entManager,
+                   const std::shared_ptr<TileRenderer>& tileRenderer,
+                   const std::shared_ptr<ShaderManager>& shaderManager);
+    SpriteRenderer(SpriteRenderer&) = delete;
+    SpriteRenderer(SpriteRenderer&&) = delete;
 
-  void init(const std::shared_ptr<Texture2D>& targetTexture,
-            const std::shared_ptr<OrthographicCamera>& camera,
-            const std::shared_ptr<TextureFactory>& textureFactory);
+    void init(const std::shared_ptr<Texture2D>& targetTexture,
+              const std::shared_ptr<OrthographicCamera>& camera,
+              const std::shared_ptr<TextureFactory>& textureFactory);
 
-  void render(double dt);
+    void render(double dt);
 
-  void spriteMove(EntityID::UUID entID, const SpriteKey& spriteKey, int nextRow, int nextCol);
-  void playAnimation(EntityID::UUID entID, const SpriteKey& spriteKey);
+    void spriteMove(EntityID::UUID entID, const SpriteKey& spriteKey, int nextRow, int nextCol);
+    void playAnimation(EntityID::UUID entID, const SpriteKey& spriteKey);
 
 private:
-  void advanceAnimations(double dt);
-  void moveSprites(double dt);
+    void advanceAnimations(double dt);
+    void moveSprites(double dt);
 
-  struct Sprite
-  {
-    std::string filePath;
-    std::shared_ptr<Texture2D> texture;
-  };
-
-  struct AnimatedSprite
-  {
-    std::string filePath;
-    unsigned int numKeyFrames{ 0 };
-    unsigned int currKeyFrame{ 0 };
-    double duration{ 500 }, currTime{ 0 }; //TODO: round duration should be changeable later on. For now 500ms.
-    bool playing{ false };
-    std::shared_ptr<Texture2DArray> textureArray;
-  };
-
-  template<typename T>
-  class SpriteSet
-  {
-  public:
-    std::optional<float> nextScreenX, nextScreenY;
-    float screenX{ 0.f }, screenY{ 0.f };
-    float moveStepX{ 0.0 }, moveStepY{ 0.0 };
-
-    SpriteSet() : m_set(), m_currentSpriteIt(m_set.end()) {}
-
-    T& operator[](const SpriteKey& key)
+    struct Sprite
     {
-      auto it = m_set.find(key);
-      if (it != m_set.end()) return it->second;
+        std::string filePath;
+        std::shared_ptr<Texture2D> texture;
+    };
 
-      if (m_currentSpriteIt == m_set.end()){
-        auto& newEl = m_set[key];
-        m_currentSpriteIt = m_set.begin();
-        return newEl;
-      }
-      else {
-        const auto& spriteKey = m_currentSpriteIt->first;
-        auto& newEl = m_set[key];
-        m_currentSpriteIt = m_set.find(spriteKey);
-        return newEl;
-      }
-    }
-
-    typename std::unordered_map<SpriteKey, T>::iterator begin() { return m_set.begin(); }
-    typename std::unordered_map<SpriteKey, T>::iterator end() { return m_set.end(); }
-    typename std::unordered_map<SpriteKey, T>::iterator find(const SpriteKey& key) { return m_set.find(key); }
-    typename std::unordered_map<SpriteKey, T>::iterator currentSpriteIt() const { return m_currentSpriteIt; }
-
-    T* currentSprite() const
+    struct AnimatedSprite
     {
-      if (m_currentSpriteIt == m_set.end()) return nullptr;
-      return &m_currentSpriteIt->second;
-    }
+        std::string filePath;
+        unsigned int numKeyFrames{ 0 };
+        unsigned int currKeyFrame{ 0 };
+        double duration{ 500 }, currTime{ 0 }; //TODO: round duration should be changeable later on. For now 500ms.
+        bool playing{ false };
+        std::shared_ptr<Texture2DArray> textureArray;
+    };
 
-    bool setCurrentSprite(const SpriteKey& key)
+    template<typename T>
+    class SpriteSet
     {
-      auto it = m_set.find(key);
-      if (it != m_set.end()) {
-        m_currentSpriteIt = it;
-        return true;
-      }
-      return false;
-    }
+    public:
+        std::optional<float> nextScreenX, nextScreenY;
+        float screenX{ 0.f }, screenY{ 0.f };
+        float moveStepX{ 0.0 }, moveStepY{ 0.0 };
 
-  private:
-    std::unordered_map<SpriteKey, T> m_set;
-    typename std::unordered_map<SpriteKey, T>::iterator m_currentSpriteIt;
-  };
+        SpriteSet() : m_set(), m_currentSpriteIt(m_set.end()) {}
 
-  std::unordered_map<EntityID::UUID, SpriteSet<AnimatedSprite>> m_animSprites;
-  std::unordered_map<EntityID::UUID, SpriteSet<Sprite>>         m_sprites;
+        T& operator[](const SpriteKey& key)
+        {
+            auto it = m_set.find(key);
+            if (it != m_set.end()) return it->second;
 
-  std::shared_ptr<EntityManager> m_entManager;
-  std::shared_ptr<TileRenderer>  m_tileRenderer;
-  std::shared_ptr<ShaderManager> m_shaderManager;
+            if (m_currentSpriteIt == m_set.end()){
+                auto& newEl = m_set[key];
+                m_currentSpriteIt = m_set.begin();
+                return newEl;
+            }
+            else {
+                const auto& spriteKey = m_currentSpriteIt->first;
+                auto& newEl = m_set[key];
+                m_currentSpriteIt = m_set.find(spriteKey);
+                return newEl;
+            }
+        }
 
-  std::shared_ptr<OrthographicCamera> m_camera;
-  GLuint  m_gl_fboID{ 0 };
-  GLuint  m_gl_vboVertexID{ 0 };
-  GLuint  m_gl_vaoID{ 0 };
+        typename std::unordered_map<SpriteKey, T>::iterator begin() { return m_set.begin(); }
+        typename std::unordered_map<SpriteKey, T>::iterator end() { return m_set.end(); }
+        typename std::unordered_map<SpriteKey, T>::iterator find(const SpriteKey& key) { return m_set.find(key); }
+        typename std::unordered_map<SpriteKey, T>::iterator currentSpriteIt() const { return m_currentSpriteIt; }
 
-  GLuint  m_glsl_projMatLoc{ 0 };
-  GLuint  m_glsl_vpMatLoc{ 0 };
+        T* currentSprite() const
+        {
+            if (m_currentSpriteIt == m_set.end()) return nullptr;
+            return &m_currentSpriteIt->second;
+        }
 
-  GLuint  m_glsl_Anim_projMatLoc{ 0 };
-  GLuint  m_glsl_Anim_vpMatLoc{ 0 };
-  GLuint  m_glsl_Anim_keyFrameLoc{ 0 };
-  GLuint  m_glsl_spriteProg{ 0 };
-  GLuint  m_glsl_animSpriteProg{ 0 };
+        bool setCurrentSprite(const SpriteKey& key)
+        {
+            auto it = m_set.find(key);
+            if (it != m_set.end()) {
+                m_currentSpriteIt = it;
+                return true;
+            }
+            return false;
+        }
+
+    private:
+        std::unordered_map<SpriteKey, T> m_set;
+        typename std::unordered_map<SpriteKey, T>::iterator m_currentSpriteIt;
+    };
+
+    std::unordered_map<EntityID::UUID, SpriteSet<AnimatedSprite>> m_animSprites;
+    std::unordered_map<EntityID::UUID, SpriteSet<Sprite>>         m_sprites;
+
+    std::shared_ptr<EntityManager> m_entManager;
+    std::shared_ptr<TileRenderer>  m_tileRenderer;
+    std::shared_ptr<ShaderManager> m_shaderManager;
+
+    std::shared_ptr<OrthographicCamera> m_camera;
+    GLuint  m_gl_fboID{ 0 };
+    GLuint  m_gl_vboVertexID{ 0 };
+    GLuint  m_gl_vaoID{ 0 };
+
+    GLuint  m_glsl_projMatLoc{ 0 };
+    GLuint  m_glsl_vpMatLoc{ 0 };
+
+    GLuint  m_glsl_Anim_projMatLoc{ 0 };
+    GLuint  m_glsl_Anim_vpMatLoc{ 0 };
+    GLuint  m_glsl_Anim_keyFrameLoc{ 0 };
+    GLuint  m_glsl_spriteProg{ 0 };
+    GLuint  m_glsl_animSpriteProg{ 0 };
 };
 
 }

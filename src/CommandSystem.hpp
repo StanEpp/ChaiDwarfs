@@ -25,8 +25,8 @@
 #include "cmpSystems/ComponentSystem.hpp"
 
 namespace cdwarfs::render {
-  class TileRenderer;
-  class SpriteRenderer;
+class TileRenderer;
+class SpriteRenderer;
 }
 
 namespace cdwarfs {
@@ -90,15 +90,15 @@ public:
     }
 
 private:
-  template<class TSys, class... Params>
-  inline void addNewComponentSystem(Params&&... args)
-  {
-      m_visitors.push_back(std::make_shared<TSys>(m_entManager, std::forward<Params>(args)...));
-  }
+    template<class TSys, class... Params>
+    inline void addNewComponentSystem(Params&&... args)
+    {
+        m_visitors.push_back(std::make_shared<TSys>(m_entManager, std::forward<Params>(args)...));
+    }
 
-  std::queue<cmd::Command>  m_cmdQueue;
-  std::vector<std::shared_ptr<compSys::BaseVisitor>>  m_visitors;
-  std::shared_ptr<EntityManager> m_entManager;
+    std::queue<cmd::Command>  m_cmdQueue;
+    std::vector<std::shared_ptr<compSys::BaseVisitor>>  m_visitors;
+    std::shared_ptr<EntityManager> m_entManager;
 };
 
 }

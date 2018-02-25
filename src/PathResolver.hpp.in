@@ -60,4 +60,4 @@ private:
 
 }
 
-#define pathRes cdwarfs::PathResolver::Instance()
+#define pathRes ::cdwarfs::PathResolver::Instance()

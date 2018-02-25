@@ -63,7 +63,6 @@ set(HEADER_FILES
     src/Timer.hpp
     src/GLFWInput.hpp
     src/PathResolver.hpp.in
-    src/DwarfRoundActions.hpp
 )
 
 set(SCRIPT_FILES

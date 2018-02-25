@@ -33,23 +33,23 @@ class GLFWInput;
 class OrthographicCamera
 {
 public:
-  OrthographicCamera();
+    OrthographicCamera();
 
-  void init(int width, int height, const std::shared_ptr<GLFWInput>& input);
-  const float* mvpPtr();
-  void update(double dt);
+    void init(int width, int height, const std::shared_ptr<GLFWInput>& input);
+    const float* mvpPtr();
+    void update(double dt);
 
 private:
-  int m_width{ -1 };
-  int m_height{ -1 };
-  float m_aspectratio{ -1.f };
+    int m_width{ -1 };
+    int m_height{ -1 };
+    float m_aspectratio{ -1.f };
 
-  glm::mat4 m_orthoProj{ 1.f };
-  glm::vec3 m_scale{ 1.f, 1.f, 0.f };
-  glm::vec3 m_translate{ 0.f, 0.f, 0.f };
-  glm::mat4 m_MVP{ 1.f };
+    glm::mat4 m_orthoProj{ 1.f };
+    glm::vec3 m_scale{ 1.f, 1.f, 0.f };
+    glm::vec3 m_translate{ 0.f, 0.f, 0.f };
+    glm::mat4 m_MVP{ 1.f };
 
-  std::shared_ptr<GLFWInput> m_input;
+    std::shared_ptr<GLFWInput> m_input;
 };
 
 }

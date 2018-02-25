@@ -33,55 +33,55 @@ namespace cdwarfs::render
 
 class Texture2D
 {
-  friend class TextureFactory;
+    friend class TextureFactory;
 
-  Texture2D();
+    Texture2D();
 
-  Texture2D(GLuint texID,
-            const std::string& filepath,
-            GLsizei width, GLsizei height, GLsizei numChannels,
-            GLint internal_format = GL_RGBA,  //format to store the image in
-            GLenum image_format = GL_RGBA,    //format the image is in
-            GLint level = 0,                  //mipmapping level
-            GLint border = 0);
+    Texture2D(GLuint texID,
+              const std::string& filepath,
+              GLsizei width, GLsizei height, GLsizei numChannels,
+              GLint internal_format = GL_RGBA,  //format to store the image in
+              GLenum image_format = GL_RGBA,    //format the image is in
+              GLint level = 0,                  //mipmapping level
+              GLint border = 0);
 
-  Texture2D(GLuint texID,
-            GLsizei width, GLsizei height, GLsizei numChannels,
-            GLint internal_format = GL_RGBA,  //format to store the image in
-            GLenum image_format = GL_RGBA,    //format the image is in
-            GLint level = 0,                  //mipmapping level
-            GLint border = 0);
+    Texture2D(GLuint texID,
+              GLsizei width, GLsizei height, GLsizei numChannels,
+              GLint internal_format = GL_RGBA,  //format to store the image in
+              GLenum image_format = GL_RGBA,    //format the image is in
+              GLint level = 0,                  //mipmapping level
+              GLint border = 0);
 
 public:
-  Texture2D(const Texture2D&) = delete;
-  Texture2D(Texture2D&&) = delete;
-  Texture2D& operator=(const Texture2D&) = delete;
-  Texture2D& operator=(Texture2D&&) = delete;
+    Texture2D(const Texture2D&) = delete;
+    Texture2D(Texture2D&&) = delete;
+    Texture2D& operator=(const Texture2D&) = delete;
+    Texture2D& operator=(Texture2D&&) = delete;
 
-  ~Texture2D();
+    ~Texture2D();
 
-  inline GLuint texID() const { return m_gl_texID; }
-  inline int width() const { return m_width; }
-  inline int height() const { return m_height; }
-  inline int channels() const { return m_numChannels; }
-  inline GLint internalFormat() const { return m_internal_format; }
-  inline GLint level() const { return m_level; }
-  inline GLint border() const { return m_border; }
-  inline auto filename() const { return m_filepath; }
-  inline GLenum imageFormat() const { return m_image_format; }
+    inline GLuint texID() const { return m_gl_texID; }
+    inline int width() const { return m_width; }
+    inline int height() const { return m_height; }
+    inline int channels() const { return m_numChannels; }
+    inline GLint internalFormat() const { return m_internal_format; }
+    inline GLint level() const { return m_level; }
+    inline GLint border() const { return m_border; }
+    inline auto filename() const { return m_filepath; }
+    inline GLenum imageFormat() const { return m_image_format; }
 
 private:
-  void init();
+    void init();
 
-  std::optional<std::string> m_filepath{};
-  int m_width{ 0 };
-  int m_height{ 0 };
-  int m_numChannels{ 0 };
-  GLuint m_gl_texID{ 0 };
-  GLint m_internal_format{ GL_RGBA };
-  GLenum m_image_format{ GL_RGBA };
-  GLint m_level{ 0 };
-  GLint m_border{ 0 };
+    std::optional<std::string> m_filepath{};
+    int m_width{ 0 };
+    int m_height{ 0 };
+    int m_numChannels{ 0 };
+    GLuint m_gl_texID{ 0 };
+    GLint m_internal_format{ GL_RGBA };
+    GLenum m_image_format{ GL_RGBA };
+    GLint m_level{ 0 };
+    GLint m_border{ 0 };
 };
 
 }

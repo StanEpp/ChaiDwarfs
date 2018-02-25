@@ -32,17 +32,17 @@ Texture2D::Texture2D(GLuint texID,
                      GLenum image_format,    // format the image is in
                      GLint level,            // mipmapping level
                      GLint border) :
-  m_filepath(filepath),
-  m_width(width),
-  m_height(height),
-  m_numChannels(numChannels),
-  m_gl_texID(texID),
-  m_internal_format(internal_format),
-  m_image_format(image_format),
-  m_level(level),
-  m_border(border)
+    m_filepath(filepath),
+    m_width(width),
+    m_height(height),
+    m_numChannels(numChannels),
+    m_gl_texID(texID),
+    m_internal_format(internal_format),
+    m_image_format(image_format),
+    m_level(level),
+    m_border(border)
 {
-  init();
+    init();
 }
 
 Texture2D::Texture2D(GLuint texID,
@@ -53,27 +53,27 @@ Texture2D::Texture2D(GLuint texID,
                      GLenum image_format,    // format the image is in
                      GLint level,            // mipmapping level
                      GLint border) :
-  m_width(width),
-  m_height(height),
-  m_numChannels(numChannels),
-  m_gl_texID(texID),
-  m_internal_format(internal_format),
-  m_image_format(image_format),
-  m_level(level),
-  m_border(border)
+    m_width(width),
+    m_height(height),
+    m_numChannels(numChannels),
+    m_gl_texID(texID),
+    m_internal_format(internal_format),
+    m_image_format(image_format),
+    m_level(level),
+    m_border(border)
 {
-  init();
+    init();
 }
 
 Texture2D::~Texture2D() {}
 
 void Texture2D::init()
 {
-  glBindTexture(GL_TEXTURE_2D, m_gl_texID);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_2D, m_gl_texID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }

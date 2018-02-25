@@ -28,73 +28,73 @@ namespace cdwarfs::cmd
 {
 
 struct Cmd_Touch {
-  EntityID::UUID  touched{ 0 };
-  EntityID::UUID  touching{ 0 };
+    EntityID::UUID  touched{ 0 };
+    EntityID::UUID  touching{ 0 };
 };
 
 struct Cmd_Heal {
-  EntityID::UUID dest{ 0 };
-  int heal{ 0 };
+    EntityID::UUID dest{ 0 };
+    int heal{ 0 };
 };
 
 struct Cmd_Damage {
-  EntityID::UUID dest{ 0 };
-  int damage{ 0 };
+    EntityID::UUID dest{ 0 };
+    int damage{ 0 };
 };
 
 struct Cmd_Points {
-  EntityID::UUID dest{ 0 };
-  int points{ 0 };
+    EntityID::UUID dest{ 0 };
+    int points{ 0 };
 };
 
 struct Cmd_MoveUp {
-  EntityID::UUID dest{ 0 };
+    EntityID::UUID dest{ 0 };
 };
 
 struct Cmd_MoveDown {
-  EntityID::UUID dest{ 0 };
+    EntityID::UUID dest{ 0 };
 };
 
 struct Cmd_MoveLeft {
-  EntityID::UUID dest{ 0 };
+    EntityID::UUID dest{ 0 };
 };
 
 struct Cmd_MoveRight {
-  EntityID::UUID dest{ 0 };
+    EntityID::UUID dest{ 0 };
 };
 
 struct Cmd_MoveNone {
-  EntityID::UUID dest{ 0 };
+    EntityID::UUID dest{ 0 };
 };
 
 struct Cmd_MoveSpriteRight {
-  EntityID::UUID dest{ 0 };
-  int row{ 0 }, col{ 0 };
+    EntityID::UUID dest{ 0 };
+    int row{ 0 }, col{ 0 };
 };
 
 struct Cmd_MoveSpriteLeft {
-  EntityID::UUID dest{ 0 };
-  int row{ 0 }, col{ 0 };
+    EntityID::UUID dest{ 0 };
+    int row{ 0 }, col{ 0 };
 };
 
 struct Cmd_MoveSpriteUp {
-  EntityID::UUID dest{ 0 };
-  int row{ 0 }, col{ 0 };
+    EntityID::UUID dest{ 0 };
+    int row{ 0 }, col{ 0 };
 };
 
 struct Cmd_MoveSpriteDown {
-  EntityID::UUID dest{ 0 };
-  int row{ 0 }, col{ 0 };
+    EntityID::UUID dest{ 0 };
+    int row{ 0 }, col{ 0 };
 };
 
 struct Cmd_ChangeTerrainType {
-  int row{ 0 }, col{ 0 };
-  TerrainType newType{ TerrainType::SOIL };
+    int row{ 0 }, col{ 0 };
+    TerrainType newType{ TerrainType::SOIL };
 };
 
 struct Cmd_ChangeTileType {
-  int row{ 0 }, col{ 0 };
-  TerrainType newType{ TerrainType::SOIL };
+    int row{ 0 }, col{ 0 };
+    TerrainType newType{ TerrainType::SOIL };
 };
 
 struct Cmd_ExecuteAI {

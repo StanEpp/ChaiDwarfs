@@ -36,35 +36,35 @@ namespace cdwarfs::render
 class Texture2DArray
 {
 public:
-  Texture2DArray();
+    Texture2DArray();
 
-  Texture2DArray(GLuint texID,
-                 const std::vector<std::string>& m_filepaths,
-                 GLsizei width, GLsizei height, GLsizei numChannels,
-                 GLenum image_format = GL_RGBA);      //format the imagea are in
+    Texture2DArray(GLuint texID,
+                   const std::vector<std::string>& m_filepaths,
+                   GLsizei width, GLsizei height, GLsizei numChannels,
+                   GLenum image_format = GL_RGBA);      //format the imagea are in
 
-  Texture2DArray(const Texture2DArray&) = delete;
-  Texture2DArray(Texture2DArray&&) = delete;
-  Texture2DArray& operator=(const Texture2DArray&) = delete;
-  Texture2DArray& operator=(Texture2DArray&&) = delete;
+    Texture2DArray(const Texture2DArray&) = delete;
+    Texture2DArray(Texture2DArray&&) = delete;
+    Texture2DArray& operator=(const Texture2DArray&) = delete;
+    Texture2DArray& operator=(Texture2DArray&&) = delete;
 
-  ~Texture2DArray();
+    ~Texture2DArray();
 
-  inline GLuint texID() const { return m_gl_texID; }
-  inline int width() const { return m_width; }
-  inline int height() const { return m_height; }
-  inline int channels() const { return m_numChannels; }
-  inline GLenum imageFormat() const { return m_image_format; }
+    inline GLuint texID() const { return m_gl_texID; }
+    inline int width() const { return m_width; }
+    inline int height() const { return m_height; }
+    inline int channels() const { return m_numChannels; }
+    inline GLenum imageFormat() const { return m_image_format; }
 
 private:
-  void init();
+    void init();
 
-  std::optional<std::vector<std::string>> m_filepaths{};
-  GLuint m_gl_texID{ 0 };
-  GLenum m_image_format{ GL_RGBA };
-  int m_width{ 0 };
-  int m_height{ 0 };
-  int m_numChannels{ 0 };
+    std::optional<std::vector<std::string>> m_filepaths{};
+    GLuint m_gl_texID{ 0 };
+    GLenum m_image_format{ GL_RGBA };
+    int m_width{ 0 };
+    int m_height{ 0 };
+    int m_numChannels{ 0 };
 };
 
 }

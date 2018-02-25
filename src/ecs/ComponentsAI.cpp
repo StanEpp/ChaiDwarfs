@@ -33,13 +33,13 @@ DwarfAI::DwarfAI(const std::string& filePath) :
 {
     chaiscript::ModulePtr m = chaiscript::ModulePtr(new chaiscript::Module());
     chaiscript::utility::add_class<TerrainType>(*m,
-      "TerrainType",
-      { { TerrainType::SOIL, "SOIL" },
-        { TerrainType::DARK, "DARK" },
-        { TerrainType::PASSABLE, "PASSABLE"},
-        { TerrainType::NO_MAP, "NOMAP" },
-        { TerrainType::STONE, "STONE" }
-      }
+        "TerrainType",
+        { { TerrainType::SOIL, "SOIL" },
+          { TerrainType::DARK, "DARK" },
+          { TerrainType::PASSABLE, "PASSABLE"},
+          { TerrainType::NO_MAP, "NOMAP" },
+          { TerrainType::STONE, "STONE" }
+        }
     );
     chai.add(m);
 }

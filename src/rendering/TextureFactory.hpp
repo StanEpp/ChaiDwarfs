@@ -40,37 +40,37 @@ class WindowGLFW;
 class TextureFactory : public std::enable_shared_from_this<TextureFactory>
 {
 public:
-  TextureFactory() = delete;
-  TextureFactory(const std::shared_ptr<WindowGLFW> &window);
-  TextureFactory(TextureFactory&) = delete;
-  TextureFactory(TextureFactory&&) = delete;
-  TextureFactory& operator=(TextureFactory const&) = delete;
+    TextureFactory() = delete;
+    TextureFactory(const std::shared_ptr<WindowGLFW> &window);
+    TextureFactory(TextureFactory&) = delete;
+    TextureFactory(TextureFactory&&) = delete;
+    TextureFactory& operator=(TextureFactory const&) = delete;
 
-  std::shared_ptr<Texture2D>
-    loadTexture2D(const std::string& filename,     //where to load the file from
-                  GLint internal_format = GL_RGBA, //format to store the image in
-                  GLenum image_format = GL_RGBA,   //format the image is in
-                  GLint level = 0,                 //mipmapping level
-                  GLint border = 0);               //border size
-
-  std::shared_ptr<Texture2D>
-    createTexture2D(GLsizei width,                   //width of the image
-                    GLsizei height,                  //height of the image
-                    GLsizei numChannels = 4,         //number of channels of the image
+    std::shared_ptr<Texture2D>
+      loadTexture2D(const std::string& filename,     //where to load the file from
                     GLint internal_format = GL_RGBA, //format to store the image in
                     GLenum image_format = GL_RGBA,   //format the image is in
                     GLint level = 0,                 //mipmapping level
                     GLint border = 0);               //border size
 
-  std::shared_ptr<Texture2DArray>
-    loadTexture2DArray(const std::vector<std::string>& filenames,
-                       GLenum image_format = GL_RGBA); //format the image is in
+    std::shared_ptr<Texture2D>
+      createTexture2D(GLsizei width,                   //width of the image
+                      GLsizei height,                  //height of the image
+                      GLsizei numChannels = 4,         //number of channels of the image
+                      GLint internal_format = GL_RGBA, //format to store the image in
+                      GLenum image_format = GL_RGBA,   //format the image is in
+                      GLint level = 0,                 //mipmapping level
+                      GLint border = 0);               //border size
+
+    std::shared_ptr<Texture2DArray>
+      loadTexture2DArray(const std::vector<std::string>& filenames,
+                         GLenum image_format = GL_RGBA); //format the image is in
 
 private:
-  std::shared_ptr<WindowGLFW> m_window;
-  std::unordered_map<std::string, std::weak_ptr<Texture2D>>  m_loadedTextures2D;
-  std::unordered_map<GLuint, std::weak_ptr<Texture2D>> m_textures2D;
-  std::unordered_map<GLuint, std::weak_ptr<Texture2DArray>>  m_textureArrays2D;
+    std::shared_ptr<WindowGLFW> m_window;
+    std::unordered_map<std::string, std::weak_ptr<Texture2D>>  m_loadedTextures2D;
+    std::unordered_map<GLuint, std::weak_ptr<Texture2D>> m_textures2D;
+    std::unordered_map<GLuint, std::weak_ptr<Texture2DArray>>  m_textureArrays2D;
 };
 
 }
