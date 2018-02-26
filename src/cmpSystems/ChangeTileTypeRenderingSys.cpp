@@ -17,20 +17,21 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
+#include "ComponentSystem.hpp"
+#include "src/rendering/TileRenderer.hpp"
 
-#include <iostream>
+using namespace cdwarfs::compSys;
 
-#include "ChaiDwarfs.hpp"
+ChangeTileType_Rendering_Sys::ChangeTileType_Rendering_Sys(
+    const std::shared_ptr<EntityManager>& entManager,
+    const std::shared_ptr<render::TileRenderer>& tileRenderer
+) :
+    BaseVisitor(entManager),
+    m_tileRenderer(tileRenderer)
+{}
 
-int main()
+BaseVisitor::ReturnedCommands ChangeTileType_Rendering_Sys::operator()(const cmd::ChangeTileType& cmd)
 {
-    try {
-        cdwarfs::ChaiDwarfs app;
-        app.init();
-        app.run();
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << '\n';
-    }
-
-    return 0;
+    m_tileRenderer->setTileType(cmd.row, cmd.col, cmd.newType);
+    return ReturnedCommands();
 }

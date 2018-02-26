@@ -17,20 +17,20 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
+#include "ComponentSystem.hpp"
+#include "src/ecs/Components.hpp"
 
-#include <iostream>
+using namespace cdwarfs::compSys;
 
-#include "ChaiDwarfs.hpp"
+Points_Sys::Points_Sys(const std::shared_ptr<EntityManager>& entManager) :
+    BaseVisitor(entManager)
+{}
 
-int main()
+BaseVisitor::ReturnedCommands Points_Sys::operator()(const cmd::Points& cmd)
 {
-    try {
-        cdwarfs::ChaiDwarfs app;
-        app.init();
-        app.run();
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << '\n';
+    auto points = m_entManager->getComponent<comp::Points>(cmd.dest);
+    if (points) {
+        points->points += cmd.points;
     }
-
-    return 0;
+    return ReturnedCommands();
 }

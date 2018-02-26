@@ -17,20 +17,27 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
+#include "ComponentSystem.hpp"
+#include "src/ecs/Components.hpp"
 
-#include <iostream>
+using namespace cdwarfs::compSys;
 
-#include "ChaiDwarfs.hpp"
+TouchHeal_Sys::TouchHeal_Sys(const std::shared_ptr<EntityManager>& entManager) :
+    BaseVisitor(entManager)
+{}
 
-int main()
+BaseVisitor::ReturnedCommands TouchHeal_Sys::operator()(const cmd::Touch& cmd)
 {
-    try {
-        cdwarfs::ChaiDwarfs app;
-        app.init();
-        app.run();
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << '\n';
+    ReturnedCommands ret;
+    auto touchHeal = m_entManager->getComponent<comp::TouchHeal>(cmd.touched);
+    if (touchHeal) {
+        auto hp = m_entManager->getComponent<comp::HP>(cmd.touching);
+        if (hp) {
+            cmd::Heal cmdHeal;
+            cmdHeal.dest = cmd.touching;
+            cmdHeal.heal = touchHeal->heal;
+            ret.push_back(cmdHeal);
+        }
     }
-
-    return 0;
+    return ret;
 }

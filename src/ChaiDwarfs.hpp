@@ -20,6 +20,12 @@
 
 #pragma once
 
+#ifndef _GL3W_
+#define _GL3W_
+#include "GL/gl3w.h"
+#include <GLFW/glfw3.h>
+#endif
+
 #include <memory>
 
 #include "rendering/RenderSystem.hpp"
@@ -65,37 +71,37 @@ public:
 
     void run()
     {
-      Timer timer;
+        Timer timer;
 
-      auto lastRound = timer.currentTime();
-      int fpsCounter = 0;
+        auto lastRound = timer.currentTime();
+        int fpsCounter = 0;
 
-      while (m_running) {
-          m_input->updateInput();
+        while (m_running) {
+            m_input->updateInput();
 
-          if (m_input->isKeyPressedOnce(GLFW_KEY_ESCAPE)) {
-              m_running = false;
-          }
+            if (m_input->isKeyPressedOnce(GLFW_KEY_ESCAPE)) {
+                m_running = false;
+            }
 
-          if (timer.haveMilliSecondsPassed(500, lastRound)) {
-              m_cmdSystem->pushCommand(cmd::ExecuteEveryAI{});
-              m_terrainObjSys->objectCollisions(m_cmdSystem);
-              m_cmdSystem->processQueue();
-              killAllDestroyedEntities();
-              lastRound = timer.currentTime();
-          }
+            if (timer.haveMilliSecondsPassed(500, lastRound)) {
+                m_cmdSystem->pushCommand(cmd::ExecuteEveryAI{});
+                m_terrainObjSys->objectCollisions(m_cmdSystem);
+                m_cmdSystem->processQueue();
+                killAllDestroyedEntities();
+                lastRound = timer.currentTime();
+            }
 
-          timer.setDt(timer.lastFrameRendered, timer.currentTime());
-          timer.lastFrameRendered = timer.currentTime();
-          m_renderer->render(timer.dt);
+            timer.setDt(timer.lastFrameRendered, timer.currentTime());
+            timer.lastFrameRendered = timer.currentTime();
+            m_renderer->render(timer.dt);
 
-          ++fpsCounter;
+            ++fpsCounter;
 
-          if (timer.haveMilliSecondsPassed(1000, timer.lastFpsUpdate)) {
-              fpsCounter = 0;
-              timer.lastFpsUpdate = timer.currentTime();
-          }
-      }
+            if (timer.haveMilliSecondsPassed(1000, timer.lastFpsUpdate)) {
+                fpsCounter = 0;
+                timer.lastFpsUpdate = timer.currentTime();
+            }
+        }
     }
 
 private:

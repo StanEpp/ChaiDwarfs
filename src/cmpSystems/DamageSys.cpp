@@ -17,20 +17,20 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
+#include "ComponentSystem.hpp"
+#include "src/ecs/Components.hpp"
 
-#include <iostream>
+using namespace cdwarfs::compSys;
 
-#include "ChaiDwarfs.hpp"
+Damage_Sys::Damage_Sys(const std::shared_ptr<EntityManager>& entManager) :
+    BaseVisitor(entManager)
+{}
 
-int main()
+BaseVisitor::ReturnedCommands Damage_Sys::operator()(const cmd::Damage& cmd)
 {
-    try {
-        cdwarfs::ChaiDwarfs app;
-        app.init();
-        app.run();
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << '\n';
+    auto hp = m_entManager->getComponent<comp::HP>(cmd.dest);
+    if (hp) {
+        hp->hp -= cmd.damage;
     }
-
-    return 0;
+    return ReturnedCommands();
 }

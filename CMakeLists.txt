@@ -54,6 +54,17 @@ set(HEADER_FILES
     src/ecs/BaseComponent.hpp
     src/cmpSystems/TerrainObjectSystem.hpp
     src/cmpSystems/ComponentSystem.hpp
+    src/cmpSystems/TouchValueSys.cpp
+    src/cmpSystems/TouchHealSys.cpp
+    src/cmpSystems/DwarfAISys.cpp
+    src/cmpSystems/TouchDamageSys.cpp
+    src/cmpSystems/TouchDestroySys.cpp
+    src/cmpSystems/DamageSys.cpp
+    src/cmpSystems/PointSys.cpp
+    src/cmpSystems/MoveSys.cpp
+    src/cmpSystems/MoveSpriteSys.cpp
+    src/cmpSystems/ChangeTerrainTypeSys.cpp
+    src/cmpSystems/ChangeTileTypeRenderingSys.cpp
     src/CommandSystem.hpp
     src/ChaiDwarfs.hpp
     src/TerrainMap.hpp

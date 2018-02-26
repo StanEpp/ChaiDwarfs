@@ -17,20 +17,28 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program.If not, see <http://www.gnu.org/licenses/>
 */
+#include "ComponentSystem.hpp"
+#include "src/ecs/Components.hpp"
 
-#include <iostream>
+using namespace cdwarfs::compSys;
 
-#include "ChaiDwarfs.hpp"
+TouchDamage_Sys::TouchDamage_Sys(const std::shared_ptr<EntityManager>& entManager) :
+    BaseVisitor(entManager)
+{}
 
-int main()
+BaseVisitor::ReturnedCommands TouchDamage_Sys::operator()(const cmd::Touch& cmd)
 {
-    try {
-        cdwarfs::ChaiDwarfs app;
-        app.init();
-        app.run();
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << '\n';
+    ReturnedCommands ret;
+    auto touchDamage = m_entManager->getComponent<comp::TouchDamage>(cmd.touched);
+    if (touchDamage) {
+        auto hp = m_entManager->getComponent<comp::HP>(cmd.touching);
+        if (hp) {
+            cmd::Damage cmdDmg;
+            cmdDmg.dest = cmd.touching;
+            cmdDmg.damage = touchDamage->damage;
+            ret.push_back(cmdDmg);
+        }
     }
-
-    return 0;
+    return ret;
 }
+
