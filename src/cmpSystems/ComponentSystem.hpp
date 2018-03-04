@@ -71,6 +71,7 @@ public:
     virtual ReturnedCommands operator()(const cmd::MoveSpriteDown&) { return ReturnedCommands(); }
     virtual ReturnedCommands operator()(const cmd::ExecuteAI&) { return ReturnedCommands(); }
     virtual ReturnedCommands operator()(const cmd::ExecuteEveryAI&) { return ReturnedCommands(); }
+    virtual ReturnedCommands operator()(const cmd::KillFlaggedEntities&) { return ReturnedCommands(); }
 
 protected:
     std::shared_ptr<EntityManager> m_entManager;
@@ -221,6 +222,13 @@ private:
     std::shared_ptr<TerrainMap> m_terrainMap;
     std::shared_ptr<TerrainObjectSystem> m_terrainObjSys;
     MoveAction m_moveAction{ MoveAction::NONE };
+};
+
+class KillEntity_Sys : public BaseVisitor
+{
+public:
+    KillEntity_Sys(const std::shared_ptr<EntityManager>& entManager);
+    ReturnedCommands operator()(const cmd::KillFlaggedEntities& cmd) override;
 };
 
 }

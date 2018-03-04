@@ -172,6 +172,13 @@ public:
         if (itC == it->second.end()) return;
         if (itC->second) delete itC->second;
         it->second.erase(itC);
+
+        auto cbIt = m_destroyComponentCB.find(TComp::componentTypeID);
+        if (cbIt != m_destroyComponentCB.end()) {
+            for (auto& cb : cbIt->second) {
+                cb(ID);
+            }
+        }
     }
 
     void killEntity(EntityID::UUID ID)
@@ -180,26 +187,44 @@ public:
         if (it == m_objects.end())
             return;
 
-        for (auto comp : it->second){
-            delete comp.second;
+        for (const auto& [CompID, ptr] : it->second) {
+            delete ptr;
+            auto cbIt = m_destroyComponentCB.find(CompID);
+            if (cbIt != m_destroyComponentCB.end()) {
+                for (auto& cb : cbIt->second) {
+                    cb(ID);
+                }
+            }
         }
+
         m_objects.erase(it);
 
-        auto cbIt = m_destroyCB.find(ID);
-        if (cbIt != m_destroyCB.end()) {
+        auto cbIt = m_destroyEntityCB.find(ID);
+        if (cbIt != m_destroyEntityCB.end()) {
             for (auto& cb : cbIt->second) {
                 cb(ID);
             }
         }
     }
 
-    void listenToEntityDestruction(EntityID::UUID eID, std::function<void(EntityID::UUID)> cb)
+    void listenToEntityDestruction(EntityID::UUID eID, std::function<void(EntityID::UUID)>&& cb)
     {
-        auto it = m_destroyCB.find(eID);
-        if (it != m_destroyCB.end()) {
+        auto it = m_destroyEntityCB.find(eID);
+        if (it != m_destroyEntityCB.end()) {
             it->second.push_back(cb);
         } else {
-            m_destroyCB[eID].push_back(cb);
+            m_destroyEntityCB[eID].push_back(std::move(cb));
+        }
+    }
+
+    template<class TComp>
+    void listenToComponentDestruction(std::function<void(EntityID::UUID)>&& cb)
+    {
+        auto it = m_destroyComponentCB.find(TComp::componentTypeID);
+        if(it != m_destroyEntityCB.end()) {
+            it->second.push_back(cb);
+        } else {
+            m_destroyComponentCB[TComp::componentTypeID].push_back(std::move(cb));
         }
     }
 
@@ -233,7 +258,8 @@ private:
     // TODO: Think whether weak_ptr for BaseComponent makes sense.
     std::unordered_map<EntityID::UUID, ECSFactory::ComponentList>  m_objects;
 
-    std::unordered_map <EntityID::UUID, std::vector<std::function<void(EntityID::UUID)>>> m_destroyCB;
+    std::unordered_map <EntityID::UUID, std::vector<std::function<void(EntityID::UUID)>>> m_destroyEntityCB;
+    std::unordered_map <ComponentUUID, std::vector<std::function<void(EntityID::UUID)>>> m_destroyComponentCB;
 };
 
 }

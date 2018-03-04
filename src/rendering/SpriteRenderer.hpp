@@ -118,10 +118,10 @@ private:
             }
         }
 
-        typename std::unordered_map<SpriteKey, T>::iterator begin() { return m_set.begin(); }
-        typename std::unordered_map<SpriteKey, T>::iterator end() { return m_set.end(); }
-        typename std::unordered_map<SpriteKey, T>::iterator find(const SpriteKey& key) { return m_set.find(key); }
-        typename std::unordered_map<SpriteKey, T>::iterator currentSpriteIt() const { return m_currentSpriteIt; }
+        auto begin() { return m_set.begin(); }
+        auto end() { return m_set.end(); }
+        auto find(const SpriteKey& key) { return m_set.find(key); }
+        auto currentSpriteIt() const { return m_currentSpriteIt; }
 
         T* currentSprite() const
         {

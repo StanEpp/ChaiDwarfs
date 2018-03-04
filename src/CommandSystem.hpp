@@ -57,6 +57,7 @@ public:
         addNewComponentSystem<compSys::ChangeTileType_Rendering_Sys>(tileRenderer);
         addNewComponentSystem<compSys::MoveSprite_Sys>(spriteRenderer);
         addNewComponentSystem<compSys::DwarfAI_Sys>(terrainMap, terrainObjSys);
+        addNewComponentSystem<compSys::KillEntity_Sys>();
     }
 
     void pushCommand(cmd::Command cmd)
@@ -64,24 +65,36 @@ public:
         m_cmdQueue.push(cmd);
     }
 
+    void executeRound()
+    {
+        // Execute every AI/script
+        m_cmdQueue.push(cmd::ExecuteEveryAI());
+        processQueue();
+
+        // All commands have been executed. Now destroy entities
+        // which are flagged for destruction.
+        m_cmdQueue.push(cmd::KillFlaggedEntities());
+        processQueue();
+    }
+
+private:
+
     void processQueue()
     {
-        std::stack<cmd::Command> cmdStack;
-
         while (!m_cmdQueue.empty()) {
-            cmdStack.push(m_cmdQueue.front());
+            m_cmdStack.push(m_cmdQueue.front());
             m_cmdQueue.pop();
 
-            while (!cmdStack.empty()) {
-                auto currCmd = cmdStack.top();
-                cmdStack.pop();
+            while (!m_cmdStack.empty()) {
+                auto currCmd = m_cmdStack.top();
+                m_cmdStack.pop();
 
                 for (auto& visitor : m_visitors) {
                     auto retCmd = std::visit(*visitor, currCmd);
 
                     if (retCmd.size() >= 1) {
                         for (auto rIt = retCmd.rbegin(); rIt != retCmd.rend(); rIt++) {
-                            cmdStack.push((*rIt));
+                            m_cmdStack.push((*rIt));
                         }
                     }
                 }
@@ -89,14 +102,14 @@ public:
         }
     }
 
-private:
     template<class TSys, class... Params>
     inline void addNewComponentSystem(Params&&... args)
     {
         m_visitors.push_back(std::make_shared<TSys>(m_entManager, std::forward<Params>(args)...));
     }
 
-    std::queue<cmd::Command>  m_cmdQueue;
+    std::queue<cmd::Command> m_cmdQueue;
+    std::stack<cmd::Command> m_cmdStack; // Stack is needed for correct processing of commands.
     std::vector<std::shared_ptr<compSys::BaseVisitor>>  m_visitors;
     std::shared_ptr<EntityManager> m_entManager;
 };

@@ -65,6 +65,7 @@ set(HEADER_FILES
     src/cmpSystems/MoveSpriteSys.cpp
     src/cmpSystems/ChangeTerrainTypeSys.cpp
     src/cmpSystems/ChangeTileTypeRenderingSys.cpp
+    src/cmpSystems/KillEntitySys.cpp
     src/CommandSystem.hpp
     src/ChaiDwarfs.hpp
     src/TerrainMap.hpp

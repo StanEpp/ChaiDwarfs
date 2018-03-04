@@ -21,12 +21,12 @@ addComp_AnimatedSprites
 
 **/
 
-auto sprites = [Pair("moveDown", "dwarf/walkDown00.png")];
+auto sprite = [Pair("Diamond", "gems/Diamond.png"), Pair("Emerald", "gems/Emerald.png")];
 auto animSprites = [Pair("moveDown", "dwarf/walkDown.png"), Pair("moveUp", "dwarf/walkUp.png"), Pair("moveLeft", "dwarf/walkLeft.png"), Pair("moveRight", "dwarf/walkRight.png")]
 
 factory.defineObject("Dwarf").addComp_Name("Dwarf").addComp_HP(100, 100).addComp_Position(0, 0).addComp_Speed(1).addComp_Points(0).addComp_View(3).addComp_DwarfAI("dwarf.chai").addComp_AnimatedSprites(animSprites)
-factory.defineObject("Diamond").addComp_Name("Diamond").addComp_TouchValue(100).addComp_Position().addComp_DestroyOnTouch()
-factory.defineObject("Sapphire").addComp_Name("Sapphire").addComp_TouchValue(20).addComp_Position().addComp_DestroyOnTouch()
-factory.defineObject("Emerald").addComp_Name("Emerald").addComp_TouchValue(10).addComp_Position().addComp_DestroyOnTouch()
+factory.defineObject("Diamond").addComp_Name("Diamond").addComp_TouchValue(100).addComp_Position().addComp_DestroyOnTouch().addComp_Sprites([Pair("Diamond", "gems/Diamond.png")]);
+factory.defineObject("Sapphire").addComp_Name("Sapphire").addComp_TouchValue(20).addComp_Position().addComp_DestroyOnTouch().addComp_Sprites([Pair("Sapphire", "gems/Sapphire.png")]);
+factory.defineObject("Emerald").addComp_Name("Emerald").addComp_TouchValue(10).addComp_Position().addComp_DestroyOnTouch().addComp_Sprites([Pair("Emerald", "gems/Emerald.png")]);
 
 print("Object Definitions: Everything went well!")

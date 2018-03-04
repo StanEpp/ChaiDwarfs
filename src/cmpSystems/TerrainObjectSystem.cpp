@@ -78,7 +78,7 @@ bool TerrainObjectSystem::erase(EntityID::UUID ID)
 }
 
 // TODO: Improve runtime. Currently quadratic!
-void TerrainObjectSystem::objectCollisions(std::shared_ptr<CommandSystem>& cmdSys)
+void TerrainObjectSystem::objectCollisions(const std::shared_ptr<CommandSystem>& cmdSys)
 {
     for (auto objID : m_objects) {
         auto pos = m_entManager->getComponent<comp::Position>(objID);

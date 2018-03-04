@@ -61,7 +61,7 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture,
         auto sprites = m_entManager->getComponent<comp::Sprites>(ent);
         for (const auto& sprite : sprites->sprites) {
             if (std::experimental::filesystem::exists(sprite.second)) { //TODO: Maybe log that file couldn't be found?
-                m_sprites[ent][sprite.first] = Sprite{ sprite.second };
+                m_sprites[ent][sprite.first] = Sprite{ sprite.second, nullptr };
             }
         }
         if (m_sprites.find(ent) != m_sprites.end()) {
@@ -92,7 +92,6 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture,
             }
             if (numKeyframes == 0) continue;
             // Some Keyframes have been found => Create AnimatedSprite struct
-            auto screenPos = m_tileRenderer->posToScreenCoord(pos->row, pos->col);
             m_animSprites[ent][sprite.first] = AnimatedSprite{ sprite.second, numKeyframes };
         }
         if (m_animSprites.find(ent) != m_animSprites.end()) {
@@ -159,7 +158,8 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture,
         gl_Position = proj * vp * vec4(pos, 0, 1);
         ex_uv = uv;
       }
-      )_", "vertexShader", GL_VERTEX_SHADER);
+      )_",
+    "vertexShader", GL_VERTEX_SHADER);
 
     m_shaderManager->compileShader(R"_(
       #version 430
@@ -171,7 +171,8 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture,
       void main(void){
         color = texture2D(tex, ex_uv);
       }
-      )_", "fragmentShaderSprite", GL_FRAGMENT_SHADER);
+      )_",
+    "fragmentShaderSprite", GL_FRAGMENT_SHADER);
 
     m_shaderManager->compileShader(R"_(
       #version 430
@@ -184,7 +185,8 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture,
       void main(void){
         color = texture(spriteAtlas, vec3(ex_uv, keyFrame));
       }
-      )_", "fragmentShaderAnimatedSprite", GL_FRAGMENT_SHADER);
+      )_",
+    "fragmentShaderAnimatedSprite", GL_FRAGMENT_SHADER);
 
     m_glsl_spriteProg = m_shaderManager->createProgram("spriteProg");
     m_shaderManager->attachShader("vertexShader", "spriteProg");
@@ -228,6 +230,17 @@ void SpriteRenderer::init(const std::shared_ptr<Texture2D>& targetTexture,
     m_glsl_Anim_projMatLoc = m_shaderManager->getUniformLocation(m_glsl_animSpriteProg, "proj");
     m_glsl_Anim_vpMatLoc = m_shaderManager->getUniformLocation(m_glsl_animSpriteProg, "vp");
     m_glsl_Anim_keyFrameLoc = m_shaderManager->getUniformLocation(m_glsl_animSpriteProg, "keyFrame");
+
+
+    m_entManager->listenToComponentDestruction<comp::Sprites>(
+    [this](auto eID) {
+        m_sprites.erase(eID);
+    });
+
+    m_entManager->listenToComponentDestruction<comp::AnimatedSprites>(
+    [this](auto eID) {
+        m_animSprites.erase(eID);
+    });
 }
 
 void SpriteRenderer::spriteMove(EntityID::UUID entID, const SpriteKey& spriteKey, int nextRow, int nextCol)
@@ -367,10 +380,10 @@ void SpriteRenderer::render(double dt)
     m_shaderManager->useProgram(m_glsl_spriteProg);
     m_shaderManager->loadMatrix4(m_glsl_projMatLoc, m_camera->mvpPtr());
 
-    for (const auto& spriteSet : m_sprites) {
-        const auto sprite = spriteSet.second.currentSprite();
+    for (const auto& [key, spriteSet] : m_sprites) {
+        const auto sprite = spriteSet.currentSprite();
         if (sprite) {
-            auto vpMat = glm::translate(glm::mat4(1.f), glm::vec3(spriteSet.second.screenX, spriteSet.second.screenY, 0.f));
+            auto vpMat = glm::translate(glm::mat4(1.f), glm::vec3(spriteSet.screenX, spriteSet.screenY, 0.f));
             m_shaderManager->loadMatrix4(m_glsl_vpMatLoc, glm::value_ptr(vpMat));
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, sprite->texture->texID());
@@ -382,10 +395,10 @@ void SpriteRenderer::render(double dt)
     m_shaderManager->useProgram(m_glsl_animSpriteProg);
     m_shaderManager->loadMatrix4(m_glsl_Anim_projMatLoc, m_camera->mvpPtr());
 
-    for (const auto& spriteSet : m_animSprites) {
-        const auto sprite = spriteSet.second.currentSprite();
+    for (const auto& [key, spriteSet] : m_animSprites) {
+        const auto sprite = spriteSet.currentSprite();
         if (sprite) {
-            m_shaderManager->loadMatrix4(m_glsl_Anim_vpMatLoc, glm::value_ptr(glm::translate(glm::mat4(1.f), glm::vec3(spriteSet.second.screenX, spriteSet.second.screenY, 0.f))));
+            m_shaderManager->loadMatrix4(m_glsl_Anim_vpMatLoc, glm::value_ptr(glm::translate(glm::mat4(1.f), glm::vec3(spriteSet.screenX, spriteSet.screenY, 0.f))));
             m_shaderManager->loadUniform(m_glsl_Anim_keyFrameLoc, sprite->currKeyFrame);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D_ARRAY, sprite->textureArray->texID());

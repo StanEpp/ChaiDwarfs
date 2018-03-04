@@ -49,7 +49,7 @@ public:
 
     bool erase(EntityID::UUID ID);
 
-    void objectCollisions(std::shared_ptr<CommandSystem>& cmdSys);
+    void objectCollisions(const std::shared_ptr<CommandSystem>& cmdSys);
 
 private:
 

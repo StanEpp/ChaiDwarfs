@@ -65,6 +65,7 @@ public:
         m_renderer->init(1280, 720, "ChaiDwarfs");
 
         m_cmdSystem->init(m_terrain, m_terrainObjSys, m_renderer->getTileRenderer(), m_renderer->getSpriteRenderer());
+        m_terrainObjSys->objectCollisions(m_cmdSystem);
 
         m_input->bindInputToWindow(*m_renderer->getWindow());
     }
@@ -84,10 +85,7 @@ public:
             }
 
             if (timer.haveMilliSecondsPassed(500, lastRound)) {
-                m_cmdSystem->pushCommand(cmd::ExecuteEveryAI{});
-                m_terrainObjSys->objectCollisions(m_cmdSystem);
-                m_cmdSystem->processQueue();
-                killAllDestroyedEntities();
+                m_cmdSystem->executeRound();
                 lastRound = timer.currentTime();
             }
 
@@ -114,14 +112,6 @@ private:
     std::shared_ptr<render::RenderSystem> m_renderer;
 
     bool  m_running;
-
-    void killAllDestroyedEntities()
-    {
-        auto vec = m_entManager->getAllEntitiesWithComponent<comp::FlaggedDestroyed>();
-        for (auto ID : vec) {
-            m_entManager->killEntity(ID);
-        }
-    }
 };
 
 }

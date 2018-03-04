@@ -103,6 +103,8 @@ struct ExecuteAI {
 
 struct ExecuteEveryAI { };
 
+struct KillFlaggedEntities { };
+
 using Command =
 std::variant<
     Touch,
@@ -121,7 +123,8 @@ std::variant<
     MoveSpriteUp,
     MoveSpriteDown,
     ExecuteAI,
-    ExecuteEveryAI
+    ExecuteEveryAI,
+    KillFlaggedEntities
 >;
 
 }

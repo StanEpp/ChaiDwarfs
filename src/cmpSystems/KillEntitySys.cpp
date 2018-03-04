@@ -19,18 +19,18 @@
 */
 #include "ComponentSystem.hpp"
 #include "src/ecs/Components.hpp"
-#include <iostream>
+
 using namespace cdwarfs::compSys;
 
-TouchDestroy_Sys::TouchDestroy_Sys(const std::shared_ptr<EntityManager>& entManager) :
+KillEntity_Sys::KillEntity_Sys(const std::shared_ptr<EntityManager>& entManager) :
     BaseVisitor(entManager)
 {}
 
-BaseVisitor::ReturnedCommands TouchDestroy_Sys::operator()(const cmd::Touch& cmd)
+BaseVisitor::ReturnedCommands KillEntity_Sys::operator()(const cmd::KillFlaggedEntities&)
 {
-    if (m_entManager->getComponent<comp::TouchDestroy>(cmd.touched)) {
-        m_entManager->addComponent<comp::FlaggedDestroyed>(cmd.touched);
+    auto entities = m_entManager->getAllEntitiesWithComponent<comp::FlaggedDestroyed>();
+    for (const auto ID : entities) {
+        m_entManager->killEntity(ID);
     }
     return ReturnedCommands();
 }
-
