@@ -22,7 +22,7 @@
 #include "src/rendering/TextureFactory.hpp"
 #define STBI_ONLY_PNG
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb/stb_image.h>
 #include "Texture2D.hpp"
 #include "Texture2DArray.hpp"
 

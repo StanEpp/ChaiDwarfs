@@ -36,7 +36,6 @@ set(HEADER_FILES
     src/rendering/ShaderBaseModel.hpp
     src/rendering/SpriteRenderer.hpp
     src/rendering/ShaderManager.hpp
-    src/rendering/stb_image.h
     src/rendering/TextureFactory.hpp
     src/rendering/ScreenquadRenderer.hpp
     src/rendering/RenderSystem.hpp
@@ -113,6 +112,6 @@ set_source_files_properties(
         WRAP_EXCLUDE TRUE
 )
 
-add_dependencies(Chaidwarfs glm_ext glfw_ext chaiscript_ext)
+add_dependencies(Chaidwarfs glm_ext glfw_ext chaiscript_ext stb_image_ext)
 
 target_link_libraries(Chaidwarfs PUBLIC glfw stdc++fs ${CMAKE_DL_LIBS} ${CMAKE_THREAD_LIBS_INIT})
