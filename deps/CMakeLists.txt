@@ -27,7 +27,7 @@ externalproject_add(chaiscript_ext
     BUILD_COMMAND ""
     UPDATE_COMMAND ""
     UPDATE_DISCONNECTED 1
-    URL https://github.com/ChaiScript/ChaiScript/archive/c++17.zip
+    URL https://github.com/ChaiScript/ChaiScript/archive/develop.zip
 )
 
 externalproject_add(glfw_ext
